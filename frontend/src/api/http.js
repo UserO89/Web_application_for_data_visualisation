@@ -1,8 +1,8 @@
-import axios from 'axios'
+﻿import axios from 'axios'
 
-// In dev we use relative URLs — requests go through Vite proxy to same origin,
-// so cookies and CSRF work. Otherwise request from 5173 to 8088 is cross-origin, cookies won't be sent.
-const baseURL = import.meta.env.DEV ? '/api/v1' : (import.meta.env.VITE_API_URL || 'http://localhost:8088/api/v1')
+// In dev we use relative URLs - requests go through Vite proxy to same origin,
+// so cookies and CSRF work. In production set VITE_API_URL if your API is not on localhost:8000.
+const baseURL = import.meta.env.DEV ? '/api/v1' : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1')
 
 export const http = axios.create({
   baseURL,

@@ -4,7 +4,7 @@
 
 <script>
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
-import Tabulator from 'tabulator-tables'
+import { TabulatorFull as Tabulator } from 'tabulator-tables'
 import 'tabulator-tables/dist/css/tabulator.min.css'
 
 export default {
@@ -19,7 +19,7 @@ export default {
       required: true,
     },
   },
-  emits: ['cellEdited'],
+  emits: ['cell-edited'],
   setup(props, { emit }) {
     const el = ref(null)
     let table = null
@@ -38,7 +38,7 @@ export default {
         movableColumns: true,
         resizableColumns: true,
         cellEdited: (cell) => {
-          emit('cellEdited', {
+          emit('cell-edited', {
             row: cell.getRow().getData(),
             field: cell.getField(),
             value: cell.getValue(),

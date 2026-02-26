@@ -83,7 +83,17 @@ export default {
         }
         router.push({ name: 'projects' })
       } catch (err) {
-        error.value = err.response?.data?.message || 'An error occurred'
+        const apiData = err?.response?.data
+
+        if (apiData?.message) {
+          error.value = apiData.message
+        } else if (apiData?.errors) {
+          error.value = Object.values(apiData.errors).flat().join(' ')
+        } else if (err?.code === 'ERR_NETWORK') {
+          error.value = 'Cannot connect to API. Start backend with `php artisan serve`.'
+        } else {
+          error.value = 'Request failed. Check backend logs and browser Network tab.'
+        }
       }
     }
 

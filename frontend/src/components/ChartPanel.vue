@@ -19,28 +19,9 @@
 
 <script>
 import { ref, onMounted, watch } from 'vue'
-import {
-  Chart,
-  LineController,
-  BarController,
-  PieController,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
-} from 'chart.js'
+import { Chart, registerables } from 'chart.js'
 
-Chart.register(
-  LineController,
-  BarController,
-  PieController,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler
-)
+Chart.register(...registerables)
 
 export default {
   name: 'ChartPanel',
@@ -55,7 +36,13 @@ export default {
     let chart = null
 
     const createChart = () => {
-      if (!canvas.value || !props.labels?.length) return
+      if (!canvas.value || !props.labels?.length) {
+        if (chart) {
+          chart.destroy()
+          chart = null
+        }
+        return
+      }
 
       if (chart) chart.destroy()
 

@@ -7,16 +7,12 @@ use App\Http\Requests\ImportDatasetRequest;
 use App\Models\Project;
 use App\Services\CsvImportService;
 use App\Services\ColumnTypeInferenceService;
-use App\Services\DatasetValidationService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DatasetImportController extends Controller
 {
     public function __construct(
         private CsvImportService $csvImportService,
-        private ColumnTypeInferenceService $typeInferenceService,
-        private DatasetValidationService $validationService
+        private ColumnTypeInferenceService $typeInferenceService
     ) {}
 
     public function import(ImportDatasetRequest $request, Project $project)
@@ -27,13 +23,18 @@ class DatasetImportController extends Controller
 
         $file = $request->file('file');
         $delimiter = $request->input('delimiter', ',');
-        $hasHeader = $request->input('has_header', true);
+        $hasHeader = $request->boolean('has_header', true);
 
         // Parse CSV
         $parsed = $this->csvImportService->parse($file, $delimiter, $hasHeader);
 
         // Store file
         $path = $file->store('datasets', 'local');
+
+        // Replace previous dataset for this project to keep one active dataset.
+        if ($project->dataset) {
+            $project->dataset->delete();
+        }
 
         // Create dataset
         $dataset = $project->dataset()->create([

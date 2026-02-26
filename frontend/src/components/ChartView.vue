@@ -1,48 +1,47 @@
 <template>
-  <VChart class="chart" :option="option" autoresize />
+  <div class="chart-view-placeholder panel">
+    <div class="title">ChartView Placeholder</div>
+    <div class="hint">
+      Reserved for advanced visualization engines (ECharts, etc.).
+    </div>
+    <pre class="preview">{{ option }}</pre>
+  </div>
 </template>
 
 <script>
-import { use } from 'echarts/core'
-import { CanvasRenderer } from 'echarts/renderers'
-import { LineChart, BarChart, PieChart, ScatterChart } from 'echarts/charts'
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent,
-} from 'echarts/components'
-import VChart from 'vue-echarts'
-
-use([
-  CanvasRenderer,
-  LineChart,
-  BarChart,
-  PieChart,
-  ScatterChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  GridComponent,
-])
-
 export default {
   name: 'ChartView',
-  components: {
-    VChart,
-  },
   props: {
     option: {
       type: Object,
-      required: true,
+      default: () => ({}),
     },
   },
 }
 </script>
 
 <style scoped>
-.chart {
-  width: 100%;
-  height: 420px;
+.chart-view-placeholder {
+  min-height: 220px;
+}
+
+.title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.preview {
+  margin: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--glass);
+  overflow: auto;
+  font-size: 12px;
 }
 </style>
