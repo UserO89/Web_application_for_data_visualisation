@@ -21,12 +21,16 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/auth/logout', [AuthController::class, 'logout']);
         Route::get('/auth/me', [AuthController::class, 'me']);
+        Route::patch('/auth/profile', [AuthController::class, 'updateProfile']);
+        Route::patch('/auth/password', [AuthController::class, 'updatePassword']);
+        Route::delete('/auth/account', [AuthController::class, 'destroyAccount']);
         Route::post('/auth/avatar', [AuthController::class, 'uploadAvatar']);
 
         // Projects
         Route::get('/projects', [ProjectController::class, 'index']);
         Route::post('/projects', [ProjectController::class, 'store']);
         Route::get('/projects/{project}', [ProjectController::class, 'show']);
+        Route::patch('/projects/{project}', [ProjectController::class, 'update']);
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy']);
 
         // Import CSV -> attach dataset to project

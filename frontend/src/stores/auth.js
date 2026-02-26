@@ -54,6 +54,36 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async updateProfile(data) {
+      this.loading = true
+      try {
+        const response = await authApi.updateProfile(data)
+        this.user = response.user
+        return response
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async changePassword(data) {
+      this.loading = true
+      try {
+        return await authApi.updatePassword(data)
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async deleteAccount(data) {
+      this.loading = true
+      try {
+        await authApi.deleteAccount(data)
+        this.user = null
+      } finally {
+        this.loading = false
+      }
+    },
+
     async uploadAvatar(file) {
       this.loading = true
       try {

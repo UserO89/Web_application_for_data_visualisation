@@ -23,6 +23,21 @@ export const authApi = {
     return response.data
   },
 
+  async updateProfile(data) {
+    const response = await http.patch('/auth/profile', data)
+    return response.data
+  },
+
+  async updatePassword(data) {
+    const response = await http.patch('/auth/password', data)
+    return response.data
+  },
+
+  async deleteAccount(data) {
+    const response = await http.delete('/auth/account', { data })
+    return response.data
+  },
+
   async uploadAvatar(file) {
     const formData = new FormData()
     formData.append('avatar', file)

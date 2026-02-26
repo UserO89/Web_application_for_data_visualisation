@@ -38,6 +38,17 @@ class ProjectController extends Controller
         return response()->json(['project' => $project->load('dataset.columns')]);
     }
 
+    public function update(StoreProjectRequest $request, Project $project)
+    {
+        if ($project->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $project->update($request->validated());
+
+        return response()->json(['project' => $project->fresh()->load('dataset')]);
+    }
+
     public function destroy(Request $request, Project $project)
     {
         if ($project->user_id !== $request->user()->id) {

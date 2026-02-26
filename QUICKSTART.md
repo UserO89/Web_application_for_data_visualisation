@@ -1,5 +1,6 @@
 # Быстрый старт
 php artisan serve
+php artisan serve --host=localhost --port=8088 --no-reload
 ## Шаг 1: Backend
 
 ```bash

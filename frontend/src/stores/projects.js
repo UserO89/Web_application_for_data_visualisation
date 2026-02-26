@@ -41,6 +41,26 @@ export const useProjectsStore = defineStore('projects', {
       }
     },
 
+    async updateProject(id, data) {
+      this.loading = true
+      try {
+        const response = await projectsApi.update(id, data)
+        const updated = response.project
+
+        this.projects = this.projects.map((project) =>
+          project.id === id ? updated : project
+        )
+
+        if (this.currentProject?.id === id) {
+          this.currentProject = updated
+        }
+
+        return updated
+      } finally {
+        this.loading = false
+      }
+    },
+
     async deleteProject(id) {
       this.loading = true
       try {

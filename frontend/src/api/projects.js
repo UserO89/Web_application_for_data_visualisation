@@ -16,6 +16,11 @@ export const projectsApi = {
     return response.data
   },
 
+  async update(id, data) {
+    const response = await http.patch(`/projects/${id}`, data)
+    return response.data
+  },
+
   async delete(id) {
     const response = await http.delete(`/projects/${id}`)
     return response.data
