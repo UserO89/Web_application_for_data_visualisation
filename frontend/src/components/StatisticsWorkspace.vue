@@ -388,7 +388,9 @@ const METRIC_OPTIONS = {
     { key: 'median', label: 'Median' },
     { key: 'min', label: 'Min' },
     { key: 'max', label: 'Max' },
-    { key: 'quartiles', label: 'Quartiles' },
+    { key: 'q1', label: 'Q1' },
+    { key: 'q2', label: 'Q2' },
+    { key: 'q3', label: 'Q3' },
     { key: 'std_dev', label: 'Std deviation' },
     { key: 'variance', label: 'Variance' },
     { key: 'range', label: 'Range' },
@@ -569,7 +571,7 @@ export default {
 
     const groupedMetricKeys = computed(() => {
       const numericMetrics = metricSelected.value.numeric || []
-      const allowed = ['count', 'mean', 'median', 'min', 'max', 'range', 'std_dev', 'variance']
+      const allowed = ['count', 'mean', 'median', 'min', 'max', 'q1', 'q2', 'q3', 'range', 'std_dev', 'variance']
       const selected = numericMetrics.filter((metric) => allowed.includes(metric))
       return selected.length ? selected : ['count', 'mean']
     })
@@ -708,7 +710,7 @@ export default {
     const typeLabel = (semanticType) => SEMANTIC_TYPE_LABELS[semanticType] || semanticType || 'Unknown'
     const metricLabel = (metricKey) => {
       if (metricKey === 'q1') return 'Q1'
-      if (metricKey === 'q2') return 'Q2 (Median)'
+      if (metricKey === 'q2') return 'Q2'
       if (metricKey === 'q3') return 'Q3'
       return [...METRIC_OPTIONS.numeric, ...METRIC_OPTIONS.category, ...METRIC_OPTIONS.date, ...METRIC_OPTIONS.ordered]
         .find((item) => item.key === metricKey)?.label || metricKey
@@ -826,6 +828,9 @@ function calculateNumericMetrics(values) {
       count: 0,
       mean: null,
       median: null,
+      q1: null,
+      q2: null,
+      q3: null,
       min: null,
       max: null,
       range: null,
@@ -838,6 +843,9 @@ function calculateNumericMetrics(values) {
   const count = sorted.length
   const mean = sorted.reduce((acc, value) => acc + value, 0) / count
   const median = quantile(sorted, 0.5)
+  const q1 = quantile(sorted, 0.25)
+  const q2 = median
+  const q3 = quantile(sorted, 0.75)
   const min = sorted[0]
   const max = sorted[count - 1]
   const range = max - min
@@ -848,6 +856,9 @@ function calculateNumericMetrics(values) {
     count,
     mean,
     median,
+    q1,
+    q2,
+    q3,
     min,
     max,
     range,
@@ -863,7 +874,7 @@ function calculateNumericMetrics(values) {
 .stats-status { color: var(--muted); font-size: 12px; }
 .stats-error { color: #ff9b9b; font-size: 13px; }
 
-.stats-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.stats-groups { display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 10px; }
 .stats-group {
   border: 1px solid var(--border);
   border-radius: 10px;

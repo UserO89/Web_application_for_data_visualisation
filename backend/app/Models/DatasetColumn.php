@@ -22,6 +22,7 @@ class DatasetColumn extends Model
         'ordinal_order',
         'is_excluded_from_analysis',
         'profile_json',
+        'quality_json',
         'inference_scores_json',
         'inference_reasons_json',
         'position',
@@ -32,6 +33,7 @@ class DatasetColumn extends Model
         return [
             'ordinal_order' => 'array',
             'profile_json' => 'array',
+            'quality_json' => 'array',
             'inference_scores_json' => 'array',
             'inference_reasons_json' => 'array',
             'semantic_confidence' => 'float',

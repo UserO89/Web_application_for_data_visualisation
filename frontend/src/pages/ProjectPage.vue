@@ -63,7 +63,7 @@
             @click="openValidationModal"
           >
             Validation Report
-            <span class="validation-pill">{{ importValidation.summary?.issue_count ?? 0 }}</span>
+            <span class="validation-pill">{{ validationIssueCount }}</span>
           </button>
         </div>
       </div>
@@ -195,37 +195,60 @@
           </div>
         </div>
         <div class="validation-summary">
-          Rows checked: {{ importValidation.summary?.rows_checked ?? 0 }},
-          fixed cells: {{ importValidation.summary?.fixed_cells ?? 0 }},
-          replaced with null: {{ importValidation.summary?.nullified_cells ?? 0 }},
-          row shape fixes: {{ importValidation.summary?.row_shape_fixes ?? 0 }}.
+          {{ validationSummaryLine }}
         </div>
-        <div v-if="importValidation.issues?.length" class="validation-list">
-          <div v-for="(issue, idx) in importValidation.issues" :key="`issue-modal-${idx}`" class="validation-item">
-            <div class="validation-item-meta">
-              <strong>Row {{ issue.row }}</strong>
-              <span v-if="issue.column">, {{ issue.column }}</span>
-              : {{ issue.message }}
+        <div class="validation-summary validation-severity-line">
+          Errors: {{ validationSummary.error_count || 0 }},
+          warnings: {{ validationSummary.warning_count || 0 }},
+          info: {{ validationSummary.info_count || 0 }}.
+        </div>
+        <div v-if="importValidation.issues?.length" class="validation-groups">
+          <div v-for="severity in severityOrder" :key="`severity-${severity}`" class="validation-group">
+            <div v-if="validationIssuesBySeverity[severity]?.length" class="validation-group-title">
+              {{ severity.toUpperCase() }} ({{ validationIssuesBySeverity[severity].length }})
             </div>
-            <div class="validation-diff">Auto-fix: {{ formatIssueValue(issue.original) }} -> {{ formatIssueValue(issue.fixed) }}</div>
-
-            <div v-if="resolveIssueTarget(issue)" class="validation-edit-row">
-              <label class="validation-edit-label" :for="`validation-edit-${idx}`">Manual fix</label>
-              <input
-                :id="`validation-edit-${idx}`"
-                v-model="validationDrafts[idx]"
-                class="validation-edit-input"
-                type="text"
-                :placeholder="issue.fixed === null ? 'Enter corrected value' : 'Adjust value if needed'"
-              />
-            </div>
-            <div v-else class="validation-item-note">
-              This issue cannot be edited directly in modal.
+            <div v-if="validationIssuesBySeverity[severity]?.length" class="validation-list">
+              <div
+                v-for="(issue, idx) in validationIssuesBySeverity[severity]"
+                :key="`issue-modal-${severity}-${idx}`"
+                class="validation-item"
+              >
+                <div class="validation-item-meta">
+                  <strong>{{ formatIssueTargetLabel(issue) }}</strong>: {{ issue.message }}
+                </div>
+                <div class="validation-item-code">{{ issue.code }}</div>
+                <div v-if="issue.original !== undefined || issue.fixed !== undefined" class="validation-diff">
+                  Auto-fix: {{ formatIssueValue(issue.original) }} -> {{ formatIssueValue(issue.fixed) }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div v-else class="validation-summary">No issues found.</div>
-        <div class="validation-footer">
+        <div v-if="validationColumnRows.length" class="validation-columns">
+          <div class="validation-group-title">Column Quality Overview</div>
+          <div class="table-wrap validation-columns-wrap">
+            <table class="data-table validation-columns-table">
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="column in validationColumnRows" :key="`quality-${column.name}`">
+                  <td>{{ column.name }}</td>
+                  <td>{{ column.type }}</td>
+                  <td>{{ column.status }}</td>
+                  <td>{{ column.note }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div v-if="editableValidationIssueCount" class="validation-footer">
           <div class="validation-save-state">{{ validationSaveState || 'Edit values and click save to update table data.' }}</div>
           <button type="button" class="btn primary" :disabled="savingValidation" @click="applyValidationEdits">
             {{ savingValidation ? 'Saving...' : 'Save Changes' }}
@@ -248,6 +271,13 @@ import { useDatasetSchemaStore } from '../stores/datasetSchema'
 import { buildSemanticChartData } from '../charts/chartDataTransformers/buildSemanticChartData'
 import { normalizeChartDefinition, validateChartDefinition } from '../charts/rules/chartDefinitionValidator'
 import { createDefaultChartDefinition, mergeChartDefinition } from '../charts/chartDefinitions/createUniversalChartDefinition'
+import {
+  SEVERITY_ORDER,
+  formatIssueTarget,
+  groupIssuesBySeverity,
+  normalizeValidationReport,
+  toColumnQualityRows,
+} from '../utils/validationReport'
 
 const IDS = ['table', 'chart', 'stats']
 const STORAGE_PREFIX = 'dataviz.workspace.layout.v2.'
@@ -358,6 +388,26 @@ export default {
         .sort((a, b) => Number(a.position) - Number(b.position))
     )
     const schemaUpdatingColumnId = computed(() => schemaStore.updatingColumnId)
+    const severityOrder = SEVERITY_ORDER
+    const validationSummary = computed(() => importValidation.value?.summary || {})
+    const validationIssuesBySeverity = computed(() =>
+      groupIssuesBySeverity(importValidation.value?.issues || [])
+    )
+    const validationColumnRows = computed(() =>
+      toColumnQualityRows(importValidation.value?.columns || [])
+    )
+    const validationIssueCount = computed(() => {
+      const summaryCount = Number(validationSummary.value?.issue_count || 0)
+      if (summaryCount > 0) return summaryCount
+      return (importValidation.value?.issues || []).length
+    })
+    const editableValidationIssueCount = computed(() =>
+      (importValidation.value?.issues || []).filter((issue) => resolveIssueTarget(issue)).length
+    )
+    const validationSummaryLine = computed(() => {
+      const summary = validationSummary.value || {}
+      return `${summary.rows_imported || 0} rows imported, ${summary.rows_skipped || 0} rows skipped, ${summary.columns_detected || 0} columns detected.`
+    })
     const buildFocusLayouts = (mode) => {
       void resizeTick.value
       const w = canvasW()
@@ -439,14 +489,14 @@ export default {
         const raw = localStorage.getItem(validationKey())
         if (!raw) return null
         const parsed = JSON.parse(raw)
-        return parsed && typeof parsed === 'object' ? parsed : null
+        return normalizeValidationReport(parsed)
       } catch (_) {
         return null
       }
     }
 
     const setValidationReport = (report, open = false) => {
-      importValidation.value = report && typeof report === 'object' ? report : null
+      importValidation.value = normalizeValidationReport(report)
       validationDrafts.value = {}
       validationSaveState.value = ''
       validationModalOpen.value = Boolean(open && importValidation.value)
@@ -536,9 +586,10 @@ export default {
     }
 
     const resolveIssueTarget = (issue) => {
-      const rowNumber = Number(issue?.row)
-      if (!Number.isInteger(rowNumber) || rowNumber < 1 || !issue?.column) return null
-      const column = sortedDatasetColumns.value.find((col) => col.name === issue.column)
+      const rowNumber = Number(issue?.target?.row ?? issue?.row)
+      const columnName = issue?.target?.column || issue?.column
+      if (!Number.isInteger(rowNumber) || rowNumber < 1 || !columnName) return null
+      const column = sortedDatasetColumns.value.find((col) => col.name === columnName)
       if (!column) return null
       const rowIndex = rowNumber - 1
       const row = tableRows.value[rowIndex]
@@ -570,7 +621,7 @@ export default {
     const buildPreset = (preset) => {
       const w = canvasW()
       const g = 16
-      const preferredChartWidth = 580
+      const preferredChartWidth = 500
       const resolveChartWidth = () => {
         const maxBySpace = Math.max(MIN.chart.w, w - g - MIN.table.w)
         return Math.min(preferredChartWidth, maxBySpace)
@@ -592,7 +643,7 @@ export default {
         }
       }
       if (preset === 'analysis-focus') {
-        const right = Math.floor(w * 0.36)
+        const right = Math.floor(w * 0.4)
         const left = w - right - g
         return {
           chart: { x: 0, y: 0, w: left, h: 460, z: 1 },
@@ -603,7 +654,7 @@ export default {
       if (preset === 'quad') {
         const chartWidth = resolveChartWidth()
         const tableWidth = Math.max(MIN.table.w, w - g - chartWidth)
-        const topHeight = 360
+        const topHeight = 430
         const lowerY = topHeight + g
         return {
           table: { x: 0, y: 0, w: tableWidth, h: topHeight, z: 1 },
@@ -613,7 +664,7 @@ export default {
       }
       const right = resolveChartWidth()
       const left = Math.max(MIN.table.w, w - right - g)
-      const topHeight = 360
+      const topHeight = 430
       const statsY = topHeight + g
       return {
         table: { x: 0, y: 0, w: left, h: topHeight, z: 1 },
@@ -664,8 +715,40 @@ export default {
       return out
     }
 
+    const alignPanelsToRightEdge = (layouts) => {
+      if (!layouts || typeof layouts !== 'object') return layouts
+      const cw = canvasW()
+      const out = {}
+      IDS.forEach((id) => {
+        out[id] = layouts[id] ? { ...layouts[id] } : null
+      })
+
+      ;['chart', 'stats'].forEach((id) => {
+        const current = out[id]
+        if (!current) return
+
+        const candidate = {
+          ...current,
+          w: Math.round(Math.max(MIN[id].w, cw - current.x)),
+        }
+
+        if (Math.abs((candidate.x + candidate.w) - (current.x + current.w)) < 2) return
+
+        const hasCollision = IDS.some((otherId) => {
+          if (otherId === id) return false
+          const other = out[otherId]
+          return other ? rectsOverlap(candidate, other) : false
+        })
+        if (!hasCollision) {
+          out[id] = candidate
+        }
+      })
+
+      return out
+    }
+
     const setLayouts = (l, persist = true) => {
-      panelLayouts.value = l
+      panelLayouts.value = alignPanelsToRightEdge(l)
       zCounter.value = Math.max(...IDS.map((id) => panelLayouts.value[id].z)) + 1
       if (persist) saveLayouts()
     }
@@ -682,9 +765,15 @@ export default {
         const raw = localStorage.getItem(key())
         if (!raw) return false
         const payload = JSON.parse(raw)
+        const preset = payload?.preset || 'default'
+        if (preset !== 'custom') {
+          activePreset.value = preset
+          setLayouts(buildPreset(preset), false)
+          return true
+        }
         const layouts = sanitize(payload.layouts, Number(payload.width))
         if (!layouts) return false
-        activePreset.value = payload.preset || 'default'
+        activePreset.value = preset
         setLayouts(layouts, false)
         return true
       } catch (_) {
@@ -859,13 +948,14 @@ export default {
         next[id] = { ...panelLayouts.value[id], ...clampRect(id, panelLayouts.value[id]) }
       })
       if (!IDS.every((id) => next[id])) return
-      if (hasAnyOverlap(next)) {
+      const aligned = alignPanelsToRightEdge(next)
+      if (hasAnyOverlap(aligned)) {
         const fallbackPreset = activePreset.value === 'custom' ? 'default' : activePreset.value
         activePreset.value = fallbackPreset
         setLayouts(buildPreset(fallbackPreset), true)
         return
       }
-      IDS.forEach((id) => Object.assign(panelLayouts.value[id], next[id]))
+      IDS.forEach((id) => Object.assign(panelLayouts.value[id], aligned[id]))
       saveLayouts()
     }
 
@@ -896,12 +986,16 @@ export default {
             clearChart()
           }
 
-          if (!importValidation.value) {
+          const backendValidation = normalizeValidationReport(project.value?.dataset?.validation_report_json)
+          if (backendValidation) {
+            setValidationReport(backendValidation, false)
+          } else if (!importValidation.value) {
             importValidation.value = loadValidation()
           }
           if (initializedForProjectId.value !== String(route.params.id)) {
             await nextTick()
             if (!loadLayouts()) applyPreset('default')
+            requestAnimationFrame(() => onResizeWindow())
             initializedForProjectId.value = String(route.params.id)
           }
         } else {
@@ -1160,6 +1254,7 @@ export default {
       if (value === null || value === undefined || value === '') return 'null'
       return String(value)
     }
+    const formatIssueTargetLabel = (issue) => formatIssueTarget(issue)
 
     const openValidationModal = () => {
       if (!importValidation.value) return
@@ -1309,7 +1404,9 @@ export default {
       project, loading, selectedFile, importing, importOptions, importMode, manualHeaders, manualRowsInput, manualError,
       importValidation, validationModalOpen, validationDrafts, savingValidation, validationSaveState,
       openValidationModal, closeValidationModal, clearValidationReport, applyValidationEdits,
-      resolveIssueTarget, formatIssueValue,
+      resolveIssueTarget, formatIssueValue, formatIssueTargetLabel,
+      severityOrder, validationSummary, validationSummaryLine, validationIssuesBySeverity,
+      validationIssueCount, validationColumnRows, editableValidationIssueCount,
       getSeriesColor, setSeriesColor, resetSeriesColors,
       viewMode, setViewMode, visiblePanelIds,
       tableRows, tableColumns, analysisRows, schemaColumns, schemaUpdatingColumnId,
@@ -1377,15 +1474,17 @@ export default {
 .validation-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .validation-title { font-size: 15px; font-weight: 700; color: #93f6b3; }
 .validation-summary { color: var(--muted); font-size: 13px; line-height: 1.45; }
-.validation-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; max-height: 54vh; overflow: auto; padding-right: 4px; }
+.validation-severity-line { margin-top: 4px; }
+.validation-groups { margin-top: 10px; display: flex; flex-direction: column; gap: 12px; }
+.validation-group-title { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.validation-list { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow: auto; padding-right: 4px; }
 .validation-item { font-size: 12px; color: var(--text); line-height: 1.45; border: 1px solid var(--border); border-radius: 10px; padding: 8px; background: #161616; }
 .validation-item-meta { margin-bottom: 4px; }
+.validation-item-code { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
 .validation-diff { color: #93f6b3; }
-.validation-edit-row { margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.validation-edit-label { color: var(--muted); min-width: 74px; }
-.validation-edit-input { flex: 1; min-width: 220px; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; font-size: 13px; }
-.validation-edit-input:focus { outline: none; border-color: var(--accent); }
-.validation-item-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
+.validation-columns { margin-top: 12px; }
+.validation-columns-wrap { max-height: 240px; }
+.validation-columns-table { min-width: 680px; }
 .validation-footer { margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .validation-save-state { color: var(--muted); font-size: 12px; }
 

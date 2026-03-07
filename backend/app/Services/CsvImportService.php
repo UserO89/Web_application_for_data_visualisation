@@ -9,13 +9,17 @@ class CsvImportService
 {
     public function parse(UploadedFile $file, string $delimiter = ',', bool $hasHeader = true): array
     {
-        $csv = Reader::createFromPath($file->getRealPath(), 'r');
-        $csv->setDelimiter($delimiter);
+        try {
+            $csv = Reader::createFromPath($file->getRealPath(), 'r');
+            $csv->setDelimiter($delimiter);
 
-        $records = $csv->getRecords(); // iterable
-        $rows = [];
-        foreach ($records as $row) {
-            $rows[] = $row;
+            $records = $csv->getRecords(); // iterable
+            $rows = [];
+            foreach ($records as $row) {
+                $rows[] = $row;
+            }
+        } catch (\Throwable $e) {
+            throw new \RuntimeException('Unable to parse uploaded CSV file.', previous: $e);
         }
 
         return [

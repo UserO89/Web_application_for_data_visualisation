@@ -140,6 +140,7 @@ class DatasetSemanticSchemaService
             'ordinalOrder' => $column->ordinal_order,
             'isExcludedFromAnalysis' => (bool) $column->is_excluded_from_analysis,
             'profile' => $column->profile_json ?? [],
+            'quality' => $column->quality_json ?? [],
             'inferenceScores' => $column->inference_scores_json ?? [],
             'inferenceReasons' => $column->inference_reasons_json ?? [],
         ];

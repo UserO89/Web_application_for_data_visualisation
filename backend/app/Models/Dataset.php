@@ -14,7 +14,18 @@ class Dataset extends Model
         'file_path',
         'delimiter',
         'has_header',
+        'import_summary_json',
+        'validation_report_json',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'has_header' => 'boolean',
+            'import_summary_json' => 'array',
+            'validation_report_json' => 'array',
+        ];
+    }
 
     public function project()
     {
