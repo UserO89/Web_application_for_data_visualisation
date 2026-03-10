@@ -3,22 +3,21 @@ import {
   alignPanelsToRightEdge as alignWorkspacePanelsToRightEdge,
   buildPresetLayout,
   hasAnyOverlap,
+  readJsonStorage,
   rectsOverlap,
+  resolveProjectId,
   sanitizeLayouts,
+  writeJsonStorage,
 } from '../../utils/project'
 
 const IDS = ['table', 'chart', 'stats']
-const STORAGE_PREFIX = 'dataviz.workspace.layout.v4.'
+const STORAGE_PREFIX = 'dataviz.workspace.layout.v5.'
+const TABLE_TO_CHART_WIDTH_RATIO = 1.18
+const PANEL_GAP = 16
 const MIN = {
   table: { w: 420, h: 280 },
   chart: { w: 360, h: 320 },
   stats: { w: 300, h: 220 },
-}
-
-const resolveProjectId = (projectId) => {
-  if (typeof projectId === 'function') return String(projectId())
-  if (projectId && typeof projectId === 'object' && 'value' in projectId) return String(projectId.value)
-  return String(projectId)
 }
 
 export const useProjectWorkspace = ({
@@ -140,32 +139,63 @@ export const useProjectWorkspace = ({
     return centered
   }
 
+  const enforceTopRowRatio = (layouts) => {
+    if (!layouts?.table || !layouts?.chart) return layouts
+
+    const width = canvasW()
+    const available = Math.max(
+      MIN.table.w + MIN.chart.w,
+      width - PANEL_GAP
+    )
+
+    const table = { ...layouts.table }
+    const chart = { ...layouts.chart }
+    const ratio = chart.w > 0 ? table.w / chart.w : 0
+    if (Number.isFinite(ratio) && ratio >= TABLE_TO_CHART_WIDTH_RATIO) return layouts
+
+    let nextChartWidth = Math.round(available / (TABLE_TO_CHART_WIDTH_RATIO + 1))
+    nextChartWidth = Math.max(MIN.chart.w, nextChartWidth)
+
+    let nextTableWidth = available - nextChartWidth
+    if (nextTableWidth < MIN.table.w) {
+      nextTableWidth = MIN.table.w
+      nextChartWidth = Math.max(MIN.chart.w, available - nextTableWidth)
+    }
+
+    table.x = 0
+    table.w = nextTableWidth
+    chart.x = table.w + PANEL_GAP
+    chart.w = Math.max(MIN.chart.w, width - chart.x)
+
+    const next = { ...layouts, table, chart }
+    if (next.stats) {
+      next.stats = { ...next.stats, x: 0, w: width }
+    }
+    return next
+  }
+
+  const normalizeWorkspaceLayouts = (layouts) =>
+    centerLayoutsHorizontally(enforceTopRowRatio(alignPanelsToRightEdge(layouts)))
+
   const setLayouts = (layouts, persist = true) => {
-    panelLayouts.value = centerLayoutsHorizontally(alignPanelsToRightEdge(layouts))
+    panelLayouts.value = normalizeWorkspaceLayouts(layouts)
     zCounter.value = Math.max(...IDS.map((id) => panelLayouts.value[id]?.z || 0)) + 1
     if (persist) saveLayouts()
   }
 
   const saveLayouts = () => {
     if (!project.value?.dataset || !IDS.every((id) => panelLayouts.value[id])) return
-    try {
-      localStorage.setItem(
-        key(),
-        JSON.stringify({
-          width: canvasW(),
-          preset: activePreset.value,
-          layouts: panelLayouts.value,
-        })
-      )
-    } catch (_) {}
+    writeJsonStorage(key(), {
+      width: canvasW(),
+      preset: activePreset.value,
+      layouts: panelLayouts.value,
+    })
   }
 
   const loadLayouts = () => {
     try {
-      const raw = localStorage.getItem(key())
-      if (!raw) return false
-
-      const payload = JSON.parse(raw)
+      const payload = readJsonStorage(key(), null)
+      if (!payload) return false
       const rawPreset = payload?.preset || 'default'
       const preset = rawPreset === 'custom' ? 'custom' : 'default'
       if (preset !== 'custom') {
@@ -176,6 +206,17 @@ export const useProjectWorkspace = ({
 
       const layouts = sanitize(payload.layouts, Number(payload.width))
       if (!layouts) return false
+
+      // Keep the standard workspace proportions: table should be visibly wider than chart.
+      const tableWidth = Number(layouts.table?.w || 0)
+      const chartWidth = Number(layouts.chart?.w || 0)
+      const ratio = chartWidth > 0 ? tableWidth / chartWidth : 0
+      if (!Number.isFinite(ratio) || ratio < TABLE_TO_CHART_WIDTH_RATIO) {
+        activePreset.value = 'default'
+        setLayouts(buildPreset('default'), true)
+        return true
+      }
+
       activePreset.value = preset
       setLayouts(layouts, false)
       return true
@@ -304,7 +345,7 @@ export const useProjectWorkspace = ({
     })
     if (!IDS.every((id) => next[id])) return
 
-    const centered = centerLayoutsHorizontally(alignPanelsToRightEdge(next))
+    const centered = normalizeWorkspaceLayouts(next)
     if (hasAnyOverlap(centered, IDS)) {
       const fallbackPreset = activePreset.value === 'custom' ? 'default' : activePreset.value
       activePreset.value = fallbackPreset

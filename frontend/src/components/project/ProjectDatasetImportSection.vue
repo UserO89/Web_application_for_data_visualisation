@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="top-row">
+    <div class="import-top-row">
       <button class="btn" @click="$emit('back')"><- Back to Projects</button>
     </div>
     <div class="panel">
@@ -177,7 +177,7 @@ export default {
 </script>
 
 <style scoped>
-.top-row { margin-bottom: 12px; }
+.import-top-row { margin-bottom: 12px; }
 .section-title { font-weight: 700; margin-bottom: 12px; }
 .mode-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
 .manual-builder { display: flex; flex-direction: column; gap: 10px; }

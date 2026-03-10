@@ -1,12 +1,6 @@
 import { ref } from 'vue'
 import { projectsApi } from '../../api/projects'
-import { mapApiRows, unpackRowsPayload } from '../../utils/project'
-
-const resolveProjectId = (projectId) => {
-  if (typeof projectId === 'function') return String(projectId())
-  if (projectId && typeof projectId === 'object' && 'value' in projectId) return String(projectId.value)
-  return String(projectId)
-}
+import { mapApiRows, resolveProjectId, unpackRowsPayload } from '../../utils/project'
 
 export const useProjectDataLoader = ({
   projectId,

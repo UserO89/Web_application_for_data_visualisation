@@ -12,15 +12,13 @@ import {
   cellField,
   formatIssueValue,
   normalizeDraftValue,
+  readJsonStorage,
+  removeStorageItem,
+  resolveProjectId,
+  writeJsonStorage,
 } from '../../utils/project'
 
 const VALIDATION_STORAGE_PREFIX = 'dataviz.validation.report.v1.'
-
-const resolveProjectId = (projectId) => {
-  if (typeof projectId === 'function') return String(projectId())
-  if (projectId && typeof projectId === 'object' && 'value' in projectId) return String(projectId.value)
-  return String(projectId)
-}
 
 export const useValidationReport = ({
   projectId,
@@ -58,24 +56,16 @@ export const useValidationReport = ({
   const validationKey = () => `${VALIDATION_STORAGE_PREFIX}${resolveProjectId(projectId)}`
 
   const persistValidation = () => {
-    try {
-      if (!importValidation.value) {
-        localStorage.removeItem(validationKey())
-        return
-      }
-      localStorage.setItem(validationKey(), JSON.stringify(importValidation.value))
-    } catch (_) {}
+    if (!importValidation.value) {
+      removeStorageItem(validationKey())
+      return
+    }
+    writeJsonStorage(validationKey(), importValidation.value)
   }
 
   const loadValidation = () => {
-    try {
-      const raw = localStorage.getItem(validationKey())
-      if (!raw) return null
-      const parsed = JSON.parse(raw)
-      return normalizeValidationReport(parsed)
-    } catch (_) {
-      return null
-    }
+    const parsed = readJsonStorage(validationKey(), null)
+    return normalizeValidationReport(parsed)
   }
 
   const setValidationReport = (report, open = false) => {

@@ -18,6 +18,7 @@ export const hasAnyOverlap = (layouts, ids) => {
 export const buildPresetLayout = ({ preset, canvasWidth, min, ids }) => {
   const gap = 16
   const preferredChartWidth = 460
+  const defaultTableShare = 0.72
   const w = canvasWidth
 
   const resolveChartWidth = () => {
@@ -69,7 +70,7 @@ export const buildPresetLayout = ({ preset, canvasWidth, min, ids }) => {
   }
 
   const availableWidth = w - gap
-  let left = Math.round(availableWidth * 0.68)
+  let left = Math.round(availableWidth * defaultTableShare)
   let right = availableWidth - left
 
   left = Math.max(min.table.w, left)
