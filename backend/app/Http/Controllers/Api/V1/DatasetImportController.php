@@ -7,7 +7,7 @@ use App\Http\Requests\ImportDatasetRequest;
 use App\Models\Project;
 use App\Services\CsvImportService;
 use App\Services\DatasetSemanticSchemaService;
-use App\Services\DatasetValidationService;
+use App\Services\DatasetValidation\DatasetValidationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
