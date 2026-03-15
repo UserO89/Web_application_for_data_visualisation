@@ -82,11 +82,10 @@
 
     <ProjectValidationModal
       :is-open="validationModalOpen"
-      :import-validation="importValidation"
-      :validation-summary-line="validationSummaryLine"
-      :validation-summary="validationSummary"
-      :validation-problem-columns="validationProblemColumns"
-      :format-issue-value="formatIssueValue"
+      :summary="validationSummary"
+      :summary-line="validationSummaryLine"
+      :problem-columns="validationProblemColumns"
+      :blocking-error="validationBlockingError"
       @close="closeValidationModal"
       @clear="clearValidationReport"
     />
@@ -175,12 +174,12 @@ export default {
       validationProblemColumnCount,
       validationProblemColumns,
       validationSummaryLine,
+      validationBlockingError,
       setValidationReport,
       clearValidationReport,
       openValidationModal,
       closeValidationModal,
       applyValidationReportFromProject,
-      formatIssueValue,
       resetValidationRouteState,
     } = useValidationReport({
       projectId,
@@ -352,6 +351,14 @@ export default {
       openValidationModal()
     }
 
+    const applyImportValidationError = (error) => {
+      const validation = error?.response?.data?.validation
+      if (!validation) return false
+      setValidationReport(validation)
+      openValidationModal()
+      return true
+    }
+
     const handleImport = async () => {
       if (!selectedFile.value) return
       importing.value = true
@@ -360,7 +367,9 @@ export default {
         const response = await projectsApi.importDataset(projectId.value, selectedFile.value, importOptions.value)
         await afterDatasetImport(response)
       } catch (e) {
-        window.alert('Import error: ' + (e.response?.data?.message || e.message))
+        if (!applyImportValidationError(e)) {
+          window.alert('Import error: ' + (e.response?.data?.message || e.message))
+        }
       } finally {
         importing.value = false
       }
@@ -375,7 +384,11 @@ export default {
         const response = await projectsApi.importDataset(projectId.value, file, { has_header: true, delimiter: ',' })
         await afterDatasetImport(response)
       } catch (e) {
-        manualError.value = e?.response?.data?.message || 'Failed to create table from manual data.'
+        if (applyImportValidationError(e)) {
+          manualError.value = ''
+        } else {
+          manualError.value = e?.response?.data?.message || 'Failed to create table from manual data.'
+        }
       } finally {
         importing.value = false
       }
@@ -486,8 +499,8 @@ export default {
       project, loading, selectedFile, importing, importOptions, importMode, manualHeaders, manualRowsInput, manualError,
       importValidation, validationModalOpen,
       openValidationModal, closeValidationModal, clearValidationReport,
-      formatIssueValue,
       validationSummary, validationSummaryLine,
+      validationBlockingError,
       validationProblemColumnCount, validationProblemColumns,
       getSeriesColor, setSeriesColor, resetSeriesColors,
       viewMode, setViewMode, visiblePanelIds,

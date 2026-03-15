@@ -3,32 +3,19 @@ import ProjectValidationModal from '../../../src/components/project/ProjectValid
 
 const buildProps = (overrides = {}) => ({
   isOpen: true,
-  importValidation: {
-    summary: {
-      rows_imported: 7,
-      rows_skipped: 1,
-      problematic_columns: 2,
-      normalized_cells: 1,
-      nullified_cells: 4,
-    },
-    problem_columns: [],
-    issues: [
-      { code: 'legacy_warning', message: 'Legacy warning dump entry' },
-    ],
-  },
-  validationSummaryLine: '7 imported, 1 skipped, 2 problematic columns, 1 normalized, 4 nullified.',
-  validationSummary: {
+  summaryLine: '7 imported, 1 skipped, 2 problematic columns, 1 normalized, 4 may become null.',
+  summary: {
     rows_imported: 7,
     rows_skipped: 1,
     problematic_columns: 2,
     normalized_cells: 1,
     nullified_cells: 4,
   },
-  validationProblemColumns: [
+  problemColumns: [
     {
       column_index: 2,
       column_name: 'Revenue',
-      issue_count: 3,
+      problematic_value_count: 3,
       normalized_count: 1,
       nullified_count: 2,
       review_samples: [
@@ -51,7 +38,7 @@ const buildProps = (overrides = {}) => ({
     {
       column_index: 3,
       column_name: 'EventDate',
-      issue_count: 2,
+      problematic_value_count: 2,
       normalized_count: 0,
       nullified_count: 2,
       review_samples: [
@@ -65,7 +52,7 @@ const buildProps = (overrides = {}) => ({
       ],
     },
   ],
-  formatIssueValue: (value) => (value === null || value === undefined || value === '' ? 'null' : String(value)),
+  blockingError: null,
   ...overrides,
 })
 
@@ -87,6 +74,7 @@ describe('ProjectValidationModal', () => {
 
     expect(wrapper.text()).toContain('Revenue')
     expect(wrapper.text()).toContain('3 problematic values')
+    expect(wrapper.text()).toContain('Problematic values')
     expect(wrapper.text()).toContain('Normalized: 1')
     expect(wrapper.text()).toContain('Nullified: 2')
     expect(wrapper.text()).toContain('EventDate')
@@ -113,11 +101,11 @@ describe('ProjectValidationModal', () => {
   it('does not flood visible review samples with empty-marker entries', () => {
     const wrapper = mount(ProjectValidationModal, {
       props: buildProps({
-        validationProblemColumns: [
+        problemColumns: [
           {
             column_index: 2,
             column_name: 'Revenue',
-            issue_count: 3,
+            problematic_value_count: 3,
             normalized_count: 0,
             nullified_count: 3,
             review_samples: [
@@ -146,11 +134,32 @@ describe('ProjectValidationModal', () => {
   })
 
   it('does not render old severity-dump contract as main UI', () => {
-    const wrapper = mount(ProjectValidationModal, { props: buildProps() })
+    const wrapper = mount(ProjectValidationModal, {
+      props: buildProps({
+        problemColumns: [
+          {
+            column_index: 2,
+            column_name: 'Revenue',
+            issue_count: 3,
+            normalized_count: 1,
+            nullified_count: 2,
+            review_samples: [
+              {
+                row: 4,
+                original_value: '12,5',
+                action: 'normalized',
+                new_value: 12.5,
+                reason: 'Numeric format normalized',
+              },
+            ],
+          },
+        ],
+      }),
+    })
 
     expect(wrapper.text()).not.toContain('ERRORS')
     expect(wrapper.text()).not.toContain('warnings:')
     expect(wrapper.text()).not.toContain('Column Quality Overview')
-    expect(wrapper.text()).not.toContain('Legacy warning dump entry')
+    expect(wrapper.text()).not.toContain('legacy_warning')
   })
 })

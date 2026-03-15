@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isOpen && importValidation"
+    v-if="isOpen"
     class="validation-modal-backdrop"
     @click.self="$emit('close')"
   >
@@ -13,58 +13,92 @@
         </div>
       </div>
 
-      <div class="validation-summary-line">
-        {{ validationSummaryLine }}
+      <div v-if="blockingError?.message" class="blocking-error">
+        {{ blockingError.message }}
       </div>
 
-      <div class="validation-summary-grid">
-        <div class="summary-item">
-          <span class="summary-label">Rows imported</span>
-          <strong class="summary-value">{{ reviewSummary.rows_imported }}</strong>
+      <section class="validation-section">
+        <div class="section-title">Summary</div>
+        <div class="validation-summary-line">
+          {{ resolvedSummaryLine }}
         </div>
-        <div class="summary-item">
-          <span class="summary-label">Rows skipped</span>
-          <strong class="summary-value">{{ reviewSummary.rows_skipped }}</strong>
+        <div class="validation-summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">Rows imported</span>
+            <strong class="summary-value">{{ reviewSummary.rows_imported }}</strong>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Rows skipped</span>
+            <strong class="summary-value">{{ reviewSummary.rows_skipped }}</strong>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Problematic columns</span>
+            <strong class="summary-value">{{ reviewSummary.problematic_columns }}</strong>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Normalized values</span>
+            <strong class="summary-value">{{ reviewSummary.normalized_cells }}</strong>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">May become null</span>
+            <strong class="summary-value">{{ reviewSummary.nullified_cells }}</strong>
+          </div>
         </div>
-        <div class="summary-item">
-          <span class="summary-label">Problematic columns</span>
-          <strong class="summary-value">{{ reviewSummary.problematic_columns }}</strong>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">Normalized values</span>
-          <strong class="summary-value">{{ reviewSummary.normalized_cells }}</strong>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">May become null</span>
-          <strong class="summary-value">{{ reviewSummary.nullified_cells }}</strong>
-        </div>
-      </div>
+      </section>
 
-      <div class="validation-columns">
+      <section class="validation-section">
         <div class="section-title">Problematic Columns</div>
+        <div v-if="reviewColumns.length" class="table-wrap">
+          <table class="data-table columns-table">
+            <thead>
+              <tr>
+                <th>Column</th>
+                <th>Problematic values</th>
+                <th>Normalized</th>
+                <th>May become null</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="column in reviewColumns"
+                :key="`problem-column-row-${column.column_name}-${column.column_index}`"
+              >
+                <td>
+                  <span class="column-name">{{ column.column_name }}</span>
+                  <span class="column-index">#{{ column.column_index || '-' }}</span>
+                </td>
+                <td>{{ column.problematic_value_count || 0 }}</td>
+                <td>{{ column.normalized_count || 0 }}</td>
+                <td>{{ column.nullified_count || 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div v-else class="validation-summary-empty">No problematic columns found.</div>
+      </section>
 
-        <div v-if="validationProblemColumns?.length" class="column-list">
+      <section class="validation-section">
+        <div class="section-title">Review Samples</div>
+        <div v-if="reviewColumns.length" class="column-list">
           <article
-            v-for="column in validationProblemColumns"
-            :key="`problem-column-${column.column_name}`"
+            v-for="column in reviewColumns"
+            :key="`problem-column-${column.column_name}-${column.column_index}`"
             class="column-card"
           >
             <div class="column-head">
               <div>
                 <div class="column-name">{{ column.column_name }}</div>
                 <div class="column-meta">
-                  {{ column.issue_count || 0 }} problematic value{{ (column.issue_count || 0) === 1 ? '' : 's' }}
+                  {{ column.problematic_value_count || 0 }} problematic value{{ (column.problematic_value_count || 0) === 1 ? '' : 's' }}
                 </div>
               </div>
-              <div class="column-index">#{{ column.column_index || '-' }}</div>
+              <div class="column-counters">
+                <span class="counter-chip">Normalized: {{ column.normalized_count || 0 }}</span>
+                <span class="counter-chip nullified">Nullified: {{ column.nullified_count || 0 }}</span>
+              </div>
             </div>
 
-            <div class="column-counters">
-              <span class="counter-chip">Normalized: {{ column.normalized_count || 0 }}</span>
-              <span class="counter-chip nullified">Nullified: {{ column.nullified_count || 0 }}</span>
-            </div>
-
-            <div v-if="getVisibleSamples(column).length" class="table-wrap samples-wrap">
+            <div v-if="column.visible_review_samples.length" class="table-wrap samples-wrap">
               <table class="data-table samples-table">
                 <thead>
                   <tr>
@@ -77,17 +111,17 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="sample in getVisibleSamples(column)"
+                    v-for="sample in column.visible_review_samples"
                     :key="`sample-${column.column_name}-${sample.row}-${sample.original_value}-${sample.new_value}`"
                   >
                     <td>{{ sample.row }}</td>
-                    <td>{{ formatIssueValue(sample.original_value) }}</td>
+                    <td>{{ formatReviewValue(sample.original_value) }}</td>
                     <td>
                       <span :class="['action-badge', sample.action === 'nullified' ? 'action-nullified' : 'action-normalized']">
                         {{ sample.action === 'nullified' ? 'nullified' : 'normalized' }}
                       </span>
                     </td>
-                    <td>{{ formatIssueValue(sample.new_value) }}</td>
+                    <td>{{ formatReviewValue(sample.new_value) }}</td>
                     <td>{{ sample.reason }}</td>
                   </tr>
                 </tbody>
@@ -96,47 +130,49 @@
             <div v-else class="column-empty">
               No reviewable samples for this column.
             </div>
+            <div v-if="column.hidden_review_sample_count > 0" class="sample-note">
+              {{ column.hidden_review_sample_count }} empty-marker sample{{ column.hidden_review_sample_count === 1 ? '' : 's' }} hidden from preview.
+            </div>
           </article>
         </div>
-        <div v-else class="validation-summary-empty">No problematic columns found.</div>
-      </div>
+        <div v-else class="validation-summary-empty">No review samples found.</div>
+      </section>
     </div>
   </div>
 </template>
 
 <script>
+import {
+  buildValidationSummaryLine,
+  extractProblematicColumns,
+  extractValidationSummary,
+  formatReviewValue,
+} from '../../utils/validationReport'
+
 export default {
   name: 'ProjectValidationModal',
   props: {
     isOpen: { type: Boolean, default: false },
-    importValidation: { type: Object, default: null },
-    validationSummaryLine: { type: String, default: '' },
-    validationSummary: { type: Object, default: () => ({}) },
-    validationProblemColumns: { type: Array, default: () => [] },
-    formatIssueValue: { type: Function, default: (value) => String(value ?? '') },
+    summary: { type: Object, default: () => ({}) },
+    summaryLine: { type: String, default: '' },
+    problemColumns: { type: Array, default: () => [] },
+    blockingError: { type: Object, default: null },
   },
   emits: ['close', 'clear'],
   computed: {
     reviewSummary() {
-      return {
-        rows_imported: Number(this.validationSummary?.rows_imported ?? 0),
-        rows_skipped: Number(this.validationSummary?.rows_skipped ?? 0),
-        problematic_columns: Number(this.validationSummary?.problematic_columns ?? 0),
-        normalized_cells: Number(this.validationSummary?.normalized_cells ?? 0),
-        nullified_cells: Number(this.validationSummary?.nullified_cells ?? 0),
-      }
+      return extractValidationSummary(this.summary)
+    },
+    resolvedSummaryLine() {
+      if (this.summaryLine) return this.summaryLine
+      return buildValidationSummaryLine(this.reviewSummary)
+    },
+    reviewColumns() {
+      return extractProblematicColumns(this.problemColumns)
     },
   },
   methods: {
-    getVisibleSamples(column) {
-      const samples = Array.isArray(column?.review_samples) ? column.review_samples : []
-      return samples.filter((sample) => {
-        if (Number(sample?.row || 0) <= 0) return false
-        const reason = String(sample?.reason || '').toLowerCase()
-        if (reason.includes('empty marker')) return false
-        return true
-      })
-    },
+    formatReviewValue,
   },
 }
 </script>
@@ -157,10 +193,18 @@ export default {
   max-height: 84vh;
   overflow: auto;
 }
-.validation-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.validation-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
 .validation-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .validation-title { font-size: 15px; font-weight: 700; color: #93f6b3; }
+.validation-section { margin-top: 12px; }
 .validation-summary-line { color: var(--muted); font-size: 13px; line-height: 1.45; margin-bottom: 8px; }
+.blocking-error {
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+}
 .validation-summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -177,8 +221,8 @@ export default {
 }
 .summary-label { color: var(--muted); font-size: 11px; }
 .summary-value { color: var(--text); font-size: 16px; }
-.validation-columns { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
 .section-title { font-size: 12px; font-weight: 700; color: var(--muted); }
+.columns-table { min-width: 540px; }
 .column-list { display: flex; flex-direction: column; gap: 10px; }
 .column-card {
   border: 1px solid var(--border);
@@ -192,9 +236,7 @@ export default {
 .column-index {
   color: var(--muted);
   font-size: 11px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 2px 7px;
+  margin-left: 6px;
 }
 .column-counters { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
 .counter-chip {
@@ -223,6 +265,11 @@ export default {
 .action-nullified {
   border: 1px solid rgba(245, 158, 11, 0.45);
   color: #fbbf24;
+}
+.sample-note {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
 }
 .column-empty,
 .validation-summary-empty {

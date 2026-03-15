@@ -1,4 +1,8 @@
-import { normalizeValidationReport } from '../../src/utils/validationReport'
+import {
+  buildValidationSummaryLine,
+  extractProblematicColumns,
+  normalizeValidationReport,
+} from '../../src/utils/validationReport'
 
 describe('validation report normalization', () => {
   it('returns null for unsupported payloads', () => {
@@ -53,7 +57,7 @@ describe('validation report normalization', () => {
 
     expect(normalized.problem_columns).toHaveLength(2)
     expect(normalized.problem_columns[0].column_name).toBe('Revenue')
-    expect(normalized.problem_columns[0].issue_count).toBe(3)
+    expect(normalized.problem_columns[0].problematic_value_count).toBe(3)
     expect(normalized.problem_columns[0].review_samples).toHaveLength(1)
     expect(normalized.problem_columns[0].review_samples[0].row).toBe(4)
 
@@ -73,5 +77,36 @@ describe('validation report normalization', () => {
     expect(normalized.summary.import_status).toBe('blocked')
     expect(normalized.problem_columns).toHaveLength(0)
     expect(normalized.blocking_error?.code).toBe('file_no_rows')
+  })
+
+  it('builds a compact summary line and de-emphasizes empty marker samples', () => {
+    const summaryLine = buildValidationSummaryLine({
+      rows_imported: 10,
+      rows_skipped: 2,
+      problematic_columns: 1,
+      normalized_cells: 3,
+      nullified_cells: 4,
+    })
+    expect(summaryLine).toContain('10 imported')
+    expect(summaryLine).toContain('4 may become null')
+
+    const columns = extractProblematicColumns([
+      {
+        column_name: 'Amount',
+        issue_count: 6,
+        normalized_count: 1,
+        nullified_count: 5,
+        review_samples: [
+          { row: 2, original_value: null, action: 'nullified', new_value: null, reason: 'Empty marker converted to null' },
+          { row: 3, original_value: '', action: 'nullified', new_value: null, reason: 'Empty marker converted to null' },
+          { row: 4, original_value: 'abc', action: 'nullified', new_value: null, reason: 'Invalid numeric value' },
+        ],
+      },
+    ])
+
+    expect(columns).toHaveLength(1)
+    expect(columns[0].visible_review_samples).toHaveLength(1)
+    expect(columns[0].hidden_review_sample_count).toBe(2)
+    expect(columns[0].visible_review_samples.map((sample) => sample.original_value)).toContain('abc')
   })
 })

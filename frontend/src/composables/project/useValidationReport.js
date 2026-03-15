@@ -1,34 +1,36 @@
 import { computed, ref } from 'vue'
 import {
+  buildValidationSummaryLine,
+  createEmptyReviewSummary,
+  extractProblematicColumns,
+  extractValidationSummary,
   normalizeValidationReport,
 } from '../../utils/validationReport'
 import {
-  formatIssueValue,
   readJsonStorage,
   removeStorageItem,
   resolveProjectId,
   writeJsonStorage,
 } from '../../utils/project'
 
-const VALIDATION_STORAGE_PREFIX = 'dataviz.validation.report.v1.'
+const VALIDATION_STORAGE_PREFIX = 'dataviz.validation.report.v2.'
 
 export const useValidationReport = ({
   projectId,
 } = {}) => {
   const importValidation = ref(null)
   const validationModalOpen = ref(false)
+  const emptySummary = createEmptyReviewSummary()
 
-  const validationSummary = computed(() => importValidation.value?.summary || {
-    rows_imported: 0,
-    rows_skipped: 0,
-    problematic_columns: 0,
-    normalized_cells: 0,
-    nullified_cells: 0,
-  })
+  const hasValidationReport = computed(() => Boolean(importValidation.value))
+  const validationSummary = computed(() =>
+    extractValidationSummary(importValidation.value?.summary || emptySummary)
+  )
   const validationProblemColumns = computed(() =>
-    Array.isArray(importValidation.value?.problem_columns)
-      ? importValidation.value.problem_columns
-      : []
+    extractProblematicColumns(importValidation.value)
+  )
+  const validationBlockingError = computed(() =>
+    importValidation.value?.blocking_error || null
   )
   const validationProblemColumnCount = computed(() => {
     const reviewCount = Number(validationSummary.value?.problematic_columns || 0)
@@ -36,8 +38,7 @@ export const useValidationReport = ({
     return validationProblemColumns.value.length
   })
   const validationSummaryLine = computed(() => {
-    const summary = validationSummary.value || {}
-    return `${summary.rows_imported || 0} imported, ${summary.rows_skipped || 0} skipped, ${summary.problematic_columns || 0} problematic columns, ${summary.normalized_cells || 0} normalized, ${summary.nullified_cells || 0} nullified.`
+    return buildValidationSummaryLine(validationSummary.value)
   })
 
   const validationKey = () => `${VALIDATION_STORAGE_PREFIX}${resolveProjectId(projectId)}`
@@ -70,7 +71,9 @@ export const useValidationReport = ({
   }
 
   const clearValidationReport = () => {
-    setValidationReport(null)
+    importValidation.value = null
+    validationModalOpen.value = false
+    persistValidationReport()
   }
 
   const applyValidationReportFromProject = (reportFromProject) => {
@@ -91,17 +94,18 @@ export const useValidationReport = ({
 
   return {
     importValidation,
+    hasValidationReport,
     validationModalOpen,
     validationSummary,
     validationProblemColumnCount,
     validationProblemColumns,
+    validationBlockingError,
     validationSummaryLine,
     setValidationReport,
     clearValidationReport,
     openValidationModal,
     closeValidationModal,
     applyValidationReportFromProject,
-    formatIssueValue,
     resetValidationRouteState,
   }
 }
