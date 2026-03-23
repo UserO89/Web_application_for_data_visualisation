@@ -9,4 +9,8 @@ export const resolveRefValue = (value) => {
   return value
 }
 
-export const resolveProjectId = (projectId) => String(resolveRefValue(projectId))
+export const resolveProjectId = (projectId) => {
+  const resolved = resolveRefValue(projectId)
+  if (resolved === null || resolved === undefined) return ''
+  return String(resolved)
+}

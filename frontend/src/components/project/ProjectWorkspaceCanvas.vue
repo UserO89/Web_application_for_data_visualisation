@@ -1,8 +1,9 @@
 <template>
   <div :ref="setWorkspaceRef" class="workspace-canvas" :style="{ height: `${workspaceHeight}px` }">
     <section
-      v-for="panelId in visiblePanelIds"
+      v-for="panelId in panelIds"
       :key="panelId"
+      v-show="isPanelVisible(panelId)"
       class="workspace-panel panel"
       :style="panelStyle(panelId)"
       @mousedown="viewMode === 'workspace' && $emit('bring-to-front', panelId)"
@@ -15,7 +16,12 @@
       <div :class="['panel-content', `${panelId}-content`]">
         <template v-if="panelId === 'table'">
           <div class="table-wrap table-fill">
-            <DataTable :columns="tableColumns" :rows="tableRows" @cell-edited="$emit('cell-edit', $event)" />
+            <DataTable
+              :columns="tableColumns"
+              :rows="tableRows"
+              :active="isPanelVisible('table')"
+              @cell-edited="$emit('cell-edit', $event)"
+            />
           </div>
           <div class="table-bottom-actions">
             <button class="btn" type="button" @click="$emit('export-csv')">Export Table CSV</button>
@@ -171,12 +177,17 @@ export default {
     'update-chart-definition',
   ],
   setup(props, { emit }) {
+    const panelIds = computed(() => Object.keys(props.panelConfig || {}))
+    const isPanelVisible = (panelId) => props.visiblePanelIds.includes(panelId)
+
     const chartDefinitionModel = computed({
       get: () => props.chartDefinition,
       set: (value) => emit('update-chart-definition', value),
     })
 
     return {
+      panelIds,
+      isPanelVisible,
       chartDefinitionModel,
     }
   },

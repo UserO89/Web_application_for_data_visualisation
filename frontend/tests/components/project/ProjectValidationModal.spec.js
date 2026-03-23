@@ -56,9 +56,19 @@ const buildProps = (overrides = {}) => ({
   ...overrides,
 })
 
+const mountModal = (props = {}) =>
+  mount(ProjectValidationModal, {
+    props,
+    global: {
+      stubs: {
+        teleport: true,
+      },
+    },
+  })
+
 describe('ProjectValidationModal', () => {
   it('renders compact validation summary', () => {
-    const wrapper = mount(ProjectValidationModal, { props: buildProps() })
+    const wrapper = mountModal(buildProps())
 
     expect(wrapper.text()).toContain('Import Review')
     expect(wrapper.text()).toContain('Rows imported')
@@ -70,7 +80,7 @@ describe('ProjectValidationModal', () => {
   })
 
   it('renders problematic columns with normalized/nullified counters', () => {
-    const wrapper = mount(ProjectValidationModal, { props: buildProps() })
+    const wrapper = mountModal(buildProps())
 
     expect(wrapper.text()).toContain('Revenue')
     expect(wrapper.text()).toContain('3 problematic values')
@@ -82,7 +92,7 @@ describe('ProjectValidationModal', () => {
   })
 
   it('renders review samples with row, original value, action, result and reason', () => {
-    const wrapper = mount(ProjectValidationModal, { props: buildProps() })
+    const wrapper = mountModal(buildProps())
 
     expect(wrapper.text()).toContain('Row')
     expect(wrapper.text()).toContain('Original value')
@@ -99,8 +109,7 @@ describe('ProjectValidationModal', () => {
   })
 
   it('does not flood visible review samples with empty-marker entries', () => {
-    const wrapper = mount(ProjectValidationModal, {
-      props: buildProps({
+    const wrapper = mountModal(buildProps({
         problemColumns: [
           {
             column_index: 2,
@@ -126,16 +135,14 @@ describe('ProjectValidationModal', () => {
             ],
           },
         ],
-      }),
-    })
+      }))
 
     expect(wrapper.text()).toContain('abc')
     expect(wrapper.text()).not.toContain('Empty marker converted to null')
   })
 
   it('does not render old severity-dump contract as main UI', () => {
-    const wrapper = mount(ProjectValidationModal, {
-      props: buildProps({
+    const wrapper = mountModal(buildProps({
         problemColumns: [
           {
             column_index: 2,
@@ -154,8 +161,7 @@ describe('ProjectValidationModal', () => {
             ],
           },
         ],
-      }),
-    })
+      }))
 
     expect(wrapper.text()).not.toContain('ERRORS')
     expect(wrapper.text()).not.toContain('warnings:')

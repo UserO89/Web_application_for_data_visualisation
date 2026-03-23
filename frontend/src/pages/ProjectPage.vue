@@ -274,8 +274,13 @@ export default {
       startResize(panelId, dir, event)
     }
 
+    const areChartDefinitionsEqual = (left, right) =>
+      JSON.stringify(normalizeChartDefinition(left)) === JSON.stringify(normalizeChartDefinition(right))
+
     const handleChartDefinitionUpdate = (nextDefinition) => {
-      chartDefinition.value = nextDefinition
+      const normalized = normalizeChartDefinition(nextDefinition)
+      if (areChartDefinitionsEqual(chartDefinition.value, normalized)) return
+      chartDefinition.value = normalized
     }
 
     const handleSetSeriesColor = ({ label, index, color }) => {
@@ -490,7 +495,9 @@ export default {
       saveLayouts()
     })
 
-    watch(() => route.params.id, () => {
+    watch(() => route.params.id, (nextId, prevId) => {
+      if (!nextId || String(nextId) === 'undefined') return
+      if (String(nextId) === String(prevId)) return
       resetRouteState()
       loadProjectPage()
     })

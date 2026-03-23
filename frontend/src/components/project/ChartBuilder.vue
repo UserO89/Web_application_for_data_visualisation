@@ -252,7 +252,13 @@ export default {
   },
   emits: ['update:modelValue', 'build'],
   setup(props, { emit }) {
-    const localDefinition = ref(normalizeChartDefinition(props.modelValue))
+    const normalizeDefinition = (definition) =>
+      normalizeChartDefinition(definition || createDefaultChartDefinition('line'))
+
+    const areDefinitionsEqual = (left, right) =>
+      JSON.stringify(normalizeDefinition(left)) === JSON.stringify(normalizeDefinition(right))
+
+    const localDefinition = ref(normalizeDefinition(props.modelValue))
     const chartTypeOptions = CHART_TYPE_OPTIONS
 
     const allowedColumns = (bindingKey) =>
@@ -351,14 +357,20 @@ export default {
     watch(
       () => props.modelValue,
       (value) => {
-        localDefinition.value = normalizeChartDefinition(value || createDefaultChartDefinition('line'))
+        const normalizedIncoming = normalizeDefinition(value)
+        if (areDefinitionsEqual(localDefinition.value, normalizedIncoming)) return
+        localDefinition.value = normalizedIncoming
       },
       { deep: true }
     )
 
     watch(
       localDefinition,
-      (value) => emit('update:modelValue', normalizeChartDefinition(value)),
+      (value) => {
+        const normalizedLocal = normalizeDefinition(value)
+        if (areDefinitionsEqual(props.modelValue, normalizedLocal)) return
+        emit('update:modelValue', normalizedLocal)
+      },
       { deep: true }
     )
 

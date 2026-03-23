@@ -16,9 +16,14 @@ export const useProjectDataLoader = ({
   const statisticsLoading = ref(false)
   const statisticsError = ref('')
 
+  const resolvedProjectId = () => resolveProjectId(projectId)
+
   const fetchProjectRows = async ({ allPages = false, perPage = 500 } = {}) => {
+    const id = resolvedProjectId()
+    if (!id) return []
+
     if (!allPages) {
-      const response = await projectsApi.getRows(resolveProjectId(projectId))
+      const response = await projectsApi.getRows(id)
       const payload = response.data ?? response
       return unpackRowsPayload(payload).rows
     }
@@ -26,7 +31,7 @@ export const useProjectDataLoader = ({
     const collected = []
     let page = 1
     while (true) {
-      const response = await projectsApi.getRows(resolveProjectId(projectId), page, perPage)
+      const response = await projectsApi.getRows(id, page, perPage)
       const payload = response.data ?? response
       const { rows, lastPage, isPaginated } = unpackRowsPayload(payload)
       collected.push(...rows)
@@ -58,18 +63,28 @@ export const useProjectDataLoader = ({
   }
 
   const loadSemanticSchema = async (rebuild = false) => {
+    const id = resolvedProjectId()
+    if (!id) return
+
     try {
-      await schemaStore.fetchSchema(resolveProjectId(projectId), { rebuild })
+      await schemaStore.fetchSchema(id, { rebuild })
     } catch (e) {
       console.error(e)
     }
   }
 
   const loadStatisticsSummary = async () => {
+    const id = resolvedProjectId()
+    if (!id) {
+      statisticsSummary.value = []
+      statisticsError.value = ''
+      return
+    }
+
     statisticsLoading.value = true
     statisticsError.value = ''
     try {
-      const response = await projectsApi.getStatisticsSummary(resolveProjectId(projectId))
+      const response = await projectsApi.getStatisticsSummary(id)
       statisticsSummary.value = response.statistics || []
     } catch (e) {
       console.error(e)
@@ -80,8 +95,14 @@ export const useProjectDataLoader = ({
   }
 
   const loadSuggestions = async () => {
+    const id = resolvedProjectId()
+    if (!id) {
+      suggestions.value = []
+      return
+    }
+
     try {
-      const response = await projectsApi.getChartSuggestions(resolveProjectId(projectId))
+      const response = await projectsApi.getChartSuggestions(id)
       suggestions.value = response.suggestions || []
     } catch (e) {
       console.error(e)
@@ -107,9 +128,16 @@ export const useProjectDataLoader = ({
   }
 
   const loadProject = async ({ onDatasetMissing, onDatasetLoaded } = {}) => {
+    const id = resolvedProjectId()
     loading.value = true
+    if (!id) {
+      project.value = null
+      loading.value = false
+      return
+    }
+
     try {
-      const response = await projectsApi.get(resolveProjectId(projectId))
+      const response = await projectsApi.get(id)
       project.value = response.project
 
       if (!project.value?.dataset) {

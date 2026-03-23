@@ -82,7 +82,7 @@ export default {
       }
     })
 
-    watch(() => props.option, applyOption, { deep: true })
+    watch(() => props.option, applyOption, { deep: false })
 
     onBeforeUnmount(() => {
       if (resizeObserver) {

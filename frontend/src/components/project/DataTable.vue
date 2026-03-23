@@ -18,6 +18,10 @@ export default {
       type: Array,
       required: true,
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['cell-edited'],
   setup(props, { emit }) {
@@ -73,7 +77,7 @@ export default {
         index: 'id',
         height: '100%',
         layout: 'fitColumns',
-        reactiveData: true,
+        reactiveData: false,
         pagination: true,
         paginationSize: 50,
         paginationSizeSelector: [25, 50, 100, 200],
@@ -116,7 +120,7 @@ export default {
         } catch (_) {}
         safeRedraw()
       },
-      { deep: true }
+      { deep: false }
     )
 
     watch(
@@ -132,7 +136,15 @@ export default {
         } catch (_) {}
         safeRedraw()
       },
-      { deep: true }
+      { deep: false }
+    )
+
+    watch(
+      () => props.active,
+      (active) => {
+        if (!active) return
+        requestAnimationFrame(() => safeRedraw())
+      }
     )
 
     onBeforeUnmount(() => {
