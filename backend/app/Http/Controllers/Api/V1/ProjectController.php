@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Project::class, 'project');
+    }
+
     public function index(Request $request)
     {
         $projects = Project::where('user_id', $request->user()->id)
@@ -29,32 +34,20 @@ class ProjectController extends Controller
         return response()->json(['project' => $project->load('dataset')], 201);
     }
 
-    public function show(Request $request, Project $project)
+    public function show(Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         return response()->json(['project' => $project->load('dataset.columns')]);
     }
 
     public function update(StoreProjectRequest $request, Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $project->update($request->validated());
 
         return response()->json(['project' => $project->fresh()->load('dataset')]);
     }
 
-    public function destroy(Request $request, Project $project)
+    public function destroy(Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         $project->delete();
 
         return response()->json(['ok' => true]);

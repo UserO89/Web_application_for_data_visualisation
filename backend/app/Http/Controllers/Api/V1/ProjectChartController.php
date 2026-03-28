@@ -9,11 +9,9 @@ use Illuminate\Http\Request;
 
 class ProjectChartController extends Controller
 {
-    public function index(Request $request, Project $project)
+    public function index(Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $project);
 
         $charts = $project->charts()
             ->orderByDesc('created_at')
@@ -24,9 +22,7 @@ class ProjectChartController extends Controller
 
     public function store(Request $request, Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         $validated = $request->validate([
             'type' => ['required', 'string', 'max:64'],
@@ -48,11 +44,9 @@ class ProjectChartController extends Controller
         return response()->json(['chart' => $chart], 201);
     }
 
-    public function destroy(Request $request, Project $project, Chart $chart)
+    public function destroy(Project $project, Chart $chart)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         if ((int) $chart->project_id !== (int) $project->id) {
             return response()->json(['message' => 'Chart not found for this project'], 404);
@@ -65,9 +59,7 @@ class ProjectChartController extends Controller
 
     public function update(Request $request, Project $project, Chart $chart)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         if ((int) $chart->project_id !== (int) $project->id) {
             return response()->json(['message' => 'Chart not found for this project'], 404);

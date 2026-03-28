@@ -26,9 +26,7 @@ class DatasetImportController extends Controller
 
     public function import(ImportDatasetRequest $request, Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         if ($project->dataset()->exists()) {
             return $this->datasetAlreadyExistsResponse();

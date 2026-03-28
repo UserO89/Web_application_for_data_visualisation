@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Services\StatisticsService;
-use Illuminate\Http\Request;
 
 class DatasetStatisticsController extends Controller
 {
@@ -13,11 +12,9 @@ class DatasetStatisticsController extends Controller
         private StatisticsService $statisticsService
     ) {}
 
-    public function show(Request $request, Project $project)
+    public function show(Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $project);
 
         $dataset = $project->dataset;
         if (!$dataset) {

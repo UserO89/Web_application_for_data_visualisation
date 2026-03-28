@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Services\VisualizationSuggestionService;
-use Illuminate\Http\Request;
 
 class DatasetSuggestionController extends Controller
 {
@@ -13,11 +12,9 @@ class DatasetSuggestionController extends Controller
         private VisualizationSuggestionService $suggestionService
     ) {}
 
-    public function index(Request $request, Project $project)
+    public function index(Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $project);
 
         $dataset = $project->dataset;
         if (!$dataset) {

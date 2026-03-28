@@ -8,6 +8,7 @@ use App\Models\DatasetRow;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -118,8 +119,9 @@ class AdminController extends Controller
 
     public function updateUserProject(Request $request, User $user, Project $project)
     {
-        if ($project->user_id !== $user->id) {
-            return response()->json(['message' => 'Project does not belong to selected user.'], 422);
+        $belongsToUserError = $this->projectBelongsToUserResponse($project, $user);
+        if ($belongsToUserError instanceof JsonResponse) {
+            return $belongsToUserError;
         }
 
         $validated = $request->validate([
@@ -150,12 +152,22 @@ class AdminController extends Controller
 
     public function destroyUserProject(User $user, Project $project)
     {
-        if ($project->user_id !== $user->id) {
-            return response()->json(['message' => 'Project does not belong to selected user.'], 422);
+        $belongsToUserError = $this->projectBelongsToUserResponse($project, $user);
+        if ($belongsToUserError instanceof JsonResponse) {
+            return $belongsToUserError;
         }
 
         $project->delete();
 
         return response()->json(['ok' => true]);
+    }
+
+    private function projectBelongsToUserResponse(Project $project, User $user): ?JsonResponse
+    {
+        if ((int) $project->user_id === (int) $user->id) {
+            return null;
+        }
+
+        return response()->json(['message' => 'Project does not belong to selected user.'], 422);
     }
 }

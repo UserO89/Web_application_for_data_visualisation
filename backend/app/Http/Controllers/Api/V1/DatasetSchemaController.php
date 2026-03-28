@@ -18,9 +18,7 @@ class DatasetSchemaController extends Controller
 
     public function show(Request $request, Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $project);
 
         $dataset = $project->dataset;
         if (!$dataset) {
@@ -38,9 +36,7 @@ class DatasetSchemaController extends Controller
         Project $project,
         DatasetColumn $column
     ) {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         $dataset = $project->dataset;
         if (!$dataset || (int) $column->dataset_id !== (int) $dataset->id) {
@@ -65,9 +61,7 @@ class DatasetSchemaController extends Controller
         Project $project,
         DatasetColumn $column
     ) {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         $dataset = $project->dataset;
         if (!$dataset || (int) $column->dataset_id !== (int) $dataset->id) {

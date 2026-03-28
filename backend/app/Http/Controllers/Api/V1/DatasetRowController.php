@@ -12,9 +12,7 @@ class DatasetRowController extends Controller
 {
     public function index(Request $request, Project $project)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('view', $project);
 
         $dataset = $project->dataset;
         if (!$dataset) {
@@ -33,9 +31,7 @@ class DatasetRowController extends Controller
 
     public function update(UpdateDatasetRowRequest $request, Project $project, DatasetRow $row)
     {
-        if ($project->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
+        $this->authorize('update', $project);
 
         $dataset = $project->dataset;
         if (!$dataset || $row->dataset_id !== $dataset->id) {
