@@ -93,13 +93,20 @@ export const buildPresetLayout = ({ preset, canvasWidth, min, ids }) => {
 
 export const sanitizeLayouts = ({ layouts, savedWidth, canvasWidth, min, ids }) => {
   if (!layouts || typeof layouts !== 'object') return null
+  if (!Array.isArray(ids) || !ids.length) return null
+  if (!min || typeof min !== 'object') return null
+  if (!Number.isFinite(canvasWidth) || canvasWidth <= 0) return null
 
-  const ratio = savedWidth > 0 ? canvasWidth / savedWidth : 1
+  const safeSavedWidth = Number(savedWidth)
+  const ratio = Number.isFinite(safeSavedWidth) && safeSavedWidth > 0 ? canvasWidth / safeSavedWidth : 1
+  const maxPanelHeight = 2200
+  const maxPanelY = 4800
   const out = {}
 
   for (const [index, id] of ids.entries()) {
     const panel = layouts[id]
-    if (!panel) return null
+    if (!panel || typeof panel !== 'object') return null
+    if (!min[id] || typeof min[id] !== 'object') return null
 
     let x = Number(panel.x) * ratio
     let y = Number(panel.y)
@@ -111,6 +118,8 @@ export const sanitizeLayouts = ({ layouts, savedWidth, canvasWidth, min, ids }) 
 
     w = Math.max(min[id].w, w)
     h = Math.max(min[id].h, h)
+    h = Math.min(maxPanelHeight, h)
+    y = Math.min(maxPanelY, y)
 
     if (w > canvasWidth) {
       w = canvasWidth
@@ -126,7 +135,7 @@ export const sanitizeLayouts = ({ layouts, savedWidth, canvasWidth, min, ids }) 
       y: Math.round(y),
       w: Math.round(w),
       h: Math.round(h),
-      z: Number.isFinite(z) ? z : index + 1,
+      z: Number.isFinite(z) && z > 0 ? Math.round(z) : index + 1,
     }
   }
 

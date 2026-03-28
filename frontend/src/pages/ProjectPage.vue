@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ProjectDatasetImportSection, ProjectValidationModal, ProjectPageToolbar, ProjectWorkspaceCanvas, } from '../components/project'
 import { projectsApi } from '../api/projects'
@@ -632,28 +632,55 @@ export default {
     }
 
     let chartViewportResizeObserver = null
+    let observedChartViewportElement = null
+
+    const syncChartViewportHeight = (height) => {
+      if (!Number.isFinite(height) || height <= 0) return
+      syncViewportHeightFromResize(height)
+    }
+
+    const disconnectChartViewportObserver = () => {
+      if (chartViewportResizeObserver) {
+        chartViewportResizeObserver.disconnect()
+      }
+      chartViewportResizeObserver = null
+      observedChartViewportElement = null
+    }
+
+    const observeChartViewport = (element) => {
+      if (typeof ResizeObserver === 'undefined') return
+      if (!element) {
+        disconnectChartViewportObserver()
+        return
+      }
+      if (observedChartViewportElement === element && chartViewportResizeObserver) return
+
+      if (!chartViewportResizeObserver) {
+        chartViewportResizeObserver = new ResizeObserver((entries) => {
+          const height = entries?.[0]?.contentRect?.height
+          syncChartViewportHeight(height)
+        })
+      } else if (observedChartViewportElement) {
+        chartViewportResizeObserver.unobserve(observedChartViewportElement)
+      }
+
+      chartViewportResizeObserver.observe(element)
+      observedChartViewportElement = element
+      const initialHeight = element.getBoundingClientRect?.().height || element.clientHeight
+      syncChartViewportHeight(initialHeight)
+    }
 
     onMounted(() => {
       loadProjectPage()
       attachWorkspaceListeners()
       window.addEventListener('keydown', onEsc)
-
-      if (typeof ResizeObserver !== 'undefined' && chartViewportRef.value) {
-        chartViewportResizeObserver = new ResizeObserver((entries) => {
-          const height = entries?.[0]?.contentRect?.height
-          syncViewportHeightFromResize(height)
-        })
-        chartViewportResizeObserver.observe(chartViewportRef.value)
-      }
+      observeChartViewport(chartViewportRef.value)
     })
 
     onBeforeUnmount(() => {
       detachWorkspaceListeners()
       window.removeEventListener('keydown', onEsc)
-      if (chartViewportResizeObserver) {
-        chartViewportResizeObserver.disconnect()
-        chartViewportResizeObserver = null
-      }
+      disconnectChartViewportObserver()
       saveLayouts()
     })
 
@@ -669,6 +696,22 @@ export default {
       if (!project.value?.dataset) return
       loadSavedCharts()
     })
+
+    watch(
+      () => chartViewportRef.value,
+      (nextElement) => {
+        observeChartViewport(nextElement)
+      }
+    )
+
+    watch(
+      () => project.value?.dataset?.id,
+      async (datasetId) => {
+        if (!datasetId) return
+        await nextTick()
+        observeChartViewport(chartViewportRef.value)
+      }
+    )
 
     return {
       project, loading, projectError, selectedFile, importing, importOptions, importMode, manualHeaders, manualRowsInput, manualError,

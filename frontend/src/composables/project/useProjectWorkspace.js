@@ -1,8 +1,9 @@
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import {
   alignPanelsToRightEdge as alignWorkspacePanelsToRightEdge,
   buildPresetLayout,
   hasAnyOverlap,
+  removeStorageItem,
   readJsonStorage,
   rectsOverlap,
   resolveProjectId,
@@ -32,6 +33,7 @@ export const useProjectWorkspace = ({
   const resizeTick = ref(0)
   const initializedForProjectId = ref(null)
   const activePreset = ref('default')
+  const listenersAttached = ref(false)
 
   const resizeDirs = ['n', 'e', 's', 'w']
   const panelConfig = {
@@ -41,8 +43,12 @@ export const useProjectWorkspace = ({
     library: { title: 'Saved Charts', subtitle: 'Project chart library' },
   }
 
-  const canvasW = () => Math.max(320, workspaceRef.value?.clientWidth || 1120)
-  const key = () => `${STORAGE_PREFIX}${resolveProjectId(projectId)}`
+  const canvasW = () => Math.max(320, workspaceRef?.value?.clientWidth || 1120)
+  const resolvedProjectId = () => resolveProjectId(projectId).trim()
+  const key = () => {
+    const id = resolvedProjectId()
+    return id ? `${STORAGE_PREFIX}${id}` : ''
+  }
 
   const visiblePanelIds = computed(() => {
     if (viewMode.value === 'table') return ['table']
@@ -183,24 +189,43 @@ export const useProjectWorkspace = ({
     centerLayoutsHorizontally(enforceTopRowRatio(alignPanelsToRightEdge(layouts)))
 
   const setLayouts = (layouts, persist = true) => {
-    panelLayouts.value = normalizeWorkspaceLayouts(layouts)
+    const normalized = normalizeWorkspaceLayouts(layouts)
+    if (!WORKSPACE_IDS.every((id) => normalized?.[id])) return
+
+    panelLayouts.value = normalized
     zCounter.value = Math.max(...WORKSPACE_IDS.map((id) => panelLayouts.value[id]?.z || 0)) + 1
     if (persist) saveLayouts()
   }
 
   const saveLayouts = () => {
+    const storageKey = key()
+    if (!storageKey) return
     if (!project.value?.dataset || !WORKSPACE_IDS.every((id) => panelLayouts.value[id])) return
-    writeJsonStorage(key(), {
+    writeJsonStorage(storageKey, {
       width: canvasW(),
       preset: activePreset.value,
       layouts: panelLayouts.value,
     })
   }
 
+  const clearStoredLayouts = () => {
+    const storageKey = key()
+    if (!storageKey) return
+    removeStorageItem(storageKey)
+  }
+
   const loadLayouts = () => {
+    const storageKey = key()
+    if (!storageKey) return false
+
     try {
-      const payload = readJsonStorage(key(), null)
+      const payload = readJsonStorage(storageKey, null)
       if (!payload) return false
+      if (typeof payload !== 'object' || Array.isArray(payload)) {
+        clearStoredLayouts()
+        return false
+      }
+
       const rawPreset = payload?.preset || 'default'
       const preset = rawPreset === 'custom' ? 'custom' : 'default'
       if (preset !== 'custom') {
@@ -210,7 +235,10 @@ export const useProjectWorkspace = ({
       }
 
       const layouts = sanitize(payload.layouts, Number(payload.width))
-      if (!layouts) return false
+      if (!layouts) {
+        clearStoredLayouts()
+        return false
+      }
 
       // Keep the standard workspace proportions: table should be visibly wider than chart.
       const tableWidth = Number(layouts.table?.w || 0)
@@ -226,6 +254,7 @@ export const useProjectWorkspace = ({
       setLayouts(layouts, false)
       return true
     } catch (_) {
+      clearStoredLayouts()
       return false
     }
   }
@@ -367,34 +396,53 @@ export const useProjectWorkspace = ({
   }
 
   const ensureWorkspaceInitializedForProject = async () => {
-    const id = resolveProjectId(projectId)
+    const id = resolvedProjectId()
+    if (!id) return
     if (initializedForProjectId.value === id) return
+
     await nextTick()
     if (!loadLayouts()) {
       activePreset.value = 'default'
       setLayouts(buildPreset('default'), true)
     }
-    requestAnimationFrame(() => onResizeWindow())
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => onResizeWindow())
+    })
     initializedForProjectId.value = id
   }
 
   const resetWorkspaceRouteState = () => {
     initializedForProjectId.value = null
     viewMode.value = 'workspace'
+    panelLayouts.value = {}
   }
 
   const attachWorkspaceListeners = () => {
+    if (listenersAttached.value) return
     window.addEventListener('mousemove', onMove)
     window.addEventListener('mouseup', onUp)
     window.addEventListener('resize', onResizeWindow)
+    listenersAttached.value = true
   }
 
   const detachWorkspaceListeners = () => {
+    if (!listenersAttached.value) return
     window.removeEventListener('mousemove', onMove)
     window.removeEventListener('mouseup', onUp)
     window.removeEventListener('resize', onResizeWindow)
     document.body.style.userSelect = ''
+    listenersAttached.value = false
   }
+
+  watch(
+    () => workspaceRef?.value,
+    (element) => {
+      if (!element) return
+      if (!initializedForProjectId.value) return
+      if (viewMode.value !== 'workspace') return
+      requestAnimationFrame(() => onResizeWindow())
+    }
+  )
 
   return {
     activePreset,
