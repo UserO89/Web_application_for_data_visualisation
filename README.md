@@ -269,5 +269,5 @@ MIT. See [LICENSE](LICENSE).
 
 ## Related Documentation
 
-- `docs/ARCHITECTURE_RULES.md` - enforced architecture decisions (single dataset per project, env-driven API/CORS config)
+- `docs/DEPLOYMENT.md` - production deployment checklist (env, build, migrate, cache, smoke test)
 - `test-data/` - CSV fixtures for validation/statistics scenarios
