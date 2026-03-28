@@ -79,6 +79,19 @@ describe('ProjectValidationModal', () => {
     expect(wrapper.text()).toContain('7 imported, 1 skipped, 2 problematic columns')
   })
 
+  it('shows dataset lock note at the top only when enabled', () => {
+    const hiddenNoteWrapper = mountModal(buildProps({
+      showDatasetBindingNote: false,
+    }))
+    expect(hiddenNoteWrapper.text()).not.toContain('This project already contains a dataset.')
+
+    const visibleNoteWrapper = mountModal(buildProps({
+      showDatasetBindingNote: true,
+    }))
+    expect(visibleNoteWrapper.text()).toContain('This project already contains a dataset.')
+    expect(visibleNoteWrapper.text()).toContain('To work with another dataset, create a new project.')
+  })
+
   it('renders problematic columns with normalized/nullified counters', () => {
     const wrapper = mountModal(buildProps())
 

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Dataset extends Model
 {
@@ -27,17 +29,17 @@ class Dataset extends Model
         ];
     }
 
-    public function project()
+    public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function columns()
+    public function columns(): HasMany
     {
         return $this->hasMany(DatasetColumn::class);
     }
 
-    public function rows()
+    public function rows(): HasMany
     {
         return $this->hasMany(DatasetRow::class);
     }

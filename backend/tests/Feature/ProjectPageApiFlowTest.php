@@ -35,7 +35,7 @@ class ProjectPageApiFlowTest extends TestCase
         $this->getJson("/api/v1/projects/{$projectId}/rows?page=1&per_page=100")->assertUnauthorized();
         $this->getJson("/api/v1/projects/{$projectId}/schema?rebuild=0")->assertUnauthorized();
         $this->getJson("/api/v1/projects/{$projectId}/chart-suggestions")->assertUnauthorized();
-        $this->getJson("/api/v1/projects/{$projectId}/statistics-summary")->assertUnauthorized();
+        $this->getJson("/api/v1/projects/{$projectId}/statistics")->assertUnauthorized();
         $this->getJson("/api/v1/projects/{$projectId}/charts")->assertUnauthorized();
         $this->postJson("/api/v1/projects/{$projectId}/charts", [
             'type' => 'line',
@@ -91,7 +91,7 @@ class ProjectPageApiFlowTest extends TestCase
         $this->getJson("/api/v1/projects/{$projectId}/rows?page=1&per_page=100")->assertForbidden();
         $this->getJson("/api/v1/projects/{$projectId}/schema?rebuild=0")->assertForbidden();
         $this->getJson("/api/v1/projects/{$projectId}/chart-suggestions")->assertForbidden();
-        $this->getJson("/api/v1/projects/{$projectId}/statistics-summary")->assertForbidden();
+        $this->getJson("/api/v1/projects/{$projectId}/statistics")->assertForbidden();
         $this->getJson("/api/v1/projects/{$projectId}/charts")->assertForbidden();
         $this->postJson("/api/v1/projects/{$projectId}/charts", [
             'type' => 'line',
@@ -566,7 +566,7 @@ CSV
             ->assertOk()
             ->assertJsonStructure(['suggestions']);
 
-        $this->getJson("/api/v1/projects/{$projectId}/statistics-summary")
+        $this->getJson("/api/v1/projects/{$projectId}/statistics")
             ->assertOk()
             ->assertJsonStructure(['statistics']);
 
@@ -633,7 +633,7 @@ CSV
             ->assertOk()
             ->assertJsonStructure(['suggestions']);
 
-        $this->getJson("/api/v1/projects/{$projectId}/statistics-summary")
+        $this->getJson("/api/v1/projects/{$projectId}/statistics")
             ->assertOk()
             ->assertJsonStructure(['statistics']);
 

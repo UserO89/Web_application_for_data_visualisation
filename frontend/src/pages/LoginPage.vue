@@ -4,7 +4,7 @@
       <div class="brand" style="margin-bottom: 24px;">
         <div class="logo">DV</div>
         <div>
-          <div class="title">DataVis Studio</div>
+          <div class="title">DataViz Studio</div>
           <div class="subtitle">Log in or register</div>
         </div>
       </div>

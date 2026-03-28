@@ -36,7 +36,7 @@ Route::prefix('v1')->group(function () {
         Route::patch('/projects/{project}', [ProjectController::class, 'update']);
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy']);
 
-        // Import CSV -> attach dataset to project
+        // Import CSV -> attach the project's single dataset (one-time import)
         Route::post('/projects/{project}/import', [DatasetImportController::class, 'import']);
 
         // Rows (table UI)
@@ -50,8 +50,6 @@ Route::prefix('v1')->group(function () {
 
         // Stats + Suggestions
         Route::get('/projects/{project}/statistics', [DatasetStatisticsController::class, 'show']);
-        Route::get('/projects/{project}/statistics-summary', [DatasetStatisticsController::class, 'show']);
-        Route::get('/projects/{project}/suggest-visualizations', [DatasetSuggestionController::class, 'index']);
         Route::get('/projects/{project}/chart-suggestions', [DatasetSuggestionController::class, 'index']);
 
         // Saved chart library

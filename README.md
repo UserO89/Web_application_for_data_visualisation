@@ -1,192 +1,192 @@
-# DataViz Studio
+﻿# DataViz Studio
 
-DataViz Studio is a full-stack web application for dataset import, validation, tabular editing, and fast chart-based exploration.
+A full-stack web application for tabular data import, data quality control, and exploratory analysis.
 
-This repository contains:
-- a Laravel 11 backend API (`backend/`)
-- a Vue 3 + Vite frontend SPA (`frontend/`)
+Built as a bachelor thesis project, but implemented as a real Laravel + Vue application with a meaningful backend pipeline: parsing, validation, normalization, semantic column inference, descriptive statistics, and chart-driven exploration.
 
-## Current Functionality
+## Project Overview
 
-### 1. Public and Navigation
-- Landing page with project overview and CTA.
-- Shared application header for authenticated pages.
-- Navigation links:
-  - `Home`
-  - `Projects` with a dropdown for quick jump to recent projects
-  - `Admin` (visible only for users with `admin` role)
-- Profile dropdown with:
-  - Projects
-  - Profile
-  - Logout
+DataViz Studio helps users move from raw CSV/TXT files to usable analysis in one flow:
+- import a dataset,
+- review what was fixed or flagged,
+- explore statistics,
+- build charts,
+- save useful visualizations per project.
 
-### 2. Authentication and Session
-- Register and login forms.
-- Session-based SPA authentication via Laravel Sanctum + CSRF.
-- Logout with session invalidation.
-- `me` endpoint to restore user state after refresh.
+The repository also includes practical product functionality: authentication, profile management, project CRUD, and an admin module.
 
-### 3. User Profile (User CRUD for own account)
-- View account info (name, email, registration date).
-- Upload avatar (PNG/JPG/WEBP, up to 5 MB).
-- Update nickname.
-- Change password (current password required).
-- Delete own account (current password required).
+Each project is designed around a single dataset: it starts empty, allows one import, and then stays permanently tied to that dataset.
 
-### 4. Project Management (User scope)
-- Create project.
-- Read/list own projects.
-- Update project title/description.
-- Delete project.
-- Open project by clicking its card.
+## Key Highlights
 
-### 5. Dataset Input
-- Two input modes on project page when dataset is missing:
-  - Upload CSV/TXT file
-  - Manual table input (add/remove rows and columns, then import as CSV)
-- Import options:
-  - custom delimiter
-  - first row as header toggle
-- One active dataset per project (new import replaces previous dataset).
+- Real full-stack scope: Laravel API + Vue SPA with role-based access control.
+- Single-dataset project architecture enforced across database, API, and UI.
+- Import pipeline with explicit outcomes: blocked import vs imported with warnings.
+- Automatic normalization for numbers, booleans, dates, and empty markers.
+- Semantic schema inference per column with manual overrides.
+- Statistics engine aware of semantic type (numeric/categorical/temporal/ordinal).
+- Chart builder with compatibility rules and 6 implemented chart types.
+- Saved chart library (save/rename/delete/PNG export).
+- Backend + frontend automated tests for critical flows.
 
-### 6. Data Validation and Auto-Fix
-- Automatic validation and normalization during import.
-- Validation report with summary and issue list.
-- Supported normalization rules:
-  - row width normalization (pad/truncate row cells)
-  - string trimming and empty marker normalization to `null`
-  - numeric normalization (currency symbols, `%`, comma/decimal variants, `k/m/b` suffix)
-  - date normalization to `DD.MM.YYYY`
-  - invalid numeric/date values replaced with `null`
-- Validation report is persisted in `localStorage` per project.
-- Modal allows manual correction of validated cells and saving changes back to backend.
-- `null` values are visually highlighted in the table.
+## Product Workflow
 
-### 7. Data Workspace and Layout
-- Workspace contains 4 panels:
-  - Data Table
-  - Visualization
-  - Statistics
-  - Functions
-- Panel actions:
-  - drag to reposition
-  - resize from all four sides
-  - swap panels by dragging one panel onto another
-- View modes:
-  - `Table`
-  - `Visualization` (chart + functions)
-  - `Statistics`
-  - `Workspace`
-- Layout presets:
-  - `Default`
-  - `Table+Chart Full Width`
-  - `Analysis Focus`
-  - `4-Grid`
-- Layout is saved in `localStorage` per project.
+1. Sign in and create a project.
+2. Import one CSV/TXT file once for that project (or build a table manually and import once).
+3. Backend validates and normalizes data before persistence.
+4. Review import summary and problematic columns.
+5. Explore table data, statistics, and chart suggestions.
+6. Adjust semantic type / ordinal order if needed.
+7. Build and save charts in project library.
 
-### 8. Table, Charts, and Analysis
-- Editable data table (Tabulator-based).
-- Save edited cells to backend row-by-row.
-- Export current table as CSV.
-- Chart build types:
-  - line
-  - bar
-  - pie
-- Chart features:
-  - per-series color picker
-  - color palette reset
-  - export chart as PNG
-  - clear chart
-- Auto-calculated statistics per column.
-- Rule-based visualization suggestions.
+## Feature Breakdown
 
-### 9. Admin Panel (Role-based)
-- Access restricted to users with `role = admin`.
-- Dashboard statistics:
-  - total users, projects, datasets, rows
-  - new users/projects over last 7 days
-  - active sessions in last 24 hours
-- User management:
-  - search users by name/email
-  - edit name/email/role/password
-  - delete user
-- Project management in admin scope:
-  - projects are hidden until a user is selected
-  - create, edit, delete selected user's projects
-- Safety constraints:
-  - admin cannot delete own account from admin panel
-  - admin cannot change own role from admin panel
-- Admin can manage user and project metadata without opening project internals.
+### Authentication and account
+- Session-based SPA auth (`Laravel Sanctum` + CSRF cookies).
+- Register/login/logout and user session restore (`/auth/me`).
+- Profile updates, password change, avatar upload, account deletion.
+
+### Projects and datasets
+- Create/list/update/delete projects.
+- Strict user ownership checks on project resources.
+- Each project is designed around exactly one dataset.
+- A project starts empty and allows one import.
+- Dataset replacement and re-import in the same project are not supported by design.
+- To analyze another dataset, create a new project.
+
+### Validation and normalization
+- Structural checks for malformed/empty tabular input.
+- Value-level normalization includes:
+  - whitespace and empty marker handling,
+  - normalization for numeric, boolean, date, and datetime values.
+- Import review contract includes summary, problematic columns, and blocking error details.
+
+### Analysis and visualization
+- Semantic schema inference (`metric`, `nominal`, `ordinal`, `temporal`, `identifier`, `binary`, `ignored`).
+- Manual semantic overrides and custom ordinal order.
+- Descriptive statistics endpoint with semantic-aware metrics.
+- Chart builder with implemented chart types:
+  - line,
+  - bar,
+  - scatter,
+  - histogram,
+  - boxplot,
+  - pie.
+- Chart suggestions, series color controls, table CSV export, chart PNG export.
+
+### Workspace and management
+- Multi-view workspace: `workspace`, `table`, `visualization`, `statistics`, `library`.
+- Draggable/resizable panels with local layout persistence.
+- Saved charts per project: list, rename, delete, download.
+- Admin panel: system stats, user management, user project management.
+
+## Engineering Notes
+
+This project is intentionally not only “CRUD + chart UI”. The core complexity is in connecting backend data quality logic with frontend analysis UX:
+- import is processed through staged backend services, not directly stored,
+- semantic schema becomes a shared contract for stats and charting,
+- frontend coordinates multiple interactive modules with persistent local state,
+- API enforces ownership and role boundaries across all key actions.
 
 ## Tech Stack
 
-### Backend
-- PHP 8.2+
-- Laravel 11
-- Laravel Sanctum (session-based SPA auth)
-- League CSV
-- MySQL (default in `.env.example`; SQLite is also supported by config)
+| Layer | Technologies used |
+| --- | --- |
+| Backend | PHP 8.2+, Laravel 11, Laravel Sanctum, League CSV |
+| Frontend | Vue 3, Vue Router 4, Pinia, Axios, Vite |
+| Data visualization | ECharts 6 |
+| Data table | Tabulator |
+| Testing | PHPUnit, Vitest, Vue Test Utils |
+| Database | MySQL (default local dev), SQLite in-memory (backend tests) |
 
-### Frontend
-- Vue 3
-- Vue Router 4
-- Pinia
-- Axios
-- Tabulator Tables
-- Chart.js
-- Vite
-
-## Project Structure
+## Architecture and Structure
 
 ```text
 Web_application_for_data_visualisation/
-|-- backend/        # Laravel API
-|-- frontend/       # Vue SPA
-|-- test-data/      # Validation testing CSV samples
-|-- QUICKSTART.md
-|-- SETUP.md
-`-- README.md
+|- backend/      # Laravel API, services, migrations, tests
+|- frontend/     # Vue SPA, chart/statistics modules, tests
+|- test-data/    # CSV samples for validation/statistics scenarios
+`- README.md
 ```
 
-## Local Setup
+High-level request flow:
+
+```text
+Vue SPA -> /api/v1/* -> Laravel controllers -> domain services -> persistence
+```
+
+## Setup
 
 ### Prerequisites
 - PHP 8.2+
 - Composer
 - Node.js 18+ and npm
-- MySQL 8+ (recommended for default setup)
+- MySQL 8+ (default setup)
 
-### 1) Backend Setup
+### 1) Backend
 
 ```bash
 cd backend
 composer install
 ```
 
-Create `.env` from example:
+Create env file:
 
-- PowerShell:
+PowerShell:
 ```powershell
 Copy-Item .env.example .env
 ```
 
-- Bash:
+Bash:
 ```bash
 cp .env.example .env
 ```
 
-Generate app key:
+Run:
 
 ```bash
 php artisan key:generate
+php artisan migrate
+php artisan serve
 ```
 
-Configure database and frontend URL in `backend/.env` (MySQL default):
+Windows fallback:
+
+```bash
+php artisan serve --host=localhost --port=8088 --no-reload
+```
+
+### 2) Frontend
+
+```bash
+cd frontend
+npm install
+Copy-Item .env.example .env.development
+# optional for production builds:
+# Copy-Item .env.example .env.production
+
+npm run dev
+```
+
+Default URL: `http://localhost:5173`
+
+Required frontend env values:
+- `VITE_API_BASE_URL` (for example `/api/v1` in local dev with proxy, or `https://your-domain.com/api/v1` in production).
+- `VITE_BACKEND_URL` (Vite dev proxy target).
+
+There is no localhost runtime fallback in the frontend API client. API base URL must come from env files.
+
+### Environment (backend)
+
+Example local backend configuration.  
+Adjust values to your environment.
 
 ```env
 APP_URL=http://127.0.0.1:8000
 FRONTEND_URL=http://localhost:5173
-
+CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+CORS_ALLOWED_ORIGIN_PATTERNS=
+CORS_SUPPORTS_CREDENTIALS=true
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -194,134 +194,62 @@ DB_DATABASE=dataviz
 DB_USERNAME=root
 DB_PASSWORD=
 
-SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173,127.0.0.1:8000
+SANCTUM_STATEFUL_DOMAINS=localhost:5173,127.0.0.1:5173,localhost:8000,127.0.0.1:8000
 ```
 
-Run migrations:
+## Testing
 
-```bash
-php artisan migrate
-```
-
-Start backend:
-
-```bash
-php artisan serve
-```
-
-If your Windows environment has auto-reload/listen issues, use:
-
-```bash
-php artisan serve --host=localhost --port=8088 --no-reload
-```
-
-### 2) Frontend Setup
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs on `http://localhost:5173` by default.
-
-The Vite dev proxy forwards `/api` and `/sanctum` to `http://127.0.0.1:8000` unless `VITE_BACKEND_URL` is set.
-
-### 3) First Run
-
-1. Open `http://localhost:5173`.
-2. Register a user.
-3. Create a project.
-4. Import CSV/TXT or use manual input mode.
-5. Build chart, inspect statistics, and review validation report.
-
-## Admin Access
-
-Promote an existing user to admin:
-
-```bash
-cd backend
-php artisan tinker --execute="App\Models\User::where('email', 'admin@example.com')->update(['role' => 'admin']);"
-```
-
-## API Overview
-
-Base path: `/api/v1`
-
-### Auth
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/logout`
-- `GET /auth/me`
-- `PATCH /auth/profile`
-- `PATCH /auth/password`
-- `DELETE /auth/account`
-- `POST /auth/avatar`
-- `GET /users/{user}/avatar`
-
-### Projects
-- `GET /projects`
-- `POST /projects`
-- `GET /projects/{project}`
-- `PATCH /projects/{project}`
-- `DELETE /projects/{project}`
-
-### Dataset
-- `POST /projects/{project}/import`
-- `GET /projects/{project}/rows`
-- `PATCH /projects/{project}/rows/{row}`
-- `GET /projects/{project}/statistics`
-- `GET /projects/{project}/suggest-visualizations`
-
-### Admin (requires `admin` middleware)
-- `GET /admin/stats`
-- `GET /admin/users`
-- `PATCH /admin/users/{user}`
-- `DELETE /admin/users/{user}`
-- `POST /admin/users/{user}/projects`
-- `PATCH /admin/users/{user}/projects/{project}`
-- `DELETE /admin/users/{user}/projects/{project}`
-
-## Test Data
-
-Use `test-data/validation_test_dataset.csv` to test validation and auto-fix behavior.
-
-See `test-data/README.md` for details.
-
-## Build and Check
-
-Frontend production build:
-
-```bash
-cd frontend
-npm run build
-```
-
-Backend tests:
+Backend:
 
 ```bash
 cd backend
 php artisan test
 ```
 
-## Troubleshooting
+Frontend:
 
-### `php artisan serve` fails to listen on 127.0.0.1:800x
-- Try:
 ```bash
-php artisan serve --host=localhost --port=8088 --no-reload
+cd frontend
+npm run test
 ```
-- Ensure `SYSTEMROOT=C:\WINDOWS` exists in `backend/.env` on Windows.
 
-### Login/register fails with CSRF or 419 errors
-- Verify frontend and backend URLs.
-- Check `SANCTUM_STATEFUL_DOMAINS` in `backend/.env`.
-- Make sure backend is reachable at the URL used by Vite proxy.
+Watch mode:
 
-### CORS or cookie issues
-- Confirm `backend/config/cors.php` allows your frontend origin.
-- `supports_credentials` must remain `true`.
+```bash
+cd frontend
+npm run test:watch
+```
+
+## Screenshots
+
+### Home
+![Home page](docs/screenshots/home-page.png)
+
+### Login
+![Login page](docs/screenshots/login-page.png)
+
+### Project Workspace
+![Project page](docs/screenshots/project-page.png)
+
+### Admin
+![Admin page](docs/screenshots/admin-page.png)
+
+## Future Improvements
+
+- Background jobs and chunked processing for larger files.
+- More advanced chart presets and export options.
+- Optional Dockerized dev environment.
+- Expanded admin audit logging.
+
+## Author
+
+Built and maintained by the repository author as a bachelor thesis project focused on practical full-stack data analysis workflows.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
+
+## Related Documentation
+
+- `docs/ARCHITECTURE_RULES.md` - enforced architecture decisions (single dataset per project, env-driven API/CORS config)
+- `test-data/` - CSV fixtures for validation/statistics scenarios

@@ -84,7 +84,7 @@ export const useProjectDataLoader = ({
     statisticsLoading.value = true
     statisticsError.value = ''
     try {
-      const response = await projectsApi.getStatisticsSummary(id)
+      const response = await projectsApi.getStatistics(id)
       statisticsSummary.value = response.statistics || []
     } catch (e) {
       console.error(e)

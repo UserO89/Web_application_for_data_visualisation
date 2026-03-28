@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -36,6 +37,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user): void {
+            $datasetFilePaths = $user->projects()
+                ->join('datasets', 'datasets.project_id', '=', 'projects.id')
+                ->whereNotNull('datasets.file_path')
+                ->distinct()
+                ->pluck('datasets.file_path')
+                ->filter(fn ($path) => is_string($path) && $path !== '')
+                ->values()
+                ->all();
+
+            if ($datasetFilePaths === []) {
+                return;
+            }
+
+            Storage::disk('local')->delete($datasetFilePaths);
+        });
     }
 
     public function projects()

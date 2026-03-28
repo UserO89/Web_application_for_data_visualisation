@@ -59,16 +59,6 @@ export const projectsApi = {
     return response.data
   },
 
-  async getStatisticsSummary(projectId) {
-    const response = await http.get(`/projects/${projectId}/statistics-summary`)
-    return response.data
-  },
-
-  async getSuggestions(projectId) {
-    const response = await http.get(`/projects/${projectId}/suggest-visualizations`)
-    return response.data
-  },
-
   async getChartSuggestions(projectId) {
     const response = await http.get(`/projects/${projectId}/chart-suggestions`)
     return response.data

@@ -27,6 +27,11 @@
     />
 
     <div v-else>
+      <div class="dataset-binding-note panel" role="status" aria-live="polite">
+        <div class="dataset-binding-title">This project already contains a dataset.</div>
+        <div class="dataset-binding-text">To work with another dataset, create a new project.</div>
+      </div>
+
       <ProjectPageToolbar
         :view-mode="viewMode"
         :import-validation="importValidation"
@@ -94,6 +99,7 @@
       :summary-line="validationSummaryLine"
       :problem-columns="validationProblemColumns"
       :blocking-error="validationBlockingError"
+      :show-dataset-binding-note="Boolean(project?.dataset)"
       @close="closeValidationModal"
       @clear="clearValidationReport"
     />
@@ -687,4 +693,14 @@ export default {
 .app-content { flex: 1; }
 .loading { text-align: center; padding: 3rem; color: var(--muted); }
 .error { text-align: center; padding: 2rem; color: #fca5a5; }
+.dataset-binding-note {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(1200px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+.dataset-binding-title { font-weight: 700; }
+.dataset-binding-text { color: var(--muted); font-size: 13px; }
 </style>

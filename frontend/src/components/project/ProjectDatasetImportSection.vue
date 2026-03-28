@@ -24,8 +24,21 @@
 
       <form v-if="importMode === 'file'" @submit.prevent="$emit('import')">
         <div class="form-group">
-          <label>CSV File</label>
-          <input type="file" accept=".csv,.txt" required @change="$emit('file-select', $event)" />
+          <label for="dataset-file-input">CSV File</label>
+          <div class="file-picker">
+            <input
+              id="dataset-file-input"
+              class="file-input-native"
+              type="file"
+              accept=".csv,.txt"
+              required
+              @change="$emit('file-select', $event)"
+            />
+            <label class="btn file-picker-trigger" for="dataset-file-input">Choose file</label>
+            <span :class="['file-picker-name', { empty: !selectedFileName }]">
+              {{ selectedFileName || 'No file selected' }}
+            </span>
+          </div>
         </div>
         <div class="form-group">
           <label>
@@ -111,6 +124,8 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+
 export default {
   name: 'ProjectDatasetImportSection',
   props: {
@@ -137,6 +152,11 @@ export default {
     'change-manual-rows',
   ],
   setup(props, { emit }) {
+    const selectedFileName = computed(() => {
+      const name = props.selectedFile?.name
+      return typeof name === 'string' && name.trim() ? name : ''
+    })
+
     const setHasHeader = (hasHeader) => {
       emit('change-import-options', {
         ...(props.importOptions || {}),
@@ -167,6 +187,7 @@ export default {
     }
 
     return {
+      selectedFileName,
       setHasHeader,
       setDelimiter,
       updateHeader,
@@ -196,6 +217,54 @@ export default {
 .manual-input:focus { outline: none; border-color: var(--accent); }
 .manual-input.header { font-weight: 600; }
 .manual-error { color: #ff9b9b; font-size: 13px; }
+
+.file-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 46px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.file-input-native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.file-picker:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.15);
+}
+
+.file-picker-trigger {
+  flex-shrink: 0;
+}
+
+.file-picker-name {
+  min-width: 0;
+  flex: 1;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-picker-name.empty {
+  color: var(--muted);
+}
 
 @media (max-width: 720px) {
   .manual-table { min-width: 520px; }

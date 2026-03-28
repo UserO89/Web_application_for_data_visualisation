@@ -6,6 +6,11 @@
       @click.self="$emit('close')"
     >
       <div class="validation-modal panel" role="dialog" aria-modal="true" aria-label="Import review">
+        <div v-if="showDatasetBindingNote" class="dataset-binding-note">
+          <div class="dataset-binding-title">This project already contains a dataset.</div>
+          <div class="dataset-binding-text">To work with another dataset, create a new project.</div>
+        </div>
+
         <div class="validation-head">
           <div class="validation-title">Import Review</div>
           <div class="validation-actions">
@@ -159,6 +164,7 @@ export default {
     summaryLine: { type: String, default: '' },
     problemColumns: { type: Array, default: () => [] },
     blockingError: { type: Object, default: null },
+    showDatasetBindingNote: { type: Boolean, default: false },
   },
   emits: ['close', 'clear'],
   computed: {
@@ -198,6 +204,15 @@ export default {
 .validation-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
 .validation-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .validation-title { font-size: 15px; font-weight: 700; color: #93f6b3; }
+.dataset-binding-note {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #151515;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.dataset-binding-title { font-weight: 700; }
+.dataset-binding-text { color: var(--muted); font-size: 13px; margin-top: 2px; }
 .validation-section { margin-top: 12px; }
 .validation-summary-line { color: var(--muted); font-size: 13px; line-height: 1.45; margin-bottom: 8px; }
 .blocking-error {
