@@ -17,8 +17,8 @@ Route::prefix('v1')->group(function () {
 
     // Auth (SPA via Sanctum) — web middleware explicitly includes session, so we don't depend on Referer
     Route::middleware('web')->group(function () {
-        Route::post('/auth/register', [AuthController::class, 'register']);
-        Route::post('/auth/login', [AuthController::class, 'login']);
+        Route::post('/auth/register', [AuthController::class, 'register'])->middleware('throttle:auth-register');
+        Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:auth-login');
     });
 
     Route::middleware('auth:sanctum')->group(function () {
@@ -37,7 +37,8 @@ Route::prefix('v1')->group(function () {
         Route::delete('/projects/{project}', [ProjectController::class, 'destroy']);
 
         // Import CSV -> attach the project's single dataset (one-time import)
-        Route::post('/projects/{project}/import', [DatasetImportController::class, 'import']);
+        Route::post('/projects/{project}/import', [DatasetImportController::class, 'import'])
+            ->middleware('throttle:project-import');
 
         // Rows (table UI)
         Route::get('/projects/{project}/rows', [DatasetRowController::class, 'index']);
