@@ -3,9 +3,11 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const backendUrl = env.VITE_BACKEND_URL?.trim()
+  const isDevelopment = mode === 'development'
+  const backendUrlRaw = env.VITE_BACKEND_URL
+  const backendUrl = typeof backendUrlRaw === 'string' ? backendUrlRaw.trim().replace(/\/+$/, '') : ''
 
-  if (mode === 'development' && !backendUrl) {
+  if (isDevelopment && !backendUrl) {
     throw new Error('[config] Missing VITE_BACKEND_URL. Set it in frontend/.env.development for local dev proxying.')
   }
 
@@ -16,7 +18,7 @@ export default defineConfig(({ mode }) => {
       globals: true,
       include: ['tests/**/*.spec.js'],
     },
-    server: backendUrl
+    server: isDevelopment
       ? {
           port: 5173,
           proxy: {
