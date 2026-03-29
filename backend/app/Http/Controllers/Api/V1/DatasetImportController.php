@@ -10,7 +10,6 @@ use App\Services\DatasetSemanticSchemaService;
 use App\Services\DatasetValidation\DatasetValidationService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
@@ -102,11 +101,9 @@ class DatasetImportController extends Controller
                     'file_path' => $path,
                     'delimiter' => $delimiter,
                     'has_header' => $hasHeader,
+                    'import_summary_json' => $importPlan['report']['summary'] ?? null,
+                    'validation_report_json' => $importPlan['report'],
                 ];
-                if ($this->datasetsTableHasValidationColumns()) {
-                    $datasetPayload['import_summary_json'] = $importPlan['report']['summary'] ?? null;
-                    $datasetPayload['validation_report_json'] = $importPlan['report'];
-                }
                 $dataset = $project->dataset()->create($datasetPayload);
 
                 foreach ($importPlan['columns'] as $index => $column) {
@@ -114,11 +111,9 @@ class DatasetImportController extends Controller
                         'name' => $column['name'],
                         'type' => $column['type'],
                         'physical_type' => $column['physical_type'] ?? null,
+                        'quality_json' => $column['quality'] ?? null,
                         'position' => $index,
                     ];
-                    if ($this->datasetColumnsTableHasQualityColumn()) {
-                        $columnPayload['quality_json'] = $column['quality'] ?? null;
-                    }
                     $dataset->columns()->create($columnPayload);
                 }
 
@@ -131,12 +126,10 @@ class DatasetImportController extends Controller
 
                 $schema = $this->datasetSemanticSchemaService->buildAndPersist($dataset);
                 $validationReport = $importPlan['report'];
-                if ($this->datasetsTableHasValidationColumns()) {
-                    $dataset->update([
-                        'import_summary_json' => $validationReport['summary'] ?? null,
-                        'validation_report_json' => $validationReport,
-                    ]);
-                }
+                $dataset->update([
+                    'import_summary_json' => $validationReport['summary'] ?? null,
+                    'validation_report_json' => $validationReport,
+                ]);
             });
         } catch (QueryException $e) {
             $this->deleteStoredDatasetFile($path);
@@ -164,17 +157,6 @@ class DatasetImportController extends Controller
         return response()->json([
             'message' => self::DATASET_ALREADY_EXISTS_MESSAGE,
         ], 409);
-    }
-
-    private function datasetsTableHasValidationColumns(): bool
-    {
-        return Schema::hasColumn('datasets', 'import_summary_json')
-            && Schema::hasColumn('datasets', 'validation_report_json');
-    }
-
-    private function datasetColumnsTableHasQualityColumn(): bool
-    {
-        return Schema::hasColumn('dataset_columns', 'quality_json');
     }
 
     private function deleteStoredDatasetFile(?string $path): void

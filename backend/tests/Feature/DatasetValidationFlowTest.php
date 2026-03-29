@@ -88,6 +88,17 @@ CSV;
         $this->assertNotNull($normalizedDateSample);
         $this->assertMatchesRegularExpression('/^\d{2}\.\d{2}\.\d{4}$/', (string) ($normalizedDateSample['new_value'] ?? ''));
 
+        $dataset = $project->fresh()->dataset;
+        $this->assertNotNull($dataset);
+        $this->assertSame($summary, $dataset->import_summary_json);
+        $this->assertSame($response->json('validation'), $dataset->validation_report_json);
+
+        $revenueColumn = $dataset->columns()->where('name', 'Revenue')->first();
+        $this->assertNotNull($revenueColumn);
+        $this->assertIsArray($revenueColumn->quality_json);
+        $this->assertNotEmpty($revenueColumn->quality_json);
+        $this->assertArrayHasKey('status', $revenueColumn->quality_json);
+
         $sampleOriginalValues = [];
         foreach ($problemColumns as $column) {
             $this->assertArrayHasKey('issue_count', $column);

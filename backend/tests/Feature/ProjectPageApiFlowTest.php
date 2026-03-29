@@ -156,6 +156,20 @@ CSV
         $dataset = $project->fresh()->dataset;
         $this->assertNotNull($dataset);
         $this->assertTrue(Storage::disk('local')->exists($dataset->file_path));
+        $this->assertSame(
+            $response->json('validation.summary'),
+            $dataset->import_summary_json
+        );
+        $this->assertSame(
+            $response->json('validation'),
+            $dataset->validation_report_json
+        );
+
+        $revenueColumn = $dataset->columns()->where('name', 'Revenue')->first();
+        $this->assertNotNull($revenueColumn);
+        $this->assertIsArray($revenueColumn->quality_json);
+        $this->assertNotEmpty($revenueColumn->quality_json);
+        $this->assertArrayHasKey('status', $revenueColumn->quality_json);
 
         $this->assertDatabaseCount('datasets', 1);
         $this->assertDatabaseCount('dataset_columns', 2);
@@ -430,6 +444,11 @@ CSV
         $this->assertGreaterThan(0, (int) ($summary['problematic_columns'] ?? 0));
         $this->assertNull($response->json('validation.issues'));
 
+        $dataset = $project->fresh()->dataset;
+        $this->assertNotNull($dataset);
+        $this->assertSame($summary, $dataset->import_summary_json);
+        $this->assertSame($response->json('validation'), $dataset->validation_report_json);
+
         $problemColumns = $response->json('validation.problem_columns') ?? [];
         $this->assertNotEmpty($problemColumns);
         $revenue = collect($problemColumns)->firstWhere('column_name', 'Revenue');
@@ -437,6 +456,12 @@ CSV
         $this->assertGreaterThan(0, (int) ($revenue['issue_count'] ?? 0));
         $this->assertGreaterThan(0, (int) ($revenue['nullified_count'] ?? 0));
         $this->assertNotEmpty($revenue['review_samples'] ?? []);
+
+        $revenueColumn = $dataset->columns()->where('name', 'Revenue')->first();
+        $this->assertNotNull($revenueColumn);
+        $this->assertIsArray($revenueColumn->quality_json);
+        $this->assertNotEmpty($revenueColumn->quality_json);
+        $this->assertArrayHasKey('issueCodes', $revenueColumn->quality_json);
     }
 
     public function test_saved_charts_library_crud_flow_works(): void
