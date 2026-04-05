@@ -12,6 +12,27 @@ class StatisticsService
         private ValueParsingService $valueParsingService
     ) {}
 
+    public function getStatistics(Dataset $dataset, bool $rebuild = false): array
+    {
+        if (!$rebuild && $dataset->statistics_json !== null) {
+            return is_array($dataset->statistics_json) ? $dataset->statistics_json : [];
+        }
+
+        return $this->buildAndPersist($dataset);
+    }
+
+    public function buildAndPersist(Dataset $dataset): array
+    {
+        $statistics = $this->calculate($dataset);
+
+        $dataset->forceFill([
+            'statistics_json' => $statistics,
+            'statistics_generated_at' => now(),
+        ])->save();
+
+        return $statistics;
+    }
+
     public function calculate(Dataset $dataset): array
     {
         // Ensure schema exists and is synced at least once.

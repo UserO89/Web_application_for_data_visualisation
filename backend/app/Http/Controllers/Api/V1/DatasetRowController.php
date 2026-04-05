@@ -7,9 +7,15 @@ use App\Http\Requests\UpdateDatasetRowRequest;
 use App\Models\Project;
 use App\Models\DatasetRow;
 use Illuminate\Http\Request;
+use App\Services\StatisticsService;
+use Illuminate\Support\Facades\DB;
 
 class DatasetRowController extends Controller
 {
+    public function __construct(
+        private StatisticsService $statisticsService
+    ) {}
+
     public function index(Request $request, Project $project)
     {
         $this->authorize('view', $project);
@@ -38,10 +44,14 @@ class DatasetRowController extends Controller
             return response()->json(['message' => 'Row does not belong to this project'], 403);
         }
 
-        $row->update([
-            'values' => json_encode($request->validated()['values']),
-        ]);
+        DB::transaction(function () use ($request, $row, $dataset) {
+            $row->update([
+                'values' => json_encode($request->validated()['values']),
+            ]);
 
-        return response()->json(['row' => $row]);
+            $this->statisticsService->buildAndPersist($dataset->fresh());
+        });
+
+        return response()->json(['row' => $row->fresh()]);
     }
 }

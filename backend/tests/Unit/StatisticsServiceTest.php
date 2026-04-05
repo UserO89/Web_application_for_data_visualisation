@@ -124,6 +124,72 @@ class StatisticsServiceTest extends TestCase
         $this->assertSame(2, $stats['frequency_by_period'][0]['count']);
     }
 
+    public function test_get_statistics_returns_persisted_payload_when_cache_exists(): void
+    {
+        $dataset = $this->createDatasetWithSingleColumn(
+            semanticType: 'metric',
+            physicalType: 'number',
+            analyticalRole: 'measure',
+            values: [10, 20, 30]
+        );
+
+        $cachedStatistics = [[
+            'column_id' => 999,
+            'column' => 'Cached',
+            'physical_type' => 'number',
+            'semantic_type' => 'metric',
+            'analytical_role' => 'measure',
+            'statistics' => [
+                'count' => 123,
+            ],
+        ]];
+
+        $dataset->update([
+            'statistics_json' => $cachedStatistics,
+            'statistics_generated_at' => now(),
+        ]);
+
+        /** @var StatisticsService $service */
+        $service = app(StatisticsService::class);
+        $statistics = $service->getStatistics($dataset->fresh());
+
+        $this->assertSame($cachedStatistics, $statistics);
+    }
+
+    public function test_get_statistics_rebuilds_and_persists_when_requested(): void
+    {
+        $dataset = $this->createDatasetWithSingleColumn(
+            semanticType: 'metric',
+            physicalType: 'number',
+            analyticalRole: 'measure',
+            values: [10, 20, 30]
+        );
+
+        $dataset->update([
+            'statistics_json' => [[
+                'column_id' => 999,
+                'column' => 'Stale',
+                'physical_type' => 'number',
+                'semantic_type' => 'metric',
+                'analytical_role' => 'measure',
+                'statistics' => [
+                    'count' => 999,
+                ],
+            ]],
+            'statistics_generated_at' => now()->subDay(),
+        ]);
+
+        /** @var StatisticsService $service */
+        $service = app(StatisticsService::class);
+        $statistics = $service->getStatistics($dataset->fresh(), true);
+
+        $this->assertCount(1, $statistics);
+        $this->assertSame('Value', $statistics[0]['column']);
+        $this->assertSame(3, $statistics[0]['statistics']['count']);
+        $this->assertSame($statistics, $dataset->fresh()->statistics_json);
+        $this->assertNotNull($dataset->fresh()->statistics_generated_at);
+    }
+
     private function createDatasetWithSingleColumn(
         string $semanticType,
         string $physicalType,

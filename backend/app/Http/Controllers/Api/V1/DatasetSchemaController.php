@@ -8,12 +8,15 @@ use App\Http\Requests\UpdateDatasetColumnSemanticTypeRequest;
 use App\Models\DatasetColumn;
 use App\Models\Project;
 use App\Services\DatasetSemanticSchemaService;
+use App\Services\StatisticsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DatasetSchemaController extends Controller
 {
     public function __construct(
-        private DatasetSemanticSchemaService $datasetSemanticSchemaService
+        private DatasetSemanticSchemaService $datasetSemanticSchemaService,
+        private StatisticsService $statisticsService
     ) {}
 
     public function show(Request $request, Project $project)
@@ -44,12 +47,18 @@ class DatasetSchemaController extends Controller
         }
 
         $payload = $request->validated();
-        $updated = $this->datasetSemanticSchemaService->overrideSemanticType(
-            $column,
-            $payload['semantic_type'],
-            $payload['analytical_role'] ?? null,
-            $payload['is_excluded_from_analysis'] ?? null
-        );
+        $updated = DB::transaction(function () use ($column, $payload, $dataset) {
+            $updatedColumn = $this->datasetSemanticSchemaService->overrideSemanticType(
+                $column,
+                $payload['semantic_type'],
+                $payload['analytical_role'] ?? null,
+                $payload['is_excluded_from_analysis'] ?? null
+            );
+
+            $this->statisticsService->buildAndPersist($dataset->fresh());
+
+            return $updatedColumn;
+        });
 
         return response()->json([
             'column' => $this->datasetSemanticSchemaService->formatColumn($updated),
@@ -68,10 +77,16 @@ class DatasetSchemaController extends Controller
             return response()->json(['message' => 'Column does not belong to this project'], 403);
         }
 
-        $updated = $this->datasetSemanticSchemaService->overrideOrdinalOrder(
-            $column,
-            $request->validated()['ordinal_order']
-        );
+        $updated = DB::transaction(function () use ($column, $request, $dataset) {
+            $updatedColumn = $this->datasetSemanticSchemaService->overrideOrdinalOrder(
+                $column,
+                $request->validated()['ordinal_order']
+            );
+
+            $this->statisticsService->buildAndPersist($dataset->fresh());
+
+            return $updatedColumn;
+        });
 
         return response()->json([
             'column' => $this->datasetSemanticSchemaService->formatColumn($updated),

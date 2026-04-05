@@ -166,6 +166,9 @@ CSV
             $response->json('validation'),
             $dataset->validation_report_json
         );
+        $this->assertIsArray($dataset->statistics_json);
+        $this->assertNotEmpty($dataset->statistics_json);
+        $this->assertNotNull($dataset->statistics_generated_at);
 
         $revenueColumn = $dataset->columns()->where('name', 'Revenue')->first();
         $this->assertNotNull($revenueColumn);
@@ -296,6 +299,7 @@ CSV
 
         $statistics = $response->json('statistics');
         $this->assertIsArray($statistics);
+        $this->assertSame($statistics, $project->fresh()->dataset->statistics_json);
 
         $revenueStats = $this->findColumnStatistics($statistics, 'Revenue');
         $this->assertNotNull($revenueStats);
@@ -352,7 +356,8 @@ CSV
 
         $statisticsResponse = $this->getJson("/api/v1/projects/{$project->id}/statistics");
         $statisticsResponse->assertOk();
-        $priorityStats = $this->findColumnStatistics($statisticsResponse->json('statistics') ?? [], 'Priority');
+        $statistics = $statisticsResponse->json('statistics') ?? [];
+        $priorityStats = $this->findColumnStatistics($statistics, 'Priority');
 
         $this->assertNotNull($priorityStats);
         $this->assertSame('ordinal', $priorityStats['semantic_type']);
@@ -360,6 +365,7 @@ CSV
         $this->assertEqualsWithDelta(2.0, $priorityStats['statistics']['median_rank'], 0.0001);
         $this->assertSame('Medium', $priorityStats['statistics']['median_rank_label']);
         $this->assertSame(['Low', 'Medium', 'High'], $priorityStats['statistics']['ordinal_order']);
+        $this->assertSame($statistics, $project->fresh()->dataset->statistics_json);
     }
 
     public function test_statistics_endpoint_returns_temporal_statistics_after_semantic_override(): void
@@ -393,13 +399,15 @@ CSV
 
         $statisticsResponse = $this->getJson("/api/v1/projects/{$project->id}/statistics");
         $statisticsResponse->assertOk();
-        $dateStats = $this->findColumnStatistics($statisticsResponse->json('statistics') ?? [], 'EventDate');
+        $statistics = $statisticsResponse->json('statistics') ?? [];
+        $dateStats = $this->findColumnStatistics($statistics, 'EventDate');
 
         $this->assertNotNull($dateStats);
         $this->assertSame('temporal', $dateStats['semantic_type']);
         $this->assertStringStartsWith('2024-01-01T00:00:00', (string) ($dateStats['statistics']['earliest'] ?? ''));
         $this->assertStringStartsWith('2024-01-03T00:00:00', (string) ($dateStats['statistics']['latest'] ?? ''));
         $this->assertSame(172800, $dateStats['statistics']['range_seconds']);
+        $this->assertSame($statistics, $project->fresh()->dataset->statistics_json);
     }
 
     public function test_semantic_override_is_persisted_across_schema_reload(): void
@@ -489,6 +497,12 @@ CSV
         $rowsAfterResponse->assertOk();
         $updatedApiValues = $this->decodeRowValues($rowsAfterResponse->json('data.0.values'));
         $this->assertSame($newValues, $updatedApiValues);
+
+        $statistics = $project->fresh()->dataset->statistics_json;
+        $this->assertIsArray($statistics);
+        $revenueStats = $this->findColumnStatistics($statistics, 'Revenue');
+        $this->assertNotNull($revenueStats);
+        $this->assertEqualsWithDelta(599.5, $revenueStats['statistics']['mean'], 0.0001);
     }
 
     public function test_import_with_warnings_is_not_blocked(): void

@@ -18,6 +18,13 @@ class Dataset extends Model
         'has_header',
         'import_summary_json',
         'validation_report_json',
+        'statistics_json',
+        'statistics_generated_at',
+    ];
+
+    protected $hidden = [
+        'statistics_json',
+        'statistics_generated_at',
     ];
 
     protected function casts(): array
@@ -26,6 +33,8 @@ class Dataset extends Model
             'has_header' => 'boolean',
             'import_summary_json' => 'array',
             'validation_report_json' => 'array',
+            'statistics_json' => 'array',
+            'statistics_generated_at' => 'datetime',
         ];
     }
 

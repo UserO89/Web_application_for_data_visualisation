@@ -11,6 +11,7 @@ use App\Services\CsvImportService;
 use App\Services\CsvImportLimitException;
 use App\Services\DatasetSemanticSchemaService;
 use App\Services\DatasetValidation\DatasetValidationService;
+use App\Services\StatisticsService;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -25,7 +26,8 @@ class DatasetImportController extends Controller
     public function __construct(
         private CsvImportService $csvImportService,
         private DatasetValidationService $datasetValidationService,
-        private DatasetSemanticSchemaService $datasetSemanticSchemaService
+        private DatasetSemanticSchemaService $datasetSemanticSchemaService,
+        private StatisticsService $statisticsService
     ) {}
 
     public function import(ImportDatasetRequest $request, Project $project)
@@ -128,6 +130,7 @@ class DatasetImportController extends Controller
                 $this->insertDatasetRowsInChunks($dataset->id, (array) $importPlan['rows'], $timestamp);
 
                 $schema = $this->datasetSemanticSchemaService->buildAndPersist($dataset);
+                $this->statisticsService->buildAndPersist($dataset);
                 $validationReport = $importPlan['report'];
                 $dataset->update([
                     'import_summary_json' => $validationReport['summary'] ?? null,

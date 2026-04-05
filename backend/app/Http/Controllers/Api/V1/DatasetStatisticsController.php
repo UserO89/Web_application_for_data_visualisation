@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Services\StatisticsService;
+use Illuminate\Http\Request;
 
 class DatasetStatisticsController extends Controller
 {
@@ -12,7 +13,7 @@ class DatasetStatisticsController extends Controller
         private StatisticsService $statisticsService
     ) {}
 
-    public function show(Project $project)
+    public function show(Request $request, Project $project)
     {
         $this->authorize('view', $project);
 
@@ -21,7 +22,10 @@ class DatasetStatisticsController extends Controller
             return response()->json(['message' => 'No dataset found'], 404);
         }
 
-        $statistics = $this->statisticsService->calculate($dataset);
+        $statistics = $this->statisticsService->getStatistics(
+            $dataset,
+            $request->boolean('rebuild', false)
+        );
 
         return response()->json(['statistics' => $statistics]);
     }

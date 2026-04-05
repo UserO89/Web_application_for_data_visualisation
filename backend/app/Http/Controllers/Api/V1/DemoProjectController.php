@@ -48,10 +48,13 @@ class DemoProjectController extends Controller
         return response()->json(['schema' => $schema]);
     }
 
-    public function statistics()
+    public function statistics(Request $request)
     {
         $dataset = $this->demoProjectResolver->resolveDataset();
-        $statistics = $this->statisticsService->calculate($dataset);
+        $statistics = $this->statisticsService->getStatistics(
+            $dataset,
+            $request->boolean('rebuild', false)
+        );
 
         return response()->json(['statistics' => $statistics]);
     }
