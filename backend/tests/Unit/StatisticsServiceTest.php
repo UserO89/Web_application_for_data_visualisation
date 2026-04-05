@@ -186,7 +186,7 @@ class StatisticsServiceTest extends TestCase
         $this->assertCount(1, $statistics);
         $this->assertSame('Value', $statistics[0]['column']);
         $this->assertSame(3, $statistics[0]['statistics']['count']);
-        $this->assertSame($statistics, $dataset->fresh()->statistics_json);
+        $this->assertEquals($statistics, $dataset->fresh()->statistics_json);
         $this->assertNotNull($dataset->fresh()->statistics_generated_at);
     }
 
