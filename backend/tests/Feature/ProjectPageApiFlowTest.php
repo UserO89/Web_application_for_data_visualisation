@@ -129,6 +129,8 @@ class ProjectPageApiFlowTest extends TestCase
     public function test_dataset_import_works(): void
     {
         Storage::fake('local');
+        config()->set('dataset_import.column_insert_chunk_size', 1);
+        config()->set('dataset_import.row_insert_chunk_size', 2);
 
         $user = $this->authenticateUser();
         $project = $this->createProjectForUser($user, 'Import works');

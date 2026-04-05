@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImportDatasetRequest;
+use App\Models\DatasetColumn;
+use App\Models\DatasetRow;
 use App\Models\Project;
 use App\Services\CsvImportService;
 use App\Services\CsvImportLimitException;
@@ -17,6 +19,8 @@ use Throwable;
 class DatasetImportController extends Controller
 {
     private const DATASET_ALREADY_EXISTS_MESSAGE = 'This project already has a dataset. Create a new project to import another file.';
+    private const DEFAULT_COLUMN_INSERT_CHUNK_SIZE = 250;
+    private const DEFAULT_ROW_INSERT_CHUNK_SIZE = 500;
 
     public function __construct(
         private CsvImportService $csvImportService,
@@ -119,23 +123,9 @@ class DatasetImportController extends Controller
                 ];
                 $dataset = $project->dataset()->create($datasetPayload);
 
-                foreach ($importPlan['columns'] as $index => $column) {
-                    $columnPayload = [
-                        'name' => $column['name'],
-                        'type' => $column['type'],
-                        'physical_type' => $column['physical_type'] ?? null,
-                        'quality_json' => $column['quality'] ?? null,
-                        'position' => $index,
-                    ];
-                    $dataset->columns()->create($columnPayload);
-                }
-
-                foreach ($importPlan['rows'] as $rowIndex => $row) {
-                    $dataset->rows()->create([
-                        'row_index' => $rowIndex,
-                        'values' => json_encode($row),
-                    ]);
-                }
+                $timestamp = now();
+                $this->insertDatasetColumnsInChunks($dataset->id, (array) $importPlan['columns'], $timestamp);
+                $this->insertDatasetRowsInChunks($dataset->id, (array) $importPlan['rows'], $timestamp);
 
                 $schema = $this->datasetSemanticSchemaService->buildAndPersist($dataset);
                 $validationReport = $importPlan['report'];
@@ -172,6 +162,65 @@ class DatasetImportController extends Controller
         ], 409);
     }
 
+    private function insertDatasetColumnsInChunks(int $datasetId, array $columns, mixed $timestamp): void
+    {
+        $chunkSize = $this->resolveChunkSize(
+            'dataset_import.column_insert_chunk_size',
+            self::DEFAULT_COLUMN_INSERT_CHUNK_SIZE
+        );
+
+        $payloadChunk = [];
+        foreach ($columns as $index => $column) {
+            $payloadChunk[] = [
+                'dataset_id' => $datasetId,
+                'name' => $column['name'],
+                'type' => $column['type'],
+                'physical_type' => $column['physical_type'] ?? null,
+                'quality_json' => isset($column['quality']) ? json_encode($column['quality']) : null,
+                'position' => $index,
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ];
+
+            if (count($payloadChunk) >= $chunkSize) {
+                DatasetColumn::query()->insert($payloadChunk);
+                $payloadChunk = [];
+            }
+        }
+
+        if ($payloadChunk !== []) {
+            DatasetColumn::query()->insert($payloadChunk);
+        }
+    }
+
+    private function insertDatasetRowsInChunks(int $datasetId, array $rows, mixed $timestamp): void
+    {
+        $chunkSize = $this->resolveChunkSize(
+            'dataset_import.row_insert_chunk_size',
+            self::DEFAULT_ROW_INSERT_CHUNK_SIZE
+        );
+
+        $payloadChunk = [];
+        foreach ($rows as $rowIndex => $row) {
+            $payloadChunk[] = [
+                'dataset_id' => $datasetId,
+                'row_index' => $rowIndex,
+                'values' => json_encode($row),
+                'created_at' => $timestamp,
+                'updated_at' => $timestamp,
+            ];
+
+            if (count($payloadChunk) >= $chunkSize) {
+                DatasetRow::query()->insert($payloadChunk);
+                $payloadChunk = [];
+            }
+        }
+
+        if ($payloadChunk !== []) {
+            DatasetRow::query()->insert($payloadChunk);
+        }
+    }
+
     private function deleteStoredDatasetFile(?string $path): void
     {
         if (!$path) {
@@ -205,5 +254,12 @@ class DatasetImportController extends Controller
 
         return str_contains($message, 'duplicate entry')
             && str_contains($message, 'project_id');
+    }
+
+    private function resolveChunkSize(string $configKey, int $default): int
+    {
+        $configured = (int) config($configKey, $default);
+
+        return $configured > 0 ? $configured : $default;
     }
 }
