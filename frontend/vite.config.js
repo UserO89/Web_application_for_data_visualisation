@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       include: ['tests/**/*.spec.js'],
+      coverage: {
+        exclude: ['src/**/index.js'],
+      },
     },
     server: isDevelopment
       ? {

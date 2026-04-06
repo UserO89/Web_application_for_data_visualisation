@@ -133,4 +133,67 @@ describe('useProjectWorkspace', () => {
     const tableWidthProject2 = Number.parseInt(state.panelStyle('table').width, 10)
     expect(tableWidthProject2).toBe(540)
   })
+
+  it('uses compact stacked layouts on narrow workspaces and switches focus modes', async () => {
+    const { state } = createWorkspaceState('3', 900)
+
+    await state.ensureWorkspaceInitializedForProject()
+
+    expect(state.isCompactWorkspace.value).toBe(true)
+    expect(state.visiblePanelIds.value).toEqual(['table', 'chart', 'stats'])
+    expect(state.panelStyle('table')).toMatchObject({
+      left: '0px',
+      width: '900px',
+    })
+    expect(state.panelStyle('chart')).toMatchObject({
+      left: '0px',
+      width: '900px',
+    })
+
+    state.setViewMode('library')
+    expect(state.visiblePanelIds.value).toEqual(['library'])
+    expect(state.panelStyle('library')).toMatchObject({
+      left: '0px',
+      width: '900px',
+      height: '720px',
+    })
+    expect(state.workspaceHeight.value).toBe(760)
+
+    state.setViewMode('workspace')
+    const compactTableStyle = state.panelStyle('table')
+    state.startDrag('table', { clientX: 10, clientY: 10 })
+    state.startResize('table', 'e', { clientX: 10, clientY: 10 })
+    expect(state.panelStyle('table')).toEqual(compactTableStyle)
+  })
+
+  it('persists custom layouts after drag and resize interactions', async () => {
+    const { state } = createWorkspaceState('4', 1120)
+
+    await state.ensureWorkspaceInitializedForProject()
+    state.attachWorkspaceListeners()
+
+    const initialStats = state.panelStyle('stats')
+    state.startDrag('stats', { clientX: 20, clientY: 20 })
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 70, clientY: 80 }))
+    window.dispatchEvent(new MouseEvent('mouseup'))
+
+    const draggedStats = state.panelStyle('stats')
+    expect(Number.parseInt(draggedStats.top, 10)).toBeGreaterThan(Number.parseInt(initialStats.top, 10))
+
+    state.startResize('stats', 's', { clientX: 0, clientY: 0 })
+    window.dispatchEvent(new MouseEvent('mousemove', { clientX: 0, clientY: 80 }))
+    window.dispatchEvent(new MouseEvent('mouseup'))
+
+    const resizedStats = state.panelStyle('stats')
+    expect(Number.parseInt(resizedStats.height, 10)).toBeGreaterThan(Number.parseInt(draggedStats.height, 10))
+
+    const persisted = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}4`))
+    expect(persisted.preset).toBe('custom')
+    expect(persisted.layouts.stats.h).toBeGreaterThan(0)
+
+    state.detachWorkspaceListeners()
+    state.resetWorkspaceRouteState()
+    expect(state.viewMode.value).toBe('workspace')
+    expect(state.panelStyle('table')).toEqual({})
+  })
 })
