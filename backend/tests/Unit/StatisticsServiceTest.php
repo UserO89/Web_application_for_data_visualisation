@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\User;
 use App\Services\StatisticsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class StatisticsServiceTest extends TestCase
@@ -188,6 +189,31 @@ class StatisticsServiceTest extends TestCase
         $this->assertSame(3, $statistics[0]['statistics']['count']);
         $this->assertEquals($statistics, $dataset->fresh()->statistics_json);
         $this->assertNotNull($dataset->fresh()->statistics_generated_at);
+    }
+
+    public function test_build_and_persist_returns_statistics_without_cache_write_when_cache_columns_are_missing(): void
+    {
+        $dataset = $this->createDatasetWithSingleColumn(
+            semanticType: 'metric',
+            physicalType: 'number',
+            analyticalRole: 'measure',
+            values: [10, 20, 30]
+        );
+
+        Schema::shouldReceive('hasColumns')
+            ->once()
+            ->with('datasets', ['statistics_json', 'statistics_generated_at'])
+            ->andReturn(false);
+
+        /** @var StatisticsService $service */
+        $service = app(StatisticsService::class);
+        $statistics = $service->buildAndPersist($dataset);
+
+        $this->assertCount(1, $statistics);
+        $this->assertSame('Value', $statistics[0]['column']);
+        $this->assertSame(3, $statistics[0]['statistics']['count']);
+        $this->assertNull($dataset->fresh()->statistics_json);
+        $this->assertNull($dataset->fresh()->statistics_generated_at);
     }
 
     private function createDatasetWithSingleColumn(

@@ -5,7 +5,6 @@
         <div class="section-title">Create Visualization</div>
         <div class="section-subtitle">Choose columns first, then chart-specific options.</div>
       </div>
-      <button type="button" class="btn primary" :disabled="!canBuild" @click="emitBuild">Build Chart</button>
     </div>
 
     <div class="chart-builder-grid">

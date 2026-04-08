@@ -92,7 +92,6 @@
         @update-chart-definition="handleChartDefinitionUpdate"
         @build-chart="handleBuildChart"
         @save-chart="saveCurrentChart"
-        @clear-chart="clearChart"
         @set-series-color="handleSetSeriesColor"
         @reset-series-colors="resetSeriesColors"
         @change-semantic="handleSemanticTypeChange"
@@ -934,7 +933,7 @@ export default {
       addManualColumn, removeManualColumn, addManualRow, removeManualRow, handleManualImport, handleCellEdit,
       handleSemanticTypeChange, handleOrdinalOrderChange,
       loadSavedCharts, saveCurrentChart, renameSavedChart, downloadSavedChart, deleteSavedChart,
-      clearChart, refreshData, exportTableCsv,
+      refreshData, exportTableCsv,
     }
   },
 }

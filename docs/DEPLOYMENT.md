@@ -104,6 +104,8 @@ Deploy `frontend/dist/*` to your SPA host/web root (for `app.your-domain.com`).
   - Check `SANCTUM_STATEFUL_DOMAINS`, `SESSION_DOMAIN`, `SESSION_SECURE_COOKIE`, and HTTPS.
 - CORS errors:
   - Check `CORS_ALLOWED_ORIGINS` includes the exact SPA origin.
+- `SQLSTATE[42S22] Unknown column 'statistics_json' in 'field list'`:
+  - New backend code is running against an older database schema. Run `php artisan migrate --force` on the deployed backend.
 - Missing images/files:
   - Re-run `php artisan storage:link` and verify web server can follow symlink.
 - Env changes not applied:

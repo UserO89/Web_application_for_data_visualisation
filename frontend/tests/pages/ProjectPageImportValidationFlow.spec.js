@@ -264,7 +264,6 @@ const ProjectWorkspaceCanvasStub = defineComponent({
     'update-chart-definition',
     'build-chart',
     'save-chart',
-    'clear-chart',
     'set-series-color',
     'reset-series-colors',
     'change-semantic',

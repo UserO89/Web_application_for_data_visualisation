@@ -14,10 +14,24 @@
 
     <div class="chart-footer">
       <div style="color: var(--muted); font-size: 13px;">Hover over the chart for details.</div>
-      <div style="display: flex; gap: 8px;">
+      <div class="chart-footer-actions">
+        <details v-if="quickActions.length" class="chart-quick-actions">
+          <summary class="btn chart-quick-actions-toggle">Quick Actions</summary>
+          <div class="chart-quick-actions-menu">
+            <button
+              v-for="action in quickActions"
+              :key="action.id"
+              type="button"
+              class="chart-quick-actions-item"
+              @click="emitQuickAction(action, $event)"
+            >
+              {{ action.label }}
+            </button>
+          </div>
+        </details>
         <button v-if="allowSave" class="btn" type="button" :disabled="!hasRenderableData" @click="$emit('save')">Save Chart</button>
         <button v-if="allowExport" class="btn" type="button" @click="exportPNG">Export PNG</button>
-        <button v-if="allowClear" class="btn" @click="$emit('clear')">Clear</button>
+        <button v-if="allowBuild" class="btn primary" type="button" :disabled="buildDisabled" @click="$emit('build')">Build Chart</button>
       </div>
     </div>
   </div>
@@ -39,10 +53,12 @@ export default {
     embedded: { type: Boolean, default: false },
     allowSave: { type: Boolean, default: false },
     allowExport: { type: Boolean, default: true },
-    allowClear: { type: Boolean, default: true },
+    allowBuild: { type: Boolean, default: false },
+    buildDisabled: { type: Boolean, default: false },
+    quickActions: { type: Array, default: () => [] },
   },
-  emits: ['clear', 'save'],
-  setup(props) {
+  emits: ['build', 'quick-action', 'save'],
+  setup(props, { emit }) {
     const chartRef = ref(null)
 
     const chartDefinition = computed(() => ({
@@ -84,7 +100,12 @@ export default {
       chartRef.value?.exportPng?.('chart.png')
     }
 
-    return { chartRef, chartOption, hasRenderableData, exportPNG }
+    const emitQuickAction = (action, event) => {
+      event?.currentTarget?.closest('details')?.removeAttribute('open')
+      emit('quick-action', action)
+    }
+
+    return { chartRef, chartOption, hasRenderableData, exportPNG, emitQuickAction }
   },
 }
 </script>
@@ -113,5 +134,57 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
+}
+.chart-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.chart-quick-actions {
+  position: relative;
+}
+.chart-quick-actions-toggle {
+  list-style: none;
+}
+.chart-quick-actions-toggle::-webkit-details-marker {
+  display: none;
+}
+.chart-quick-actions[open] .chart-quick-actions-toggle {
+  border-color: rgba(29, 185, 84, 0.5);
+  color: #dfffea;
+}
+.chart-quick-actions-menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: min(360px, 72vw);
+  max-height: 260px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #151515;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.34);
+  z-index: 10;
+}
+.chart-quick-actions-item {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: var(--text);
+  padding: 8px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.chart-quick-actions-item:hover {
+  border-color: rgba(29, 185, 84, 0.45);
+  background: #1e1e1e;
 }
 </style>

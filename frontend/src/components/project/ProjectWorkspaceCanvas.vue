@@ -63,34 +63,16 @@
                 :datasets="chartDatasets"
                 :meta="chartMeta"
                 :type="chartType"
+                :quick-actions="quickActions"
+                :allow-build="true"
+                :build-disabled="!canBuildChart"
                 :allow-save="!readOnly"
-                @clear="$emit('clear-chart')"
+                @build="emitBuildChart"
+                @quick-action="handleQuickChartAction"
                 @save="$emit('save-chart')"
               />
             </div>
             <div class="chart-tools">
-              <div class="analysis-state-card">
-                <div class="analysis-state-head">
-                  <div class="analysis-title">Chart data</div>
-                  <button
-                    class="btn"
-                    type="button"
-                    :disabled="analysisRowsLoading"
-                    @click="$emit('load-analysis-rows')"
-                  >
-                    {{ analysisRowsLoading ? 'Loading full dataset...' : (analysisRowsReady ? 'Reload full dataset' : 'Load full dataset') }}
-                  </button>
-                </div>
-                <div v-if="analysisRowsError" class="analysis-state-text analysis-state-error">
-                  {{ analysisRowsError }}
-                </div>
-                <div v-else-if="analysisRowsReady" class="analysis-state-text">
-                  Charts now use the full dataset loaded in the browser.
-                </div>
-                <div v-else class="analysis-state-text">
-                  Full dataset rows are loaded only on demand for chart building.
-                </div>
-              </div>
               <div class="controls">
                 <button class="btn" type="button" @click="$emit('refresh-data')">Refresh Data</button>
                 <button class="btn" type="button" @click="$emit('export-csv')">Export CSV</button>
@@ -214,7 +196,6 @@
                     :meta="savedChart.meta"
                     :type="savedChart.type"
                     :allow-export="false"
-                    :allow-clear="false"
                   />
                 </div>
                 <div class="saved-chart-actions">
@@ -245,6 +226,8 @@ import ChartPanel from './ChartPanel.vue'
 import ChartBuilder from './ChartBuilder.vue'
 import DataTable from './DataTable.vue'
 import StatisticsWorkspace from './StatisticsWorkspace.vue'
+import { getFriendlyBuildHint } from '../../charts/ui/friendlyChartHints'
+import { buildQuickChartActions } from '../../charts/ui/quickChartActions'
 
 const noop = () => {}
 
@@ -303,7 +286,6 @@ export default {
     'set-chart-height',
     'build-chart',
     'save-chart',
-    'clear-chart',
     'set-series-color',
     'reset-series-colors',
     'change-semantic',
@@ -419,6 +401,20 @@ export default {
       get: () => props.chartDefinition,
       set: (value) => emit('update-chart-definition', value),
     })
+    const chartBuildHint = computed(() => getFriendlyBuildHint(props.chartDefinition, props.schemaColumns))
+    const canBuildChart = computed(() => !chartBuildHint.value)
+    const quickActions = computed(() => buildQuickChartActions(props.suggestions, props.schemaColumns))
+
+    const emitBuildChart = () => {
+      if (!canBuildChart.value) return
+      emit('build-chart', chartDefinitionModel.value)
+    }
+
+    const handleQuickChartAction = (action) => {
+      if (!action?.definition) return
+      emit('update-chart-definition', action.definition)
+      emit('build-chart', action.definition)
+    }
 
     onMounted(() => {
       detectLandscapeRequirement()
@@ -449,6 +445,10 @@ export default {
       hasSavedChartTitleChanges,
       saveSavedChartTitle,
       chartDefinitionModel,
+      canBuildChart,
+      quickActions,
+      emitBuildChart,
+      handleQuickChartAction,
     }
   },
 }
@@ -481,26 +481,6 @@ export default {
   padding: 6px;
 }
 .chart-tools { display: flex; flex-direction: column; gap: 10px; }
-.analysis-state-card {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: #171717;
-  padding: 10px;
-}
-.analysis-state-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.analysis-state-text {
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--muted);
-}
-.analysis-state-error {
-  color: #ff9b9b;
-}
 .chart-size-control { color: var(--muted); font-size: 12px; align-self: center; }
 .chart-size-select {
   min-width: 120px;
@@ -642,15 +622,6 @@ export default {
 }
 
 @media (max-width: 760px) {
-  .analysis-state-head {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .analysis-state-head .btn {
-    width: 100%;
-  }
-
   .controls .btn {
     width: 100%;
   }

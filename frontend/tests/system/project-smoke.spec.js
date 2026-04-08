@@ -52,6 +52,6 @@ test('user can register, create a project, import a dataset, review it, and save
   await saveChartButton.click()
 
   await expect(page.getByText('Chart saved to the project library.')).toBeVisible()
-  await expect(page.locator('.library-shell').getByText('Saved Charts')).toBeVisible()
+  await expect(page.locator('.library-shell .saved-chart-card')).toHaveCount(1)
   await expect(page.getByRole('button', { name: /download png/i })).toBeVisible()
 })

@@ -4,9 +4,12 @@ namespace App\Services;
 
 use App\Models\Dataset;
 use App\Models\DatasetRow;
+use Illuminate\Support\Facades\Schema;
 
 class StatisticsService
 {
+    private ?bool $statisticsCacheColumnsAvailable = null;
+
     public function __construct(
         private DatasetSemanticSchemaService $datasetSemanticSchemaService,
         private ValueParsingService $valueParsingService
@@ -25,12 +28,30 @@ class StatisticsService
     {
         $statistics = $this->calculate($dataset);
 
+        if (!$this->canPersistStatisticsCache()) {
+            return $statistics;
+        }
+
         $dataset->forceFill([
             'statistics_json' => $statistics,
             'statistics_generated_at' => now(),
         ])->save();
 
         return $statistics;
+    }
+
+    private function canPersistStatisticsCache(): bool
+    {
+        if ($this->statisticsCacheColumnsAvailable !== null) {
+            return $this->statisticsCacheColumnsAvailable;
+        }
+
+        $this->statisticsCacheColumnsAvailable = Schema::hasColumns('datasets', [
+            'statistics_json',
+            'statistics_generated_at',
+        ]);
+
+        return $this->statisticsCacheColumnsAvailable;
     }
 
     public function calculate(Dataset $dataset): array

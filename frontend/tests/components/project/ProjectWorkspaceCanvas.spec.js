@@ -28,24 +28,31 @@ vi.mock('../../../src/components/project/ChartPanel.vue', async () => {
         embedded: { type: Boolean, default: false },
         allowSave: { type: Boolean, default: false },
         allowExport: { type: Boolean, default: true },
-        allowClear: { type: Boolean, default: true },
+        allowBuild: { type: Boolean, default: false },
+        buildDisabled: { type: Boolean, default: false },
+        quickActions: { type: Array, default: () => [] },
         labels: { type: Array, default: () => [] },
         datasets: { type: Array, default: () => [] },
         meta: { type: Object, default: () => ({}) },
         type: { type: String, default: 'line' },
       },
-      emits: ['clear', 'save'],
+      emits: ['build', 'quick-action', 'save'],
       setup(props, { emit }) {
         return () => h('div', { class: 'chart-panel-stub' }, [
           h('div', { class: 'chart-panel-props' }, JSON.stringify({
             embedded: props.embedded,
             allowSave: props.allowSave,
             allowExport: props.allowExport,
-            allowClear: props.allowClear,
+            allowBuild: props.allowBuild,
+            buildDisabled: props.buildDisabled,
+            quickActions: props.quickActions,
             type: props.type,
           })),
           h('button', { class: 'chart-panel-save', onClick: () => emit('save') }, 'Chart save'),
-          h('button', { class: 'chart-panel-clear', onClick: () => emit('clear') }, 'Chart clear'),
+          props.quickActions.length
+            ? h('button', { class: 'chart-panel-quick-action', onClick: () => emit('quick-action', props.quickActions[0]) }, 'Chart quick action')
+            : null,
+          h('button', { class: 'chart-panel-build', onClick: () => emit('build') }, 'Chart build'),
         ])
       },
     }),
@@ -131,9 +138,31 @@ const buildProps = (overrides = {}) => ({
   chartDatasets: [{ label: 'Revenue', data: [100] }],
   chartMeta: { xAxisLabel: 'Month' },
   chartType: 'line',
-  chartDefinition: { chartType: 'line', bindings: {} },
-  schemaColumns: [{ id: 1, name: 'Month' }],
-  suggestions: [{ id: 's1' }],
+  chartDefinition: {
+    chartType: 'line',
+    bindings: {
+      x: 1,
+      y: { field: 2, aggregation: 'sum' },
+      group: null,
+      value: { field: null, aggregation: 'none' },
+      category: null,
+    },
+  },
+  schemaColumns: [
+    { id: 1, name: 'Month', semanticType: 'temporal' },
+    { id: 2, name: 'Revenue', semanticType: 'metric' },
+    { id: 3, name: 'Region', semanticType: 'nominal' },
+  ],
+  suggestions: [{
+    id: 's1',
+    definition: {
+      chartType: 'bar',
+      bindings: {
+        x: 3,
+        y: { field: 2, aggregation: 'sum' },
+      },
+    },
+  }],
   statisticsSummary: [{ column: 'Revenue' }],
   statisticsLoading: false,
   statisticsError: '',
@@ -207,27 +236,65 @@ describe('ProjectWorkspaceCanvas', () => {
     })
 
     const buttons = wrapper.findAll('button')
-    await buttons.find((button) => button.text() === 'Load full dataset').trigger('click')
     await buttons.find((button) => button.text() === 'Refresh Data').trigger('click')
     await buttons.find((button) => button.text() === 'Export CSV').trigger('click')
     await wrapper.find('select[name="chart_height"]').setValue('520')
     await wrapper.find('.chart-builder-build').trigger('click')
+    await wrapper.find('.chart-panel-quick-action').trigger('click')
+    await wrapper.find('.chart-panel-build').trigger('click')
     await wrapper.find('.chart-builder-update').trigger('click')
     await wrapper.find('.chart-panel-save').trigger('click')
-    await wrapper.find('.chart-panel-clear').trigger('click')
     await buttons.find((button) => button.text() === 'Reset Colors').trigger('click')
 
     const colorInput = wrapper.find('input[type="color"]')
     await colorInput.setValue('#654321')
 
-    expect(wrapper.emitted('load-analysis-rows')).toHaveLength(1)
     expect(wrapper.emitted('refresh-data')).toHaveLength(1)
     expect(wrapper.emitted('export-csv')).toHaveLength(1)
     expect(wrapper.emitted('set-chart-height')).toEqual([['520']])
-    expect(wrapper.emitted('build-chart')).toEqual([[{ source: 'builder' }]])
-    expect(wrapper.emitted('update-chart-definition')).toEqual([[{ chartType: 'bar', bindings: {} }]])
+    expect(wrapper.emitted('build-chart')).toEqual([
+      [{ source: 'builder' }],
+      [{
+        chartType: 'bar',
+        bindings: {
+          x: 3,
+          y: { field: 2, aggregation: 'sum' },
+          group: null,
+          value: { field: null, aggregation: 'none' },
+          category: null,
+        },
+        settings: {},
+        filters: [],
+        sort: null,
+      }],
+      [{
+        chartType: 'line',
+        bindings: {
+          x: 1,
+          y: { field: 2, aggregation: 'sum' },
+          group: null,
+          value: { field: null, aggregation: 'none' },
+          category: null,
+        },
+      }],
+    ])
+    expect(wrapper.emitted('update-chart-definition')).toEqual([
+      [{
+        chartType: 'bar',
+        bindings: {
+          x: 3,
+          y: { field: 2, aggregation: 'sum' },
+          group: null,
+          value: { field: null, aggregation: 'none' },
+          category: null,
+        },
+        settings: {},
+        filters: [],
+        sort: null,
+      }],
+      [{ chartType: 'bar', bindings: {} }],
+    ])
     expect(wrapper.emitted('save-chart')).toHaveLength(1)
-    expect(wrapper.emitted('clear-chart')).toHaveLength(1)
     expect(wrapper.emitted('reset-series-colors')).toHaveLength(1)
     expect(wrapper.emitted('set-series-color')).toEqual([
       [{ label: 'Revenue', index: 0, color: '#654321' }],

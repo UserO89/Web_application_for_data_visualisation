@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       include: ['tests/**/*.spec.js'],
+      exclude: ['tests/system/**'],
       coverage: {
         exclude: ['src/**/index.js'],
       },

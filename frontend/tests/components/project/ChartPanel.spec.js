@@ -40,7 +40,9 @@ const buildProps = (overrides = {}) => ({
   embedded: false,
   allowSave: false,
   allowExport: true,
-  allowClear: true,
+  allowBuild: false,
+  buildDisabled: false,
+  quickActions: [],
   ...overrides,
 })
 
@@ -66,7 +68,7 @@ describe('ChartPanel', () => {
     expect(saveButton.attributes('disabled')).toBeDefined()
   })
 
-  it('builds ECharts options for renderable line data and emits save or clear actions', async () => {
+  it('builds ECharts options for renderable line data and emits save, build, and quick-action events', async () => {
     const builtOption = {
       xAxis: { type: 'category' },
       series: [{ type: 'line', data: [100] }],
@@ -80,6 +82,14 @@ describe('ChartPanel', () => {
         meta: { xAxisLabel: 'Month', yAxisLabel: 'Revenue' },
         type: 'line',
         allowSave: true,
+        allowBuild: true,
+        quickActions: [
+          {
+            id: 'line-0',
+            label: 'Line: Month vs sum(Revenue)',
+            definition: { chartType: 'line', bindings: { x: 1, y: { field: 2, aggregation: 'sum' } } },
+          },
+        ],
       }),
     })
 
@@ -97,9 +107,21 @@ describe('ChartPanel', () => {
     await saveButton.trigger('click')
     expect(wrapper.emitted('save')).toHaveLength(1)
 
-    const clearButton = wrapper.findAll('button').find((button) => button.text() === 'Clear')
-    await clearButton.trigger('click')
-    expect(wrapper.emitted('clear')).toHaveLength(1)
+    const buildButton = wrapper.findAll('button').find((button) => button.text() === 'Build Chart')
+    expect(buildButton.attributes('disabled')).toBeUndefined()
+    await buildButton.trigger('click')
+    expect(wrapper.emitted('build')).toHaveLength(1)
+
+    expect(wrapper.text()).toContain('Quick Actions')
+    const quickActionButton = wrapper.find('.chart-quick-actions-item')
+    await quickActionButton.trigger('click')
+    expect(wrapper.emitted('quick-action')).toEqual([[
+      {
+        id: 'line-0',
+        label: 'Line: Month vs sum(Revenue)',
+        definition: { chartType: 'line', bindings: { x: 1, y: { field: 2, aggregation: 'sum' } } },
+      },
+    ]])
   })
 
   it('treats boxplot values as renderable data and delegates PNG export to BaseEChart', async () => {
@@ -150,5 +172,17 @@ describe('ChartPanel', () => {
 
     const saveButton = wrapper.findAll('button').find((button) => button.text() === 'Save Chart')
     expect(saveButton.attributes('disabled')).toBeUndefined()
+  })
+
+  it('renders a disabled build button when build action is blocked', () => {
+    const wrapper = mount(ChartPanel, {
+      props: buildProps({
+        allowBuild: true,
+        buildDisabled: true,
+      }),
+    })
+
+    const buildButton = wrapper.findAll('button').find((button) => button.text() === 'Build Chart')
+    expect(buildButton.attributes('disabled')).toBeDefined()
   })
 })
