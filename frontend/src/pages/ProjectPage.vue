@@ -1,7 +1,7 @@
 <template>
   <div class="project-page app-content">
-    <div v-if="loading" class="loading panel">Loading...</div>
-    <div v-else-if="!project" class="error panel">{{ projectError || 'Project not found' }}</div>
+    <div v-if="loading" class="loading panel">{{ $t('common.loading') }}</div>
+    <div v-else-if="!project" class="error panel">{{ projectError || $t('project.page.notFound') }}</div>
 
     <ProjectDatasetImportSection
       v-else-if="!project.dataset && !isReadOnly"
@@ -27,12 +27,12 @@
       @change-manual-rows="manualRowsInput = $event"
     />
     <div v-else-if="!project.dataset" class="panel demo-unavailable">
-      Demo dataset is currently unavailable.
+      {{ $t('project.page.demoUnavailable') }}
     </div>
 
     <div v-else>
       <div v-if="isReadOnly" class="panel demo-readonly-banner">
-        Demo mode is public and read-only. You can view data and build charts, but table edits are disabled.
+        {{ $t('project.page.demoReadonlyBanner') }}
       </div>
 
       <ProjectPageToolbar
@@ -119,6 +119,7 @@
 
 <script>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { ProjectDatasetImportSection, ProjectValidationModal, ProjectPageToolbar, ProjectWorkspaceCanvas, } from '../components/project'
 import { projectsApi } from '../api/projects'
@@ -146,6 +147,7 @@ export default {
     ProjectWorkspaceCanvas,
   },
   setup(props) {
+    const { t } = useI18n({ useScope: 'global' })
     const route = useRoute()
     const router = useRouter()
     const isReadOnly = computed(() => props.mode === 'demo')
@@ -153,7 +155,9 @@ export default {
       isReadOnly.value ? 'demo' : String(route.params.id)
     ))
     const projectApi = computed(() => (isReadOnly.value ? demoProjectsApi : projectsApi))
-    const backButtonLabel = computed(() => (isReadOnly.value ? '<- Back to Home' : '<- Back to Projects'))
+    const backButtonLabel = computed(() => (
+      isReadOnly.value ? t('project.page.backToHome') : t('project.page.backToProjects')
+    ))
     const handleBack = () => {
       router.push(isReadOnly.value ? { name: 'home' } : { name: 'projects' })
     }
@@ -269,7 +273,7 @@ export default {
       ...panelConfig,
       table: {
         ...(panelConfig.table || {}),
-        subtitle: isReadOnly.value ? 'Read-only demo' : 'Editable',
+        subtitle: isReadOnly.value ? t('project.page.readOnlyDemo') : t('project.page.editable'),
       },
     }))
 
@@ -346,7 +350,7 @@ export default {
     }
 
     const buildSavedChartTitle = (type) =>
-      `${String(type || 'chart').toUpperCase()} ${new Date().toLocaleString()}`
+      `${String(type || t('project.page.chartTitlePrefix')).toUpperCase()} ${new Date().toLocaleString()}`
 
     const setWorkspaceCanvasRef = (element) => {
       workspaceRef.value = element
@@ -408,12 +412,12 @@ export default {
 
     const saveCurrentChart = async () => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Saving charts is disabled.')
+        notify.info(t('project.page.readOnly.saveChartsDisabled'))
         return
       }
 
       if (!chartDatasets.value.length) {
-        notify.warning('Build a chart before saving it to the project library.')
+        notify.warning(t('project.page.charts.buildBeforeSaving'))
         return
       }
 
@@ -433,9 +437,9 @@ export default {
         })
         await loadSavedCharts()
         setViewMode('library')
-        notify.success('Chart saved to the project library.')
+        notify.success(t('project.page.charts.saved'))
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to save chart.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.charts.saveFailed')))
       }
     }
 
@@ -444,19 +448,19 @@ export default {
       try {
         await downloadSavedChartPng(savedChart, savedChart.title || `chart-${savedChart.id}`)
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to download chart PNG.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.charts.downloadFailed')))
       }
     }
 
     const renameSavedChart = async ({ chartId, title }) => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Renaming is disabled.')
+        notify.info(t('project.page.readOnly.renamingDisabled'))
         return
       }
       if (!chartId) return
       const nextTitle = String(title || '').trim()
       if (!nextTitle) {
-        notify.warning('Chart name cannot be empty.')
+        notify.warning(t('project.page.charts.nameCannotBeEmpty'))
         return
       }
 
@@ -475,27 +479,27 @@ export default {
               }
             : chart
         )
-        notify.success('Chart renamed successfully.')
+        notify.success(t('project.page.charts.renamed'))
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to rename chart.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.charts.renameFailed')))
       }
     }
 
     const deleteSavedChart = async (savedChartId) => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Deleting is disabled.')
+        notify.info(t('project.page.readOnly.deletingDisabled'))
         return
       }
       if (!savedChartId) return
-      const confirmed = window.confirm('Delete this saved chart from the project library?')
+      const confirmed = window.confirm(t('project.page.charts.deleteConfirm'))
       if (!confirmed) return
 
       try {
         await projectsApi.deleteSavedChart(projectId.value, savedChartId)
         await loadSavedCharts()
-        notify.success('Saved chart deleted.')
+        notify.success(t('project.page.charts.deleted'))
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to delete chart.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.charts.deleteFailed')))
       }
     }
 
@@ -631,7 +635,7 @@ export default {
       setValidationReport(response?.validation || null)
       await loadProjectPage()
       openValidationModal()
-      notify.success('Dataset imported successfully.')
+      notify.success(t('project.page.dataset.imported'))
     }
 
     const applyImportValidationError = (error) => {
@@ -640,17 +644,17 @@ export default {
       setValidationReport(validation)
       openValidationModal()
       const validationMessage = validation?.blocking_error?.message
-      notify.warning(validationMessage || 'Import completed with validation issues. Please review the report.')
+      notify.warning(validationMessage || t('project.page.dataset.importValidationIssues'))
       return true
     }
 
     const handleImport = async () => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Import is disabled.')
+        notify.info(t('project.page.readOnly.importDisabled'))
         return
       }
       if (!selectedFile.value) {
-        notify.warning('Choose a file before importing.')
+        notify.warning(t('project.page.dataset.chooseFile'))
         return
       }
       importing.value = true
@@ -660,7 +664,7 @@ export default {
         await afterDatasetImport(response)
       } catch (e) {
         if (!applyImportValidationError(e)) {
-          notify.error(extractApiErrorMessage(e, 'Import failed.'))
+          notify.error(extractApiErrorMessage(e, t('project.page.dataset.importFailed')))
         }
       } finally {
         importing.value = false
@@ -669,7 +673,7 @@ export default {
 
     const handleManualImport = async () => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Import is disabled.')
+        notify.info(t('project.page.readOnly.importDisabled'))
         return
       }
       const file = prepareManualImportFile()
@@ -683,7 +687,7 @@ export default {
         if (applyImportValidationError(e)) {
           manualError.value = ''
         } else {
-          manualError.value = extractApiErrorMessage(e, 'Failed to create table from manual data.')
+          manualError.value = extractApiErrorMessage(e, t('project.page.dataset.manualImportFailed'))
           notify.error(manualError.value)
         }
       } finally {
@@ -693,14 +697,14 @@ export default {
 
     const handleCellEdit = async (data) => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Table edits are disabled.')
+        notify.info(t('project.page.readOnly.tableEditsDisabled'))
         return
       }
       try {
         const values = buildRowUpdateValues(data.row, sortedDatasetColumns.value)
         await projectsApi.updateRow(projectId.value, data.row.id, values)
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to save row changes.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.dataset.rowSaveFailed')))
       }
     }
 
@@ -713,7 +717,7 @@ export default {
 
     const handleSemanticTypeChange = async ({ columnId, semanticType, analyticalRole, isExcludedFromAnalysis }) => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Semantic edits are disabled.')
+        notify.info(t('project.page.readOnly.semanticEditsDisabled'))
         return
       }
       try {
@@ -724,13 +728,13 @@ export default {
         })
         await refreshDerivedData()
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to update semantic type.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.schema.semanticUpdateFailed')))
       }
     }
 
     const handleOrdinalOrderChange = async ({ columnId, ordinalOrder }) => {
       if (isReadOnly.value) {
-        notify.info('Demo mode is read-only. Ordinal edits are disabled.')
+        notify.info(t('project.page.readOnly.ordinalEditsDisabled'))
         return
       }
       if (!Array.isArray(ordinalOrder) || ordinalOrder.length < 2) return
@@ -738,13 +742,13 @@ export default {
         await schemaStore.setOrdinalOrder(projectId.value, columnId, ordinalOrder)
         await refreshDerivedData()
       } catch (e) {
-        notify.error(extractApiErrorMessage(e, 'Failed to update ordinal order.'))
+        notify.error(extractApiErrorMessage(e, t('project.page.schema.ordinalUpdateFailed')))
       }
     }
 
     const exportTableCsv = () => {
       if (!tableColumns.value.length || !tableRows.value.length) {
-        notify.info('No table data to export.')
+        notify.info(t('project.page.dataset.noTableData'))
         return
       }
 

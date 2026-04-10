@@ -2,6 +2,8 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { vi } from 'vitest'
 import ProjectPage from '../../src/pages/ProjectPage.vue'
+import i18n from '../../src/i18n'
+import { withI18n } from '../support/i18n'
 
 const mockRouteState = vi.hoisted(() => ({
   id: '1',
@@ -251,7 +253,7 @@ const ProjectValidationModalStub = defineComponent({
 })
 
 const mountPage = (props = {}) =>
-  mount(ProjectPage, {
+  mount(ProjectPage, withI18n({
     props,
     global: {
       stubs: {
@@ -261,7 +263,7 @@ const mountPage = (props = {}) =>
         ProjectValidationModal: ProjectValidationModalStub,
       },
     },
-  })
+  }))
 
 describe('ProjectPage actions', () => {
   beforeEach(() => {
@@ -405,7 +407,7 @@ describe('ProjectPage actions', () => {
     await flushPromises()
 
     await wrapper.vm.saveCurrentChart()
-    expect(mockNotifications.warning).toHaveBeenCalledWith('Build a chart before saving it to the project library.')
+    expect(mockNotifications.warning).toHaveBeenCalledWith(i18n.global.t('project.page.charts.buildBeforeSaving'))
 
     mockProjectState.chartLabels = ['Jan']
     mockProjectState.chartDatasets = [{ label: 'Revenue', data: [100] }]
@@ -430,7 +432,7 @@ describe('ProjectPage actions', () => {
     }))
     expect(mockProjectsApi.listSavedCharts).toHaveBeenCalledWith('1')
     expect(mockProjectWorkspace.setViewMode).toHaveBeenCalledWith('library')
-    expect(mockNotifications.success).toHaveBeenCalledWith('Chart saved to the project library.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('project.page.charts.saved'))
   })
 
   it('updates rows and schema semantics, then refreshes derived analytics', async () => {
@@ -519,14 +521,14 @@ describe('ProjectPage actions', () => {
     expect(mockProjectsApi.updateSavedChart).toHaveBeenCalledWith('1', 9, {
       title: 'Revenue Trend',
     })
-    expect(confirmSpy).toHaveBeenCalledWith('Delete this saved chart from the project library?')
+    expect(confirmSpy).toHaveBeenCalledWith(i18n.global.t('project.page.charts.deleteConfirm'))
     expect(mockProjectsApi.deleteSavedChart).toHaveBeenCalledWith('1', 9)
     expect(createObjectURLSpy).toHaveBeenCalledTimes(1)
     expect(anchor.download).toBe('Analytics-table.csv')
     expect(anchor.click).toHaveBeenCalledTimes(1)
     expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:table')
-    expect(mockNotifications.success).toHaveBeenCalledWith('Chart renamed successfully.')
-    expect(mockNotifications.success).toHaveBeenCalledWith('Saved chart deleted.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('project.page.charts.renamed'))
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('project.page.charts.deleted'))
 
     createElementSpy.mockRestore()
   })
@@ -558,11 +560,11 @@ describe('ProjectPage actions', () => {
     expect(mockRouter.push).toHaveBeenCalledWith({ name: 'home' })
     expect(mockRouter.push).toHaveBeenCalledWith({ name: 'project-demo' })
     expect(mockProjectsApi.listSavedCharts).not.toHaveBeenCalled()
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Saving charts is disabled.')
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Table edits are disabled.')
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Semantic edits are disabled.')
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Ordinal edits are disabled.')
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Renaming is disabled.')
-    expect(mockNotifications.info).toHaveBeenCalledWith('Demo mode is read-only. Deleting is disabled.')
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.saveChartsDisabled'))
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.tableEditsDisabled'))
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.semanticEditsDisabled'))
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.ordinalEditsDisabled'))
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.renamingDisabled'))
+    expect(mockNotifications.info).toHaveBeenCalledWith(i18n.global.t('project.page.readOnly.deletingDisabled'))
   })
 })

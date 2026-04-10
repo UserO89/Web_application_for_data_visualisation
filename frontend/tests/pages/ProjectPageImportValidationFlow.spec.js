@@ -2,6 +2,8 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import { vi } from 'vitest'
 import ProjectPage from '../../src/pages/ProjectPage.vue'
+import i18n from '../../src/i18n'
+import { withI18n } from '../support/i18n'
 
 const mockRouteState = vi.hoisted(() => ({
   id: '1',
@@ -293,7 +295,7 @@ const ProjectValidationModalStub = defineComponent({
 })
 
 const mountPage = () =>
-  mount(ProjectPage, {
+  mount(ProjectPage, withI18n({
     global: {
       stubs: {
         ProjectDatasetImportSection: ProjectDatasetImportSectionStub,
@@ -302,7 +304,7 @@ const mountPage = () =>
         ProjectValidationModal: ProjectValidationModalStub,
       },
     },
-  })
+  }))
 
 describe('ProjectPage import and validation flow', () => {
   beforeEach(() => {
@@ -421,7 +423,7 @@ describe('ProjectPage import and validation flow', () => {
     })
     expect(mockValidationReport.setValidationReport).toHaveBeenCalledWith(validation)
     expect(mockValidationReport.openValidationModal).toHaveBeenCalledTimes(1)
-    expect(mockNotifications.success).toHaveBeenCalledWith('Dataset imported successfully.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('project.page.dataset.imported'))
   })
 
   it('shows the validation report when file import returns validation issues', async () => {
@@ -484,7 +486,7 @@ describe('ProjectPage import and validation flow', () => {
       delimiter: ',',
     })
     expect(mockValidationReport.setValidationReport).toHaveBeenCalledWith(validation)
-    expect(mockNotifications.success).toHaveBeenCalledWith('Dataset imported successfully.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('project.page.dataset.imported'))
   })
 
   it('forwards toolbar and workspace events through the page orchestration layer', async () => {
