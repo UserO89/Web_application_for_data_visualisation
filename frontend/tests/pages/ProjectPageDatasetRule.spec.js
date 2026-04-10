@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import ProjectPage from '../../src/pages/ProjectPage.vue'
+import { withI18n } from '../support/i18n'
 
 const mockRouteState = vi.hoisted(() => ({
   id: '1',
@@ -150,7 +151,7 @@ vi.mock('../../src/composables/project', async () => {
 })
 
 const mountPage = () =>
-  mount(ProjectPage, {
+  mount(ProjectPage, withI18n({
     global: {
       stubs: {
         ProjectDatasetImportSection: { template: '<section data-test="import-section" />' },
@@ -164,7 +165,7 @@ const mountPage = () =>
         },
       },
     },
-  })
+  }))
 
 describe('ProjectPage dataset architecture rule', () => {
   beforeEach(() => {

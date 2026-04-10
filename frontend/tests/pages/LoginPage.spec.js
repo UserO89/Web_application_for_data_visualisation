@@ -68,7 +68,7 @@ describe('LoginPage', () => {
   it('switches to register mode and submits the full registration form', async () => {
     const wrapper = mountPage()
 
-    await wrapper.get('button[type="button"]').trigger('click')
+    await wrapper.findAll('button[type="button"]').at(-1).trigger('click')
     await wrapper.get('input[name="name"]').setValue('Jane Doe')
     await wrapper.get('input[name="email"]').setValue('jane@example.com')
     await wrapper.get('input[name="password"]').setValue('secret123')
