@@ -8,41 +8,48 @@
       <div class="brand" style="margin-bottom: 24px;">
         <div class="logo">DV</div>
         <div>
-          <div class="title">DataViz Studio</div>
-          <div class="subtitle">Log in or register</div>
+          <div class="title">{{ $t('common.studioName') }}</div>
+          <div class="subtitle">{{ $t('auth.subtitle') }}</div>
         </div>
       </div>
 
       <form @submit.prevent="handleSubmit" class="login-form">
         <div v-if="isRegister" class="form-group">
-          <label for="auth-name">Name</label>
-          <input id="auth-name" v-model="form.name" name="name" type="text" placeholder="Your name" required />
+          <label for="auth-name">{{ $t('auth.name') }}</label>
+          <input
+            id="auth-name"
+            v-model="form.name"
+            name="name"
+            type="text"
+            :placeholder="$t('auth.namePlaceholder')"
+            required
+          />
         </div>
         <div class="form-group">
-          <label for="auth-email">Email</label>
+          <label for="auth-email">{{ $t('auth.email') }}</label>
           <input
             id="auth-email"
             v-model="form.email"
             name="email"
             type="email"
-            placeholder="your@email.com"
+            :placeholder="$t('auth.emailPlaceholder')"
             required
           />
         </div>
         <div class="form-group">
-          <label for="auth-password">Password</label>
+          <label for="auth-password">{{ $t('auth.password') }}</label>
           <input
             id="auth-password"
             v-model="form.password"
             name="password"
             type="password"
-            placeholder="Password"
+            :placeholder="$t('auth.passwordPlaceholder')"
             required
             minlength="8"
           />
         </div>
         <button type="submit" :disabled="authStore.loading" class="btn primary" style="width: 100%; padding: 12px;">
-          {{ isRegister ? 'Register' : 'Log in' }}
+          {{ isRegister ? $t('auth.register') : $t('auth.login') }}
         </button>
         <button
           type="button"
@@ -50,7 +57,7 @@
           class="btn"
           style="width: 100%; margin-top: 8px;"
         >
-          {{ isRegister ? 'Already have an account? Log in' : "Don't have an account? Register" }}
+          {{ isRegister ? $t('auth.switchToLogin') : $t('auth.switchToRegister') }}
         </button>
       </form>
 
@@ -61,6 +68,7 @@
 
 <script>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useNotifications } from '../composables/useNotifications'
@@ -71,6 +79,7 @@ export default {
   name: 'LoginPage',
   components: { LanguageSwitcher },
   setup() {
+    const { t } = useI18n({ useScope: 'global' })
     const router = useRouter()
     const authStore = useAuthStore()
     const notify = useNotifications()
@@ -88,17 +97,17 @@ export default {
       try {
         if (isRegister.value) {
           await authStore.register(form.value)
-          notify.success('Registration successful. Welcome!')
+          notify.success(t('auth.registerSuccess'))
         } else {
           await authStore.login({
             email: form.value.email,
             password: form.value.password,
           })
-          notify.success('Logged in successfully.')
+          notify.success(t('auth.loginSuccess'))
         }
         router.push({ name: 'projects' })
       } catch (err) {
-        error.value = extractApiErrorMessage(err, 'Authentication failed. Please try again.')
+        error.value = extractApiErrorMessage(err, t('auth.failure'))
         notify.error(error.value)
       }
     }
