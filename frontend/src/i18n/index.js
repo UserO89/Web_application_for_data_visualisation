@@ -1,4 +1,8 @@
 import { createI18n } from 'vue-i18n'
+import en from './locales/en.json'
+import sk from './locales/sk.json'
+import ru from './locales/ru.json'
+import uk from './locales/uk.json'
 import {
   FALLBACK_LOCALE,
   getLocaleDefinition,
@@ -8,12 +12,19 @@ import {
   SUPPORTED_LOCALES,
 } from './config'
 
+const messages = {
+  en,
+  sk,
+  ru,
+  uk,
+}
+
 const i18n = createI18n({
   legacy: false,
   locale: resolveInitialLocale(),
   fallbackLocale: FALLBACK_LOCALE,
   globalInjection: true,
-  messages: {},
+  messages,
 })
 
 function syncDocumentLanguage(localeCode) {

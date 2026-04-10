@@ -1,0 +1,130 @@
+{
+  "languages": {
+    "en": "Angliyskiy",
+    "sk": "Slovatskiy",
+    "ru": "Russkiy",
+    "uk": "Ukrainskiy"
+  },
+  "common": {
+    "appName": "DataViz",
+    "studioName": "DataViz Studio",
+    "language": "Yazyk",
+    "user": "Polzovatel",
+    "loading": "Zagruzka...",
+    "cancel": "Otmena",
+    "create": "Sozdat",
+    "edit": "Redaktirovat",
+    "delete": "Udalit",
+    "saveChanges": "Sohranit izmeneniya"
+  },
+  "nav": {
+    "home": "Glavnaya",
+    "projects": "Proekty",
+    "openProjects": "Otkryt proekty",
+    "loadingProjects": "Zagruzka proektov...",
+    "noProjects": "Poka net proektov.",
+    "login": "Voyti",
+    "logout": "Vyiti",
+    "logoutSuccess": "Vyhod vypolnen uspeshno.",
+    "logoutFailed": "Ne udalos vyiti.",
+    "profile": "Profil",
+    "admin": "Administrirovanie",
+    "toggleNavigation": "Pereklyuchit menyu navigatsii",
+    "avatarAlt": "avatar",
+    "projectFallback": "Proekt #{id}"
+  },
+  "auth": {
+    "subtitle": "Voyti ili zaregistrirovatsya",
+    "name": "Imya",
+    "namePlaceholder": "Vashe imya",
+    "email": "El. pochta",
+    "emailPlaceholder": "you@email.com",
+    "password": "Parol",
+    "passwordPlaceholder": "Parol",
+    "login": "Voyti",
+    "register": "Zaregistrirovatsya",
+    "switchToLogin": "Uzhe est akkaunt? Voyti",
+    "switchToRegister": "Net akkaunta? Zaregistrirovatsya",
+    "registerSuccess": "Registratsiya proshla uspeshno. Dobro pozhalovat!",
+    "loginSuccess": "Vhod vypolnen uspeshno.",
+    "failure": "Ne udalos vypolnit autentifikatsiyu. Povtorite popytku."
+  },
+  "projects": {
+    "title": "Moi proekty",
+    "newProject": "+ Novyi proekt",
+    "empty": "Poka net proektov. Sozdaite pervyi proekt.",
+    "withData": "S dannymi",
+    "withoutData": "Bez dannyh",
+    "deleting": "Udalenie...",
+    "editProject": "Redaktirovat proekt",
+    "createProject": "Sozdat proekt",
+    "projectTitle": "Nazvanie",
+    "projectDescription": "Opisanie (neobyazatelno)",
+    "titleRequired": "Nazvanie proekta obyazatelno.",
+    "updated": "Proekt uspeshno obnovlen.",
+    "created": "Proekt uspeshno sozdan.",
+    "saveFailed": "Ne udalos sohranit proekt.",
+    "deleteConfirm": "Udalit proekt \"{title}\"?",
+    "deleted": "Proekt uspeshno udalen.",
+    "deleteFailed": "Ne udalos udalit proekt."
+  },
+  "project": {
+    "page": {
+      "backToHome": "<- Nazad na glavnuyu",
+      "backToProjects": "<- Nazad k proektam",
+      "demoUnavailable": "Demo-nabor dannyh seychas nedostupen.",
+      "demoReadonlyBanner": "Demo-rezhim publichnyy i dostupen tolko dlya chteniya. Vy mozhete prosmatrivat dannye i stroit grafiki, no redaktirovanie tablicy otklyucheno.",
+      "readOnlyDemo": "Demo tolko dlya chteniya",
+      "editable": "Redaktiruemo",
+      "notFound": "Proekt ne nayden",
+      "chartTitlePrefix": "Grafik",
+      "readOnly": {
+        "saveChartsDisabled": "Demo-rezhim tolko dlya chteniya. Sohranenie grafikov otklyucheno.",
+        "importDisabled": "Demo-rezhim tolko dlya chteniya. Import otklyuchen.",
+        "tableEditsDisabled": "Demo-rezhim tolko dlya chteniya. Redaktirovanie tablicy otklyucheno.",
+        "semanticEditsDisabled": "Demo-rezhim tolko dlya chteniya. Semanticheskie izmeneniya otklyucheny.",
+        "ordinalEditsDisabled": "Demo-rezhim tolko dlya chteniya. Izmenenie poryadkovoy posledovatelnosti otklyucheno.",
+        "renamingDisabled": "Demo-rezhim tolko dlya chteniya. Pereimenovanie otklyucheno.",
+        "deletingDisabled": "Demo-rezhim tolko dlya chteniya. Udalenie otklyucheno."
+      },
+      "charts": {
+        "buildBeforeSaving": "Postroyte grafik pered sohraneniem v biblioteku proekta.",
+        "saved": "Grafik sohranen v biblioteku proekta.",
+        "saveFailed": "Ne udalos sohranit grafik.",
+        "downloadFailed": "Ne udalos skachat PNG grafika.",
+        "nameCannotBeEmpty": "Nazvanie grafika ne mozhet byt pustym.",
+        "renamed": "Grafik uspeshno pereimenovan.",
+        "renameFailed": "Ne udalos pereimenovat grafik.",
+        "deleteConfirm": "Udalit etot sohranennyy grafik iz biblioteki proekta?",
+        "deleted": "Sokhranennyy grafik udalen.",
+        "deleteFailed": "Ne udalos udalit grafik."
+      },
+      "dataset": {
+        "imported": "Nabor dannyh uspeshno importirovan.",
+        "importValidationIssues": "Import zavershen s oshibkami validatsii. Proverte otchet.",
+        "chooseFile": "Vyberite fayl pered importom.",
+        "importFailed": "Import ne vypolnen.",
+        "manualImportFailed": "Ne udalos sozdat tablicu iz vvedennyh vruchnuyu dannyh.",
+        "rowSaveFailed": "Ne udalos sohranit izmeneniya stroki.",
+        "noTableData": "Net tablichnyh dannyh dlya eksporta."
+      },
+      "schema": {
+        "semanticUpdateFailed": "Ne udalos obnovit semanticheskiy tip.",
+        "ordinalUpdateFailed": "Ne udalos obnovit poryadkovuyu posledovatelnost."
+      }
+    },
+    "toolbar": {
+      "table": "Tablitsa",
+      "visualization": "Vizualizatsiya",
+      "statistics": "Statistika",
+      "workspace": "Rabochaya oblast",
+      "savedCharts": "Sohranennye grafiki",
+      "importReview": "Proverka importa"
+    }
+  },
+  "errors": {
+    "requestFailed": "Zapros zavershilsya oshibkoy.",
+    "sessionExpired": "Sessiya istekla ili CSRF-token nedeystvitelen. Povtorite popytku.",
+    "networkUnavailable": "Ne udaetsya podklyuchitsya k API. Proverte set i backend-server."
+  }
+}

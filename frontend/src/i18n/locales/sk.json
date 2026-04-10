@@ -1,0 +1,130 @@
+{
+  "languages": {
+    "en": "Anglictina",
+    "sk": "Slovencina",
+    "ru": "Rustina",
+    "uk": "Ukrajincina"
+  },
+  "common": {
+    "appName": "DataViz",
+    "studioName": "DataViz Studio",
+    "language": "Jazyk",
+    "user": "Pouzivatel",
+    "loading": "Nacitava sa...",
+    "cancel": "Zrusit",
+    "create": "Vytvorit",
+    "edit": "Upravit",
+    "delete": "Odstranit",
+    "saveChanges": "Ulozit zmeny"
+  },
+  "nav": {
+    "home": "Domov",
+    "projects": "Projekty",
+    "openProjects": "Otvorit projekty",
+    "loadingProjects": "Nacitavaju sa projekty...",
+    "noProjects": "Zatial ziadne projekty.",
+    "login": "Prihlasit sa",
+    "logout": "Odhlasit sa",
+    "logoutSuccess": "Odhlasenie bolo uspesne.",
+    "logoutFailed": "Nepodarilo sa odhlasit.",
+    "profile": "Profil",
+    "admin": "Administracia",
+    "toggleNavigation": "Prepnut navigacne menu",
+    "avatarAlt": "avatar",
+    "projectFallback": "Projekt c. {id}"
+  },
+  "auth": {
+    "subtitle": "Prihlaste sa alebo sa zaregistrujte",
+    "name": "Meno",
+    "namePlaceholder": "Vase meno",
+    "email": "E-mail",
+    "emailPlaceholder": "vas@email.com",
+    "password": "Heslo",
+    "passwordPlaceholder": "Heslo",
+    "login": "Prihlasit sa",
+    "register": "Registrovat sa",
+    "switchToLogin": "Uz mate ucet? Prihlaste sa",
+    "switchToRegister": "Nemate ucet? Zaregistrujte sa",
+    "registerSuccess": "Registracia bola uspesna. Vitajte!",
+    "loginSuccess": "Prihlasenie bolo uspesne.",
+    "failure": "Autentifikacia zlyhala. Skuste to znova."
+  },
+  "projects": {
+    "title": "Moje projekty",
+    "newProject": "+ Novy projekt",
+    "empty": "Zatial ziadne projekty. Vytvorte svoj prvy projekt.",
+    "withData": "S datami",
+    "withoutData": "Bez dat",
+    "deleting": "Odstranuje sa...",
+    "editProject": "Upravit projekt",
+    "createProject": "Vytvorit projekt",
+    "projectTitle": "Nazov",
+    "projectDescription": "Popis (volitelny)",
+    "titleRequired": "Nazov projektu je povinny.",
+    "updated": "Projekt bol uspesne aktualizovany.",
+    "created": "Projekt bol uspesne vytvoreny.",
+    "saveFailed": "Projekt sa nepodarilo ulozit.",
+    "deleteConfirm": "Odstranit projekt \"{title}\"?",
+    "deleted": "Projekt bol uspesne odstraneny.",
+    "deleteFailed": "Projekt sa nepodarilo odstranit."
+  },
+  "project": {
+    "page": {
+      "backToHome": "<- Spat na domov",
+      "backToProjects": "<- Spat na projekty",
+      "demoUnavailable": "Demo dataset je momentalne nedostupny.",
+      "demoReadonlyBanner": "Demo rezim je verejny a len na citanie. Mozete prezerat udaje a vytvarat grafy, ale upravy tabulky su zakazane.",
+      "readOnlyDemo": "Demo len na citanie",
+      "editable": "Upravovatelne",
+      "notFound": "Projekt sa nenasiel",
+      "chartTitlePrefix": "Graf",
+      "readOnly": {
+        "saveChartsDisabled": "Demo rezim je len na citanie. Ukladanie grafov je zakazane.",
+        "importDisabled": "Demo rezim je len na citanie. Import je zakazany.",
+        "tableEditsDisabled": "Demo rezim je len na citanie. Upravy tabulky su zakazane.",
+        "semanticEditsDisabled": "Demo rezim je len na citanie. Semanticke upravy su zakazane.",
+        "ordinalEditsDisabled": "Demo rezim je len na citanie. Upravy ordinalneho poradia su zakazane.",
+        "renamingDisabled": "Demo rezim je len na citanie. Premenovanie je zakazane.",
+        "deletingDisabled": "Demo rezim je len na citanie. Mazanie je zakazane."
+      },
+      "charts": {
+        "buildBeforeSaving": "Pred ulozenim do kniznice projektu najprv vytvorte graf.",
+        "saved": "Graf bol ulozeny do kniznice projektu.",
+        "saveFailed": "Graf sa nepodarilo ulozit.",
+        "downloadFailed": "PNG grafu sa nepodarilo stiahnut.",
+        "nameCannotBeEmpty": "Nazov grafu nemoze byt prazdny.",
+        "renamed": "Graf bol uspesne premenovany.",
+        "renameFailed": "Graf sa nepodarilo premenovat.",
+        "deleteConfirm": "Odstranit tento ulozeny graf z kniznice projektu?",
+        "deleted": "Ulozeny graf bol odstraneny.",
+        "deleteFailed": "Graf sa nepodarilo odstranit."
+      },
+      "dataset": {
+        "imported": "Dataset bol uspesne importovany.",
+        "importValidationIssues": "Import bol dokonceny s validacnymi problemami. Skontrolujte spravu.",
+        "chooseFile": "Pred importom vyberte subor.",
+        "importFailed": "Import zlyhal.",
+        "manualImportFailed": "Z manualnych udajov sa nepodarilo vytvorit tabulku.",
+        "rowSaveFailed": "Zmeny riadka sa nepodarilo ulozit.",
+        "noTableData": "Nie su k dispozicii ziadne tabulkove udaje na export."
+      },
+      "schema": {
+        "semanticUpdateFailed": "Nepodarilo sa aktualizovat semanticky typ.",
+        "ordinalUpdateFailed": "Nepodarilo sa aktualizovat ordinalne poradie."
+      }
+    },
+    "toolbar": {
+      "table": "Tabulka",
+      "visualization": "Vizualizacia",
+      "statistics": "Statistika",
+      "workspace": "Pracovny priestor",
+      "savedCharts": "Ulozene grafy",
+      "importReview": "Kontrola importu"
+    }
+  },
+  "errors": {
+    "requestFailed": "Poziadavka zlyhala.",
+    "sessionExpired": "Platnost relacie vyprsala alebo token CSRF nie je platny. Skuste to znova.",
+    "networkUnavailable": "K API sa neda pripojit. Skontrolujte siet a backend server."
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "languages": {
+    "en": "Angliyska",
+    "sk": "Slovatska",
+    "ru": "Rosiyska",
+    "uk": "Ukrainska"
+  },
+  "common": {
+    "appName": "DataViz",
+    "studioName": "DataViz Studio",
+    "language": "Mova",
+    "user": "Korystuvach",
+    "loading": "Zavantazhennya...",
+    "cancel": "Skasuvaty",
+    "create": "Stvoryty",
+    "edit": "Redaguvaty",
+    "delete": "Vydalyty",
+    "saveChanges": "Zberehty zminy"
+  },
+  "nav": {
+    "home": "Holovna",
+    "projects": "Proyekty",
+    "openProjects": "Vidkryty proyekty",
+    "loadingProjects": "Zavantazhennya proektiv...",
+    "noProjects": "Poky shcho nemae proektiv.",
+    "login": "Uviyty",
+    "logout": "Vyyty",
+    "logoutSuccess": "Vyhid vykonano uspishno.",
+    "logoutFailed": "Ne vdalosya vyyty.",
+    "profile": "Profil",
+    "admin": "Administruvannya",
+    "toggleNavigation": "Peremknuty menyu navigatsiyi",
+    "avatarAlt": "avatar",
+    "projectFallback": "Proyekt #{id}"
+  },
+  "auth": {
+    "subtitle": "Uviyty abo zareyestruvatysya",
+    "name": "Imya",
+    "namePlaceholder": "Vashe imya",
+    "email": "El. poshta",
+    "emailPlaceholder": "you@email.com",
+    "password": "Parol",
+    "passwordPlaceholder": "Parol",
+    "login": "Uviyty",
+    "register": "Zareyestruvatysya",
+    "switchToLogin": "Vzhe mayete akaunt? Uviyty",
+    "switchToRegister": "Nemae akaunta? Zareyestruvatysya",
+    "registerSuccess": "Reyestratsiya uspishna. Laskavo prosymo!",
+    "loginSuccess": "Vhid vykonano uspishno.",
+    "failure": "Ne vdalosya vykonaty avtentyfikatsiyu. Sprobuyte shche raz."
+  },
+  "projects": {
+    "title": "Moyi proyekty",
+    "newProject": "+ Novyi proyekt",
+    "empty": "Poky shcho nemae proektiv. Stvorit sviy pershyi proyekt.",
+    "withData": "Z danymy",
+    "withoutData": "Bez danyh",
+    "deleting": "Vydalennya...",
+    "editProject": "Redaguvaty proyekt",
+    "createProject": "Stvoryty proyekt",
+    "projectTitle": "Nazva",
+    "projectDescription": "Opys (neobovyazkovo)",
+    "titleRequired": "Nazva proyektu obovyazkova.",
+    "updated": "Proyekt uspishno onovleno.",
+    "created": "Proyekt uspishno stvoreno.",
+    "saveFailed": "Ne vdalosya zberehty proyekt.",
+    "deleteConfirm": "Vydalyty proyekt \"{title}\"?",
+    "deleted": "Proyekt uspishno vydaleno.",
+    "deleteFailed": "Ne vdalosya vydalyty proyekt."
+  },
+  "project": {
+    "page": {
+      "backToHome": "<- Nazad na holovnu",
+      "backToProjects": "<- Nazad do proektiv",
+      "demoUnavailable": "Demo-nabir danyh narazi nedostupnyi.",
+      "demoReadonlyBanner": "Demo-rezhym ye publichnym i dostupnym lyshe dlya chytannya. Vy mozhete perehlyadaty dani ta buduvaty grafiky, ale redaguvannya tablytsi vymknene.",
+      "readOnlyDemo": "Demo lyshe dlya chytannya",
+      "editable": "Redaguyetsya",
+      "notFound": "Proyekt ne zaydeno",
+      "chartTitlePrefix": "Grafik",
+      "readOnly": {
+        "saveChartsDisabled": "Demo-rezhym lyshe dlya chytannya. Zberezhennya grafikiv vymknene.",
+        "importDisabled": "Demo-rezhym lyshe dlya chytannya. Import vymknenyi.",
+        "tableEditsDisabled": "Demo-rezhym lyshe dlya chytannya. Redaguvannya tablytsi vymknene.",
+        "semanticEditsDisabled": "Demo-rezhym lyshe dlya chytannya. Semantychni zminy vymkneni.",
+        "ordinalEditsDisabled": "Demo-rezhym lyshe dlya chytannya. Redaguvannya poryadkovogo poryadku vymknene.",
+        "renamingDisabled": "Demo-rezhym lyshe dlya chytannya. Pereymenuvannya vymknene.",
+        "deletingDisabled": "Demo-rezhym lyshe dlya chytannya. Vydalennya vymknene."
+      },
+      "charts": {
+        "buildBeforeSaving": "Pobuduyte grafik pered zberezhennyam do biblioteky proyektu.",
+        "saved": "Grafik zberezheno do biblioteky proyektu.",
+        "saveFailed": "Ne vdalosya zberehty grafik.",
+        "downloadFailed": "Ne vdalosya zavantazhyty PNG grafika.",
+        "nameCannotBeEmpty": "Nazva grafika ne mozhe buty porozhnoyu.",
+        "renamed": "Grafik uspishno pereymenovano.",
+        "renameFailed": "Ne vdalosya pereymenuvaty grafik.",
+        "deleteConfirm": "Vydalyty tsey zberezhenyy grafik iz biblioteky proyektu?",
+        "deleted": "Zberezhenyy grafik vydaleno.",
+        "deleteFailed": "Ne vdalosya vydalyty grafik."
+      },
+      "dataset": {
+        "imported": "Nabir danyh uspishno importovano.",
+        "importValidationIssues": "Import zaversheno z problemamy validatsiyi. Pereglyante zvit.",
+        "chooseFile": "Vyberit fayl pered importom.",
+        "importFailed": "Import ne vykonano.",
+        "manualImportFailed": "Ne vdalosya stvoryty tablytsyu z danyh, vvedenyh vruchnu.",
+        "rowSaveFailed": "Ne vdalosya zberehty zminy ryadka.",
+        "noTableData": "Nemae tablichnyh danyh dlya eksportu."
+      },
+      "schema": {
+        "semanticUpdateFailed": "Ne vdalosya onovyty semantychnyy typ.",
+        "ordinalUpdateFailed": "Ne vdalosya onovyty poryadkovyy poryadok."
+      }
+    },
+    "toolbar": {
+      "table": "Tablytsya",
+      "visualization": "Vizualizatsiya",
+      "statistics": "Statystyka",
+      "workspace": "Robochyi prostir",
+      "savedCharts": "Zberezheni grafiky",
+      "importReview": "Perevirka importu"
+    }
+  },
+  "errors": {
+    "requestFailed": "Zapyt zavershyvsya pomylkoyu.",
+    "sessionExpired": "Sesiyu zaversheno abo CSRF-token nediyisnyy. Sprobuyte shche raz.",
+    "networkUnavailable": "Ne vdayetsya pidklyuchytysya do API. Perevirte merezhu ta backend-server."
+  }
+}
