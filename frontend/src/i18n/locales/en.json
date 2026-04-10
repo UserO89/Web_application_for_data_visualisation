@@ -89,6 +89,7 @@
       },
       "charts": {
         "buildBeforeSaving": "Build a chart before saving it to the project library.",
+        "loadFailed": "Failed to load saved charts.",
         "saved": "Chart saved to the project library.",
         "saveFailed": "Failed to save chart.",
         "downloadFailed": "Failed to download chart PNG.",
@@ -109,8 +110,16 @@
         "noTableData": "No table data to export."
       },
       "schema": {
+        "loadFailed": "Failed to load dataset schema.",
         "semanticUpdateFailed": "Failed to update semantic type.",
         "ordinalUpdateFailed": "Failed to update ordinal order."
+      },
+      "loaders": {
+        "projectFailed": "Failed to load project.",
+        "tableRowsFailed": "Failed to load table rows.",
+        "analysisRowsFailed": "Failed to load analysis rows.",
+        "statisticsFailed": "Failed to load statistics summary.",
+        "suggestionsFailed": "Failed to load chart suggestions."
       }
     },
     "toolbar": {

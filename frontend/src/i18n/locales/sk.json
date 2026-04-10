@@ -89,6 +89,7 @@
       },
       "charts": {
         "buildBeforeSaving": "Pred ulozenim do kniznice projektu najprv vytvorte graf.",
+        "loadFailed": "Ulozene grafy sa nepodarilo nacitat.",
         "saved": "Graf bol ulozeny do kniznice projektu.",
         "saveFailed": "Graf sa nepodarilo ulozit.",
         "downloadFailed": "PNG grafu sa nepodarilo stiahnut.",
@@ -109,8 +110,16 @@
         "noTableData": "Nie su k dispozicii ziadne tabulkove udaje na export."
       },
       "schema": {
+        "loadFailed": "Shemu datasetu sa nepodarilo nacitat.",
         "semanticUpdateFailed": "Nepodarilo sa aktualizovat semanticky typ.",
         "ordinalUpdateFailed": "Nepodarilo sa aktualizovat ordinalne poradie."
+      },
+      "loaders": {
+        "projectFailed": "Projekt sa nepodarilo nacitat.",
+        "tableRowsFailed": "Riadky tabulky sa nepodarilo nacitat.",
+        "analysisRowsFailed": "Analyticke riadky sa nepodarilo nacitat.",
+        "statisticsFailed": "Suhrn statistiky sa nepodarilo nacitat.",
+        "suggestionsFailed": "Navrhy grafov sa nepodarilo nacitat."
       }
     },
     "toolbar": {

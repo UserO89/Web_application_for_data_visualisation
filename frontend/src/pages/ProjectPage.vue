@@ -404,7 +404,7 @@ export default {
         const nextCharts = Array.isArray(response?.charts) ? response.charts.map(normalizeSavedChart) : []
         savedCharts.value = nextCharts
       } catch (e) {
-        savedChartsError.value = extractApiErrorMessage(e, 'Failed to load saved charts.')
+        savedChartsError.value = extractApiErrorMessage(e, t('project.page.charts.loadFailed'))
       } finally {
         savedChartsLoading.value = false
       }

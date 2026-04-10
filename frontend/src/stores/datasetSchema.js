@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { projectsApi } from '../api/projects'
+import { translate } from '../i18n'
 import { extractApiErrorMessage } from '../utils/api/errors'
 
 const indexColumns = (columns) => {
@@ -49,7 +50,7 @@ export const useDatasetSchemaStore = defineStore('datasetSchema', {
         this.applySchema(response.schema || null)
         return this.schema
       } catch (error) {
-        this.error = extractApiErrorMessage(error, 'Failed to load dataset schema.')
+        this.error = extractApiErrorMessage(error, translate('project.page.schema.loadFailed'))
         throw error
       } finally {
         this.loading = false
@@ -64,7 +65,7 @@ export const useDatasetSchemaStore = defineStore('datasetSchema', {
         this.mergeColumn(response.column)
         return response.column
       } catch (error) {
-        this.error = extractApiErrorMessage(error, 'Failed to update semantic type.')
+        this.error = extractApiErrorMessage(error, translate('project.page.schema.semanticUpdateFailed'))
         throw error
       } finally {
         this.updatingColumnId = null
@@ -79,7 +80,7 @@ export const useDatasetSchemaStore = defineStore('datasetSchema', {
         this.mergeColumn(response.column)
         return response.column
       } catch (error) {
-        this.error = extractApiErrorMessage(error, 'Failed to update ordinal order.')
+        this.error = extractApiErrorMessage(error, translate('project.page.schema.ordinalUpdateFailed'))
         throw error
       } finally {
         this.updatingColumnId = null

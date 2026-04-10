@@ -89,6 +89,7 @@
       },
       "charts": {
         "buildBeforeSaving": "Pobuduyte grafik pered zberezhennyam do biblioteky proyektu.",
+        "loadFailed": "Ne vdalosya zavantazhyty zberezheni grafiky.",
         "saved": "Grafik zberezheno do biblioteky proyektu.",
         "saveFailed": "Ne vdalosya zberehty grafik.",
         "downloadFailed": "Ne vdalosya zavantazhyty PNG grafika.",
@@ -109,8 +110,16 @@
         "noTableData": "Nemae tablichnyh danyh dlya eksportu."
       },
       "schema": {
+        "loadFailed": "Ne vdalosya zavantazhyty shemu naboru danyh.",
         "semanticUpdateFailed": "Ne vdalosya onovyty semantychnyy typ.",
         "ordinalUpdateFailed": "Ne vdalosya onovyty poryadkovyy poryadok."
+      },
+      "loaders": {
+        "projectFailed": "Ne vdalosya zavantazhyty proyekt.",
+        "tableRowsFailed": "Ne vdalosya zavantazhyty ryadky tablytsi.",
+        "analysisRowsFailed": "Ne vdalosya zavantazhyty analitychni ryadky.",
+        "statisticsFailed": "Ne vdalosya zavantazhyty pidsumkovu statystyku.",
+        "suggestionsFailed": "Ne vdalosya zavantazhyty rekomendatsiyi grafikiv."
       }
     },
     "toolbar": {

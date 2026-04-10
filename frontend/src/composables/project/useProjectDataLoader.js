@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { projectsApi } from '../../api/projects'
+import { translate } from '../../i18n'
 import { mapApiRows, resolveProjectId, resolveRefValue, unpackRowsPayload } from '../../utils/project'
 import { extractApiErrorMessage } from '../../utils/api/errors'
 
@@ -100,7 +101,7 @@ export const useProjectDataLoader = ({
       }
     } catch (e) {
       tableRows.value = []
-      tableRowsError.value = extractApiErrorMessage(e, 'Failed to load table rows.')
+      tableRowsError.value = extractApiErrorMessage(e, translate('project.page.loaders.tableRowsFailed'))
     }
   }
 
@@ -125,7 +126,7 @@ export const useProjectDataLoader = ({
       } catch (e) {
         analysisRows.value = []
         analysisRowsReady.value = false
-        analysisRowsError.value = extractApiErrorMessage(e, 'Failed to load analysis rows.')
+        analysisRowsError.value = extractApiErrorMessage(e, translate('project.page.loaders.analysisRowsFailed'))
         return null
       } finally {
         analysisRowsLoading.value = false
@@ -162,7 +163,7 @@ export const useProjectDataLoader = ({
       const response = await api.getSchema(id, { rebuild })
       schemaStore.applySchema(response?.schema || null)
     } catch (e) {
-      schemaError.value = extractApiErrorMessage(e, 'Failed to load semantic schema.')
+      schemaError.value = extractApiErrorMessage(e, translate('project.page.schema.loadFailed'))
     }
   }
 
@@ -180,7 +181,7 @@ export const useProjectDataLoader = ({
       const response = await resolvedApiClient().getStatistics(id)
       statisticsSummary.value = response.statistics || []
     } catch (e) {
-      statisticsError.value = extractApiErrorMessage(e, 'Failed to load statistics summary.')
+      statisticsError.value = extractApiErrorMessage(e, translate('project.page.loaders.statisticsFailed'))
     } finally {
       statisticsLoading.value = false
     }
@@ -199,7 +200,7 @@ export const useProjectDataLoader = ({
       suggestions.value = response.suggestions || []
     } catch (e) {
       suggestions.value = []
-      suggestionsError.value = extractApiErrorMessage(e, 'Failed to load chart suggestions.')
+      suggestionsError.value = extractApiErrorMessage(e, translate('project.page.loaders.suggestionsFailed'))
     }
   }
 
@@ -266,7 +267,7 @@ export const useProjectDataLoader = ({
       }
     } catch (e) {
       project.value = null
-      projectError.value = extractApiErrorMessage(e, 'Failed to load project.')
+      projectError.value = extractApiErrorMessage(e, translate('project.page.loaders.projectFailed'))
     } finally {
       loading.value = false
     }

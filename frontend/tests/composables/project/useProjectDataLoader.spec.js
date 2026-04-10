@@ -1,5 +1,6 @@
 import { ref } from 'vue'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { setLocale } from '../../../src/i18n'
 
 vi.mock('../../../src/api/projects', () => ({
   projectsApi: {},
@@ -21,6 +22,10 @@ const columns = [
 ]
 
 describe('useProjectDataLoader', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('does not preload analysis rows during standard reload', async () => {
     const apiClient = buildApiClient({
       getRows: vi.fn().mockResolvedValue({
@@ -85,5 +90,25 @@ describe('useProjectDataLoader', () => {
       id: 3,
       col_0: 30,
     })
+  })
+
+  it('uses translated fallback messages when data loading fails', async () => {
+    setLocale('sk')
+
+    const apiClient = buildApiClient({
+      getRows: vi.fn().mockRejectedValue(new Error('boom')),
+      get: vi.fn().mockRejectedValue(new Error('boom')),
+    })
+
+    const state = useProjectDataLoader({
+      projectId: ref('project-3'),
+      apiClient,
+    })
+
+    await state.loadRows({ columns })
+    await state.loadProject()
+
+    expect(state.tableRowsError.value).toBe('Riadky tabulky sa nepodarilo nacitat.')
+    expect(state.projectError.value).toBe('Projekt sa nepodarilo nacitat.')
   })
 })

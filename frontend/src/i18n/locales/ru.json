@@ -89,6 +89,7 @@
       },
       "charts": {
         "buildBeforeSaving": "Postroyte grafik pered sohraneniem v biblioteku proekta.",
+        "loadFailed": "Ne udalos zagruzit sohranennye grafiki.",
         "saved": "Grafik sohranen v biblioteku proekta.",
         "saveFailed": "Ne udalos sohranit grafik.",
         "downloadFailed": "Ne udalos skachat PNG grafika.",
@@ -109,8 +110,16 @@
         "noTableData": "Net tablichnyh dannyh dlya eksporta."
       },
       "schema": {
+        "loadFailed": "Ne udalos zagruzit skhemu nabora dannyh.",
         "semanticUpdateFailed": "Ne udalos obnovit semanticheskiy tip.",
         "ordinalUpdateFailed": "Ne udalos obnovit poryadkovuyu posledovatelnost."
+      },
+      "loaders": {
+        "projectFailed": "Ne udalos zagruzit proekt.",
+        "tableRowsFailed": "Ne udalos zagruzit stroki tablitsy.",
+        "analysisRowsFailed": "Ne udalos zagruzit analiticheskie stroki.",
+        "statisticsFailed": "Ne udalos zagruzit svodnuyu statistiku.",
+        "suggestionsFailed": "Ne udalos zagruzit rekomendatsii grafikov."
       }
     },
     "toolbar": {
