@@ -1,6 +1,8 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import ProjectsPage from '../../src/pages/ProjectsPage.vue'
+import i18n from '../../src/i18n'
+import { withI18n } from '../support/i18n'
 
 const mockRouter = vi.hoisted(() => ({
   push: vi.fn(),
@@ -34,7 +36,7 @@ vi.mock('../../src/composables/useNotifications', () => ({
   useNotifications: () => mockNotifications,
 }))
 
-const mountPage = () => mount(ProjectsPage)
+const mountPage = () => mount(ProjectsPage, withI18n())
 
 describe('ProjectsPage', () => {
   beforeEach(() => {
@@ -92,7 +94,7 @@ describe('ProjectsPage', () => {
       title: 'Retention Study',
       description: 'Cohort analysis workspace',
     })
-    expect(mockNotifications.success).toHaveBeenCalledWith('Project created successfully.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('projects.created'))
     expect(mockRouter.push).toHaveBeenCalledWith({
       name: 'project',
       params: { id: 44 },
@@ -116,7 +118,7 @@ describe('ProjectsPage', () => {
       title: 'Revenue dashboard v2',
       description: 'Updated notes',
     })
-    expect(mockNotifications.success).toHaveBeenCalledWith('Project updated successfully.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('projects.updated'))
     expect(mockRouter.push).not.toHaveBeenCalled()
   })
 

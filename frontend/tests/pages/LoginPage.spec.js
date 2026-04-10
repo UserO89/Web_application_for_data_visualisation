@@ -1,6 +1,8 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import LoginPage from '../../src/pages/LoginPage.vue'
+import i18n from '../../src/i18n'
+import { withI18n } from '../support/i18n'
 
 const mockRouter = vi.hoisted(() => ({
   push: vi.fn(),
@@ -31,7 +33,7 @@ vi.mock('../../src/composables/useNotifications', () => ({
   useNotifications: () => mockNotifications,
 }))
 
-const mountPage = () => mount(LoginPage)
+const mountPage = () => mount(LoginPage, withI18n())
 
 describe('LoginPage', () => {
   beforeEach(() => {
@@ -59,7 +61,7 @@ describe('LoginPage', () => {
       email: 'jane@example.com',
       password: 'secret123',
     })
-    expect(mockNotifications.success).toHaveBeenCalledWith('Logged in successfully.')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('auth.loginSuccess'))
     expect(mockRouter.push).toHaveBeenCalledWith({ name: 'projects' })
   })
 
@@ -78,7 +80,7 @@ describe('LoginPage', () => {
       email: 'jane@example.com',
       password: 'secret123',
     })
-    expect(mockNotifications.success).toHaveBeenCalledWith('Registration successful. Welcome!')
+    expect(mockNotifications.success).toHaveBeenCalledWith(i18n.global.t('auth.registerSuccess'))
     expect(mockRouter.push).toHaveBeenCalledWith({ name: 'projects' })
   })
 
