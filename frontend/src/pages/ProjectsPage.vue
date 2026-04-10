@@ -1,13 +1,13 @@
 <template>
   <div class="projects-page app-content">
     <div class="panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <div style="font-weight: 700; font-size: 18px;">My Projects</div>
-      <button @click="openCreateModal" class="btn primary">+ New Project</button>
+      <div style="font-weight: 700; font-size: 18px;">{{ $t('projects.title') }}</div>
+      <button @click="openCreateModal" class="btn primary">{{ $t('projects.newProject') }}</button>
     </div>
 
-    <div v-if="projectsStore.loading" class="loading">Loading...</div>
+    <div v-if="projectsStore.loading" class="loading">{{ $t('common.loading') }}</div>
     <div v-else-if="projectsStore.projects.length === 0" class="empty-state panel">
-      <p>No projects yet. Create your first project.</p>
+      <p>{{ $t('projects.empty') }}</p>
     </div>
     <div v-else class="projects-grid">
       <div
@@ -23,18 +23,18 @@
           <div style="font-weight: 700; margin-bottom: 8px;">{{ project.title }}</div>
           <p v-if="project.description" style="color: var(--muted); font-size: 14px; margin-bottom: 12px;">{{ project.description }}</p>
           <div style="font-size: 12px; color: var(--muted);">
-            {{ project.dataset ? 'With data' : 'No data' }}
+            {{ project.dataset ? $t('projects.withData') : $t('projects.withoutData') }}
           </div>
         </div>
         <div class="project-actions">
-          <button class="btn" type="button" @click.stop="openEditModal(project)">Edit</button>
+          <button class="btn" type="button" @click.stop="openEditModal(project)">{{ $t('common.edit') }}</button>
           <button
             class="btn danger"
             type="button"
             @click.stop="handleDelete(project)"
             :disabled="deleteBusyId === project.id"
           >
-            {{ deleteBusyId === project.id ? 'Deleting...' : 'Delete' }}
+            {{ deleteBusyId === project.id ? $t('projects.deleting') : $t('common.delete') }}
           </button>
         </div>
       </div>
@@ -42,23 +42,25 @@
 
     <div v-if="showProjectModal" class="modal-overlay" @click="closeProjectModal">
       <div class="modal panel" @click.stop>
-        <h2 style="margin-bottom: 16px; font-size: 18px;">{{ isEditing ? 'Edit Project' : 'Create Project' }}</h2>
+        <h2 style="margin-bottom: 16px; font-size: 18px;">
+          {{ isEditing ? $t('projects.editProject') : $t('projects.createProject') }}
+        </h2>
         <form @submit.prevent="handleSave">
           <div class="form-group">
-            <label for="project-form-title">Title</label>
+            <label for="project-form-title">{{ $t('projects.projectTitle') }}</label>
             <input id="project-form-title" v-model="projectForm.title" name="title" type="text" required />
           </div>
           <div class="form-group">
-            <label for="project-form-description">Description (optional)</label>
+            <label for="project-form-description">{{ $t('projects.projectDescription') }}</label>
             <textarea id="project-form-description" v-model="projectForm.description" name="description" rows="3"></textarea>
           </div>
           <div v-if="formError" class="form-error">
             {{ formError }}
           </div>
           <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px;">
-            <button type="button" @click="closeProjectModal" class="btn">Cancel</button>
+            <button type="button" @click="closeProjectModal" class="btn">{{ $t('common.cancel') }}</button>
             <button type="submit" class="btn primary">
-              {{ isEditing ? 'Save changes' : 'Create' }}
+              {{ isEditing ? $t('common.saveChanges') : $t('common.create') }}
             </button>
           </div>
         </form>
@@ -69,6 +71,7 @@
 
 <script>
 import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { useProjectsStore } from '../stores/projects'
 import { useNotifications } from '../composables/useNotifications'
@@ -77,6 +80,7 @@ import { extractApiErrorMessage } from '../utils/api/errors'
 export default {
   name: 'ProjectsPage',
   setup() {
+    const { t } = useI18n({ useScope: 'global' })
     const router = useRouter()
     const projectsStore = useProjectsStore()
     const notify = useNotifications()
@@ -129,7 +133,7 @@ export default {
       }
 
       if (!payload.title) {
-        formError.value = 'Project title is required.'
+        formError.value = t('projects.titleRequired')
         return
       }
 
@@ -139,30 +143,30 @@ export default {
         if (isEditing.value) {
           await projectsStore.updateProject(editingProjectId.value, payload)
           closeProjectModal()
-          notify.success('Project updated successfully.')
+          notify.success(t('projects.updated'))
           return
         }
 
         const project = await projectsStore.createProject(payload)
         closeProjectModal()
-        notify.success('Project created successfully.')
+        notify.success(t('projects.created'))
         goToProject(project.id)
       } catch (error) {
-        formError.value = extractApiErrorMessage(error, 'Failed to save project.')
+        formError.value = extractApiErrorMessage(error, t('projects.saveFailed'))
       }
     }
 
     const handleDelete = async (project) => {
-      const confirmed = window.confirm(`Delete project "${project.title}"?`)
+      const confirmed = window.confirm(t('projects.deleteConfirm', { title: project.title }))
       if (!confirmed) return
 
       deleteBusyId.value = project.id
 
       try {
         await projectsStore.deleteProject(project.id)
-        notify.success('Project deleted successfully.')
+        notify.success(t('projects.deleted'))
       } catch (error) {
-        notify.error(extractApiErrorMessage(error, 'Failed to delete project.'))
+        notify.error(extractApiErrorMessage(error, t('projects.deleteFailed')))
       } finally {
         deleteBusyId.value = null
       }
