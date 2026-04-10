@@ -6,8 +6,8 @@
         <button
           type="button"
           :class="['btn', 'mode-btn', { primary: viewMode === 'table' }]"
-          aria-label="Table"
-          title="Table"
+          :aria-label="$t('project.toolbar.table')"
+          :title="$t('project.toolbar.table')"
           @click="$emit('change-view-mode', 'table')"
         >
           <span class="mode-icon" aria-hidden="true">
@@ -15,13 +15,13 @@
               <path d="M4 5h16v14H4zM4 10h16M9 5v14M15 5v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="mode-label">Table</span>
+          <span class="mode-label">{{ $t('project.toolbar.table') }}</span>
         </button>
         <button
           type="button"
           :class="['btn', 'mode-btn', { primary: viewMode === 'visualization' }]"
-          aria-label="Visualization"
-          title="Visualization"
+          :aria-label="$t('project.toolbar.visualization')"
+          :title="$t('project.toolbar.visualization')"
           @click="$emit('change-view-mode', 'visualization')"
         >
           <span class="mode-icon" aria-hidden="true">
@@ -33,13 +33,13 @@
               <circle cx="20" cy="7" r="1.2" fill="currentColor"/>
             </svg>
           </span>
-          <span class="mode-label">Visualization</span>
+          <span class="mode-label">{{ $t('project.toolbar.visualization') }}</span>
         </button>
         <button
           type="button"
           :class="['btn', 'mode-btn', { primary: viewMode === 'statistics' }]"
-          aria-label="Statistics"
-          title="Statistics"
+          :aria-label="$t('project.toolbar.statistics')"
+          :title="$t('project.toolbar.statistics')"
           @click="$emit('change-view-mode', 'statistics')"
         >
           <span class="mode-icon" aria-hidden="true">
@@ -47,13 +47,13 @@
               <path d="M5 19V9M12 19V5M19 19v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="mode-label">Statistics</span>
+          <span class="mode-label">{{ $t('project.toolbar.statistics') }}</span>
         </button>
         <button
           type="button"
           :class="['btn', 'mode-btn', { primary: viewMode === 'workspace' }]"
-          aria-label="Workspace"
-          title="Workspace"
+          :aria-label="$t('project.toolbar.workspace')"
+          :title="$t('project.toolbar.workspace')"
           @click="$emit('change-view-mode', 'workspace')"
         >
           <span class="mode-icon" aria-hidden="true">
@@ -61,14 +61,14 @@
               <path d="M4 4h8v8H4zM14 4h6v5h-6zM14 11h6v9h-6zM4 14h8v6H4z" stroke="currentColor" stroke-width="1.8"/>
             </svg>
           </span>
-          <span class="mode-label">Workspace</span>
+          <span class="mode-label">{{ $t('project.toolbar.workspace') }}</span>
         </button>
         <button
           v-if="!readOnly"
           type="button"
           :class="['btn', 'mode-btn', { primary: viewMode === 'library' }]"
-          aria-label="Saved Charts"
-          title="Saved Charts"
+          :aria-label="$t('project.toolbar.savedCharts')"
+          :title="$t('project.toolbar.savedCharts')"
           @click="$emit('change-view-mode', 'library')"
         >
           <span class="mode-icon" aria-hidden="true">
@@ -76,7 +76,7 @@
               <path d="M4 6h16v12H4zM8 3v6M16 3v6M8 15h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="mode-label">Saved Charts</span>
+          <span class="mode-label">{{ $t('project.toolbar.savedCharts') }}</span>
         </button>
       </div>
     </div>
@@ -87,7 +87,7 @@
         class="btn"
         @click="$emit('open-validation')"
       >
-        Import Review
+        {{ $t('project.toolbar.importReview') }}
         <span class="validation-pill">{{ validationProblemColumnCount }}</span>
       </button>
     </div>
