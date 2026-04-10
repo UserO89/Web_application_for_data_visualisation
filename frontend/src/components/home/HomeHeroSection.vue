@@ -5,11 +5,10 @@
 
     <div class="hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">Integrated Data Analysis Workspace</p>
-        <h1>Move from raw tables to clear insights in one focused flow.</h1>
+        <p class="eyebrow">{{ $t('home.hero.eyebrow') }}</p>
+        <h1>{{ $t('home.hero.title') }}</h1>
         <p class="hero-lead">
-          DataViz helps you import, validate, edit, summarize, and visualize tabular data in one place.
-          It is built for practical student projects, academic demonstrations, and fast analytics iteration.
+          {{ $t('home.hero.lead') }}
         </p>
 
         <div class="hero-actions">
@@ -24,15 +23,15 @@
             class="btn hero-btn hero-btn-secondary"
             @click.prevent="$emit('explore-capabilities')"
           >
-            Explore Capabilities
+            {{ $t('home.hero.exploreCapabilities') }}
           </a>
         </div>
 
         <div class="hero-points">
-          <span>CSV/TXT import</span>
-          <span>Validation before charts</span>
-          <span>Table-first editing</span>
-          <span>Summary statistics</span>
+          <span>{{ $t('home.hero.points.import') }}</span>
+          <span>{{ $t('home.hero.points.validation') }}</span>
+          <span>{{ $t('home.hero.points.editing') }}</span>
+          <span>{{ $t('home.hero.points.summary') }}</span>
         </div>
       </div>
 

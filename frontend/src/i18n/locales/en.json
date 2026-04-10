@@ -122,6 +122,211 @@
       "importReview": "Import Review"
     }
   },
+  "home": {
+    "actions": {
+      "openDashboard": "Open Dashboard",
+      "startAnalyzing": "Start Analyzing",
+      "tryDemo": "Try Public Demo"
+    },
+    "hero": {
+      "eyebrow": "Integrated Data Analysis Workspace",
+      "title": "Move from raw tables to clear insights in one focused flow.",
+      "lead": "DataViz helps you import, validate, edit, summarize, and visualize tabular data in one place. It is built for practical student projects, academic demonstrations, and fast analytics iteration.",
+      "exploreCapabilities": "Explore Capabilities",
+      "points": {
+        "import": "CSV/TXT import",
+        "validation": "Validation before charts",
+        "editing": "Table-first editing",
+        "summary": "Summary statistics"
+      },
+      "snapshot": {
+        "kicker": "Workflow Snapshot",
+        "title": "Import -> Validate -> Edit -> Analyze -> Visualize"
+      },
+      "stages": {
+        "import": "Import",
+        "validate": "Validate",
+        "edit": "Edit",
+        "analyze": "Analyze",
+        "chart": "Chart"
+      },
+      "highlights": {
+        "oneValue": "One",
+        "fastValue": "Fast",
+        "cleanValue": "Clean",
+        "clearValue": "Clear",
+        "workspace": "Integrated workspace",
+        "summary": "Summary generation",
+        "tableFirst": "Table-first editing",
+        "chartReady": "Chart-ready outputs"
+      }
+    },
+    "capabilitiesSection": {
+      "kicker": "Capabilities",
+      "title": "Everything needed for table-first data work.",
+      "description": "The platform keeps the core analysis journey in one structured workspace so users can focus on understanding data instead of stitching tools together."
+    },
+    "capabilities": {
+      "import": {
+        "title": "Import CSV or TXT datasets",
+        "text": "Start quickly with tabular files and bring raw data into a dedicated project workspace."
+      },
+      "validate": {
+        "title": "Validate structure and values",
+        "text": "Check inferred columns and detect issues before spending time on charts and interpretation."
+      },
+      "edit": {
+        "title": "Inspect and edit rows directly",
+        "text": "Correct entries in a table-first interface so data cleaning stays close to the source values."
+      },
+      "stats": {
+        "title": "Generate summary statistics",
+        "text": "Get fast descriptive metrics to understand distributions and guide the next analysis step."
+      },
+      "chart": {
+        "title": "Build useful visualizations",
+        "text": "Create chart views from cleaned data and move from values to interpretable visual stories."
+      },
+      "workspace": {
+        "title": "Work in one connected flow",
+        "text": "Avoid fragmented tool chains and keep import, cleaning, analytics, and charts aligned."
+      }
+    },
+    "advantagesSection": {
+      "kicker": "Why This Platform",
+      "title": "Built for practical analysis, not fragmented workflows.",
+      "description": "Typical workflows split data cleaning, validation, and charting across separate tools. DataViz keeps these steps connected, so each decision remains traceable and faster to verify."
+    },
+    "advantages": {
+      "workspace": {
+        "title": "One workspace instead of scattered tools",
+        "text": "Reduce context switching between spreadsheet edits, scripts, and chart builders."
+      },
+      "validation": {
+        "title": "Validation before visualization",
+        "text": "Catch schema and value issues early to protect chart quality and interpretation accuracy."
+      },
+      "tableFirst": {
+        "title": "Table-first editing",
+        "text": "Perform quick data corrections where rows are visible, without leaving the analysis context."
+      },
+      "feedback": {
+        "title": "Fast analytical feedback",
+        "text": "Summary statistics provide immediate checkpoints while refining datasets."
+      },
+      "foundation": {
+        "title": "Stable foundation for academic extension",
+        "text": "The architecture is structured for thesis demonstrations and iterative feature growth."
+      }
+    },
+    "statsSection": {
+      "kicker": "Progress Metrics",
+      "title": "From input to insight with fewer moving parts.",
+      "description": "These numbers summarize the core workflow scope and show how the platform keeps the analysis path concise and understandable."
+    },
+    "stats": {
+      "steps": {
+        "label": "Workflow stages",
+        "text": "From first import to chart-driven conclusions."
+      },
+      "actions": {
+        "label": "Core platform actions",
+        "text": "Import, validate, inspect, edit, analyze, visualize."
+      },
+      "inputs": {
+        "label": "Tabular input formats",
+        "text": "Ready for CSV and TXT datasets."
+      },
+      "workspace": {
+        "label": "Integrated environment",
+        "text": "A single place for the full data preparation cycle."
+      }
+    },
+    "workflowSection": {
+      "kicker": "How It Works",
+      "title": "A clear workflow from first upload to final decision.",
+      "description": "Each stage is intentionally simple, making the platform suitable for thesis demos, classroom exercises, and quick exploratory analysis sessions."
+    },
+    "workflow": {
+      "steps": {
+        "create": {
+          "title": "Create a project",
+          "text": "Open a clean workspace for one dataset or research question."
+        },
+        "import": {
+          "title": "Import your dataset",
+          "text": "Load CSV or TXT files and start with visible table structure."
+        },
+        "validate": {
+          "title": "Validate and inspect",
+          "text": "Review columns, value quality, and early consistency checks."
+        },
+        "analyze": {
+          "title": "Edit and analyze",
+          "text": "Clean rows directly and review summary statistics for direction."
+        },
+        "visualize": {
+          "title": "Visualize and present",
+          "text": "Build clear charts and translate findings into useful conclusions."
+        }
+      }
+    },
+    "demo": {
+      "section": {
+        "kicker": "Chart Creation Demo",
+        "title": "Create visual stories in seconds with a guided flow.",
+        "description": "This mini demo shows how quickly users can switch between chart styles and still keep the result clean, readable, and presentation-ready."
+      },
+      "controls": {
+        "dataset": "Demo Dataset",
+        "chartType": "Chart Type",
+        "openWorkspace": "Open Full Chart Workspace"
+      },
+      "benefits": {
+        "refresh": "Instant preview refresh with no manual reconfiguration.",
+        "visuals": "Consistent dark-theme visuals for reports and demos.",
+        "workflow": "Same workflow principles as the full project workspace."
+      },
+      "loading": "Loading interactive chart demo...",
+      "chartTypes": {
+        "line": "Line",
+        "bar": "Bar",
+        "scatter": "Scatter",
+        "boxplot": "Boxplot",
+        "pie": "Pie"
+      },
+      "weeks": {
+        "week1": "Week 1",
+        "week2": "Week 2",
+        "week3": "Week 3",
+        "week4": "Week 4",
+        "week5": "Week 5"
+      },
+      "scenarios": {
+        "quality": {
+          "label": "Quality trend",
+          "title": "Validation quality improves after each iteration",
+          "subtitle": "Dataset consistency score by sprint"
+        },
+        "distribution": {
+          "label": "Category mix",
+          "title": "Cleaned data distribution by segment",
+          "subtitle": "Rows kept after validation and editing"
+        },
+        "impact": {
+          "label": "Insight growth",
+          "title": "Actionable findings per analysis cycle",
+          "subtitle": "How quickly insights scale in one workspace"
+        }
+      }
+    },
+    "finalCta": {
+      "kicker": "Ready To Start",
+      "title": "Build your next dataset story without tool switching.",
+      "description": "Create a project, load your data, and move directly into validation, analysis, and visual reporting.",
+      "viewWorkflow": "View Workflow"
+    }
+  },
   "errors": {
     "requestFailed": "Request failed.",
     "sessionExpired": "Session expired or CSRF token is invalid. Please try again.",

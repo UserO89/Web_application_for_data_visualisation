@@ -1,7 +1,7 @@
 <template>
   <div class="demo-controls-panel">
     <div class="demo-control-block" data-reveal style="--reveal-delay: 80ms;">
-      <div class="demo-control-label">Demo Dataset</div>
+      <div class="demo-control-label">{{ $t('home.demo.controls.dataset') }}</div>
       <div class="demo-chip-row">
         <button
           v-for="scenario in demoScenarios"
@@ -17,7 +17,7 @@
     </div>
 
     <div class="demo-control-block" data-reveal style="--reveal-delay: 140ms;">
-      <div class="demo-control-label">Chart Type</div>
+      <div class="demo-control-label">{{ $t('home.demo.controls.chartType') }}</div>
       <div class="demo-chip-row">
         <button
           v-for="typeItem in demoChartTypes"
@@ -33,13 +33,13 @@
     </div>
 
     <ul class="demo-benefits" data-reveal style="--reveal-delay: 200ms;">
-      <li>Instant preview refresh with no manual reconfiguration.</li>
-      <li>Consistent dark-theme visuals for reports and demos.</li>
-      <li>Same workflow principles as the full project workspace.</li>
+      <li>{{ $t('home.demo.benefits.refresh') }}</li>
+      <li>{{ $t('home.demo.benefits.visuals') }}</li>
+      <li>{{ $t('home.demo.benefits.workflow') }}</li>
     </ul>
 
     <router-link :to="primaryAction.to" class="btn primary demo-cta">
-      Open Full Chart Workspace
+      {{ $t('home.demo.controls.openWorkspace') }}
     </router-link>
   </div>
 </template>

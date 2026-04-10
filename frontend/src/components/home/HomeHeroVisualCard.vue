@@ -1,8 +1,8 @@
 <template>
   <div class="hero-visual" data-reveal style="--reveal-delay: 120ms;">
     <div class="surface-card">
-      <p class="surface-kicker">Workflow Snapshot</p>
-      <h3>Import -> Validate -> Edit -> Analyze -> Visualize</h3>
+      <p class="surface-kicker">{{ $t('home.hero.snapshot.kicker') }}</p>
+      <h3>{{ $t('home.hero.snapshot.title') }}</h3>
 
       <div class="stage-rail">
         <div v-for="stage in heroStages" :key="stage" class="stage-node">

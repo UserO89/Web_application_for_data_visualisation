@@ -1,159 +1,171 @@
-export const HOME_HERO_STAGES = ['Import', 'Validate', 'Edit', 'Analyze', 'Chart']
-
-export const HOME_HERO_HIGHLIGHTS = [
-  { value: 'One', label: 'Integrated workspace' },
-  { value: 'Fast', label: 'Summary generation' },
-  { value: 'Clean', label: 'Table-first editing' },
-  { value: 'Clear', label: 'Chart-ready outputs' },
+export const buildHomeHeroStages = (t) => [
+  t('home.hero.stages.import'),
+  t('home.hero.stages.validate'),
+  t('home.hero.stages.edit'),
+  t('home.hero.stages.analyze'),
+  t('home.hero.stages.chart'),
 ]
 
-export const HOME_CAPABILITIES = [
+export const buildHomeHeroHighlights = (t) => [
+  { value: t('home.hero.highlights.oneValue'), label: t('home.hero.highlights.workspace') },
+  { value: t('home.hero.highlights.fastValue'), label: t('home.hero.highlights.summary') },
+  { value: t('home.hero.highlights.cleanValue'), label: t('home.hero.highlights.tableFirst') },
+  { value: t('home.hero.highlights.clearValue'), label: t('home.hero.highlights.chartReady') },
+]
+
+export const buildHomeCapabilities = (t) => [
   {
     icon: 'import',
     iconPath: 'M12 3v12M7 10l5 5 5-5M4 19h16',
-    title: 'Import CSV or TXT datasets',
-    text: 'Start quickly with tabular files and bring raw data into a dedicated project workspace.',
+    title: t('home.capabilities.import.title'),
+    text: t('home.capabilities.import.text'),
   },
   {
     icon: 'validate',
     iconPath: 'M20 7L10 17l-6-6M4 4h16',
-    title: 'Validate structure and values',
-    text: 'Check inferred columns and detect issues before spending time on charts and interpretation.',
+    title: t('home.capabilities.validate.title'),
+    text: t('home.capabilities.validate.text'),
   },
   {
     icon: 'edit',
     iconPath: 'M4 20h5l10-10-5-5L4 15v5zM13 6l5 5',
-    title: 'Inspect and edit rows directly',
-    text: 'Correct entries in a table-first interface so data cleaning stays close to the source values.',
+    title: t('home.capabilities.edit.title'),
+    text: t('home.capabilities.edit.text'),
   },
   {
     icon: 'stats',
     iconPath: 'M5 18V9M12 18V5M19 18v-7M3 20h18',
-    title: 'Generate summary statistics',
-    text: 'Get fast descriptive metrics to understand distributions and guide the next analysis step.',
+    title: t('home.capabilities.stats.title'),
+    text: t('home.capabilities.stats.text'),
   },
   {
     icon: 'chart',
     iconPath: 'M4 18l5-6 4 3 7-8M4 4v14h16',
-    title: 'Build useful visualizations',
-    text: 'Create chart views from cleaned data and move from values to interpretable visual stories.',
+    title: t('home.capabilities.chart.title'),
+    text: t('home.capabilities.chart.text'),
   },
   {
     icon: 'workspace',
     iconPath: 'M4 6h16v12H4zM9 6v12M4 11h16',
-    title: 'Work in one connected flow',
-    text: 'Avoid fragmented tool chains and keep import, cleaning, analytics, and charts aligned.',
+    title: t('home.capabilities.workspace.title'),
+    text: t('home.capabilities.workspace.text'),
   },
 ]
 
-export const HOME_ADVANTAGES = [
+export const buildHomeAdvantages = (t) => [
   {
-    title: 'One workspace instead of scattered tools',
-    text: 'Reduce context switching between spreadsheet edits, scripts, and chart builders.',
+    title: t('home.advantages.workspace.title'),
+    text: t('home.advantages.workspace.text'),
   },
   {
-    title: 'Validation before visualization',
-    text: 'Catch schema and value issues early to protect chart quality and interpretation accuracy.',
+    title: t('home.advantages.validation.title'),
+    text: t('home.advantages.validation.text'),
   },
   {
-    title: 'Table-first editing',
-    text: 'Perform quick data corrections where rows are visible, without leaving the analysis context.',
+    title: t('home.advantages.tableFirst.title'),
+    text: t('home.advantages.tableFirst.text'),
   },
   {
-    title: 'Fast analytical feedback',
-    text: 'Summary statistics provide immediate checkpoints while refining datasets.',
+    title: t('home.advantages.feedback.title'),
+    text: t('home.advantages.feedback.text'),
   },
   {
-    title: 'Stable foundation for academic extension',
-    text: 'The architecture is structured for thesis demonstrations and iterative feature growth.',
+    title: t('home.advantages.foundation.title'),
+    text: t('home.advantages.foundation.text'),
   },
 ]
 
-export const HOME_STATS_ITEMS = [
+export const buildHomeStatsItems = (t) => [
   {
     key: 'steps',
     target: 5,
     suffix: '',
-    label: 'Workflow stages',
-    text: 'From first import to chart-driven conclusions.',
+    label: t('home.stats.steps.label'),
+    text: t('home.stats.steps.text'),
   },
   {
     key: 'actions',
     target: 6,
     suffix: '',
-    label: 'Core platform actions',
-    text: 'Import, validate, inspect, edit, analyze, visualize.',
+    label: t('home.stats.actions.label'),
+    text: t('home.stats.actions.text'),
   },
   {
     key: 'inputs',
     target: 2,
     suffix: '+',
-    label: 'Tabular input formats',
-    text: 'Ready for CSV and TXT datasets.',
+    label: t('home.stats.inputs.label'),
+    text: t('home.stats.inputs.text'),
   },
   {
     key: 'workspace',
     target: 1,
     suffix: '',
-    label: 'Integrated environment',
-    text: 'A single place for the full data preparation cycle.',
+    label: t('home.stats.workspace.label'),
+    text: t('home.stats.workspace.text'),
   },
 ]
 
-export const HOME_WORKFLOW_STEPS = [
+export const buildHomeWorkflowSteps = (t) => [
   {
-    title: 'Create a project',
-    text: 'Open a clean workspace for one dataset or research question.',
+    title: t('home.workflow.steps.create.title'),
+    text: t('home.workflow.steps.create.text'),
   },
   {
-    title: 'Import your dataset',
-    text: 'Load CSV or TXT files and start with visible table structure.',
+    title: t('home.workflow.steps.import.title'),
+    text: t('home.workflow.steps.import.text'),
   },
   {
-    title: 'Validate and inspect',
-    text: 'Review columns, value quality, and early consistency checks.',
+    title: t('home.workflow.steps.validate.title'),
+    text: t('home.workflow.steps.validate.text'),
   },
   {
-    title: 'Edit and analyze',
-    text: 'Clean rows directly and review summary statistics for direction.',
+    title: t('home.workflow.steps.analyze.title'),
+    text: t('home.workflow.steps.analyze.text'),
   },
   {
-    title: 'Visualize and present',
-    text: 'Build clear charts and translate findings into useful conclusions.',
+    title: t('home.workflow.steps.visualize.title'),
+    text: t('home.workflow.steps.visualize.text'),
   },
 ]
 
-export const HOME_DEMO_SCENARIOS = [
+export const buildHomeDemoScenarios = (t) => [
   {
     key: 'quality',
-    label: 'Quality trend',
-    title: 'Validation quality improves after each iteration',
-    subtitle: 'Dataset consistency score by sprint',
+    label: t('home.demo.scenarios.quality.label'),
+    title: t('home.demo.scenarios.quality.title'),
+    subtitle: t('home.demo.scenarios.quality.subtitle'),
     labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6'],
     values: [61, 69, 74, 82, 88, 93],
   },
   {
     key: 'distribution',
-    label: 'Category mix',
-    title: 'Cleaned data distribution by segment',
-    subtitle: 'Rows kept after validation and editing',
+    label: t('home.demo.scenarios.distribution.label'),
+    title: t('home.demo.scenarios.distribution.title'),
+    subtitle: t('home.demo.scenarios.distribution.subtitle'),
     labels: ['A', 'B', 'C', 'D', 'E'],
     values: [34, 26, 18, 14, 8],
   },
   {
     key: 'impact',
-    label: 'Insight growth',
-    title: 'Actionable findings per analysis cycle',
-    subtitle: 'How quickly insights scale in one workspace',
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+    label: t('home.demo.scenarios.impact.label'),
+    title: t('home.demo.scenarios.impact.title'),
+    subtitle: t('home.demo.scenarios.impact.subtitle'),
+    labels: [
+      t('home.demo.weeks.week1'),
+      t('home.demo.weeks.week2'),
+      t('home.demo.weeks.week3'),
+      t('home.demo.weeks.week4'),
+      t('home.demo.weeks.week5'),
+    ],
     values: [4, 7, 11, 15, 19],
   },
 ]
 
-export const HOME_DEMO_CHART_TYPES = [
-  { key: 'line', label: 'Line' },
-  { key: 'bar', label: 'Bar' },
-  { key: 'scatter', label: 'Scatter' },
-  { key: 'boxplot', label: 'Boxplot' },
-  { key: 'pie', label: 'Pie' },
+export const buildHomeDemoChartTypes = (t) => [
+  { key: 'line', label: t('home.demo.chartTypes.line') },
+  { key: 'bar', label: t('home.demo.chartTypes.bar') },
+  { key: 'scatter', label: t('home.demo.chartTypes.scatter') },
+  { key: 'boxplot', label: t('home.demo.chartTypes.boxplot') },
+  { key: 'pie', label: t('home.demo.chartTypes.pie') },
 ]

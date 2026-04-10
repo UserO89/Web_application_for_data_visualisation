@@ -122,6 +122,211 @@
       "importReview": "Proverka importa"
     }
   },
+  "home": {
+    "actions": {
+      "openDashboard": "Otkryt dashboard",
+      "startAnalyzing": "Nachat analiz",
+      "tryDemo": "Poprobovat publichnoe demo"
+    },
+    "hero": {
+      "eyebrow": "Integrirovannoe rabochee prostranstvo dlya analiza dannyh",
+      "title": "Perehodite ot syryh tablits k ponyatnym vyvodam v odnom sobranom potoke.",
+      "lead": "DataViz pomogaet importirovat, validirovat, redaktirovat, summarizovat i vizualizirovat tablichnye dannye v odnom meste. Servis podhodit dlya uchebnyh proektov, akademicheskih demonstratsiy i bystryh analiticheskih iteratsiy.",
+      "exploreCapabilities": "Posmotret vozmozhnosti",
+      "points": {
+        "import": "Import CSV/TXT",
+        "validation": "Validatsiya do grafikov",
+        "editing": "Redaktirovanie cherez tablitsu",
+        "summary": "Svodnaya statistika"
+      },
+      "snapshot": {
+        "kicker": "Snimok workflow",
+        "title": "Import -> Validatsiya -> Redaktirovanie -> Analiz -> Vizualizatsiya"
+      },
+      "stages": {
+        "import": "Import",
+        "validate": "Validatsiya",
+        "edit": "Redaktirovanie",
+        "analyze": "Analiz",
+        "chart": "Grafik"
+      },
+      "highlights": {
+        "oneValue": "Odno",
+        "fastValue": "Bystro",
+        "cleanValue": "Chisto",
+        "clearValue": "Yasno",
+        "workspace": "Integrirovannyy workspace",
+        "summary": "Postroenie summary",
+        "tableFirst": "Tablitsa v centre raboty",
+        "chartReady": "Rezultaty gotovy k grafikam"
+      }
+    },
+    "capabilitiesSection": {
+      "kicker": "Vozmozhnosti",
+      "title": "Vse neobhodimoe dlya raboty s dannymi v tablichnom formate.",
+      "description": "Platforma derzhit osnovnoy put analiza v odnom strukturirovannom rabochem prostranstve, chtoby polzovatel fokusirovalsya na dannyh, a ne na skleyke instrumentov."
+    },
+    "capabilities": {
+      "import": {
+        "title": "Import CSV ili TXT naborov dannyh",
+        "text": "Bystro nachnite s tablichnymi faylami i perenesite syrie dannye v vydelennoe proektnoe prostranstvo."
+      },
+      "validate": {
+        "title": "Validatsiya struktury i znacheniy",
+        "text": "Proveryayte opredelennye stolbtsy i nahodite problemy do togo, kak tratit vremya na grafiki i interpretatsiyu."
+      },
+      "edit": {
+        "title": "Prosmotr i redaktirovanie strok",
+        "text": "Ispravlyayte zapisi v interfeise, gde tablica yavlyaetsya osnovoy raboty s dannymi."
+      },
+      "stats": {
+        "title": "Postroenie svodnoy statistiki",
+        "text": "Poluchayte bystrye opisatelnye metriky, chtoby ponyat raspredeleniya i opredelit sleduyuschiy shag analiza."
+      },
+      "chart": {
+        "title": "Sozdanie poleznyh vizualizatsiy",
+        "text": "Stroyte grafiki na osnove ochishchennyh dannyh i perehodite ot znacheniy k ponyatnym vizualnym syuzhetam."
+      },
+      "workspace": {
+        "title": "Rabota v odnom svyazannom potoke",
+        "text": "Izbegayte razroznennoj tsepochki instrumentov i uderzhivayte import, ochistku, analiz i grafiki v edinom kontekste."
+      }
+    },
+    "advantagesSection": {
+      "kicker": "Pochemu eta platforma",
+      "title": "Sozdana dlya prakticheskogo analiza, a ne dlya fragmentirovannyh workflow.",
+      "description": "Tipichnye workflow raznosyat ochistku dannyh, validatsiyu i postroenie grafikov po raznym instrumentam. DataViz svyazyvaet eti etapy, chtoby kazhdoe reshenie bylo prozrachnym i bystro proveryalos."
+    },
+    "advantages": {
+      "workspace": {
+        "title": "Odno prostranstvo vmesto razbrosannyh instrumentov",
+        "text": "Snizte kolichestvo pereklyucheniy mezhdu tablitsami, skriptami i konstruktorami grafikov."
+      },
+      "validation": {
+        "title": "Validatsiya do vizualizatsii",
+        "text": "Nahodite problemy shemy i znacheniy ranshe, chtoby zashchitit kachestvo grafikov i interpretatsiyu."
+      },
+      "tableFirst": {
+        "title": "Redaktirovanie cherez tablitsu",
+        "text": "Delajte bystrye ispravleniya dannyh tam, gde stroki vidny srazu, ne vyhodya iz analiza."
+      },
+      "feedback": {
+        "title": "Bystraya analiticheskaya obratnaya svyaz",
+        "text": "Svodnaya statistika daet momentalnye kontrolnye tochki pri utochnenii naborov dannyh."
+      },
+      "foundation": {
+        "title": "Stabilnaya osnova dlya akademicheskogo rasshireniya",
+        "text": "Arhitektura podgotovlena dlya demonstratsiy v ramkah diplomnyh rabot i iterativnogo rosta funkcionalnosti."
+      }
+    },
+    "statsSection": {
+      "kicker": "Metriki progressa",
+      "title": "Ot vhoda k insightu s men'shim chislom dvizhuschihsya chastey.",
+      "description": "Eti chisla summarizuyut mashtab osnovnogo workflow i pokazyvayut, kak platforma derzhit put analiza kompaktnym i ponyatnym."
+    },
+    "stats": {
+      "steps": {
+        "label": "Etapy workflow",
+        "text": "Ot pervogo importa do vyvodov na osnove grafikov."
+      },
+      "actions": {
+        "label": "Osnovnye deystviya platformy",
+        "text": "Import, validatsiya, prosmotr, redaktirovanie, analiz, vizualizatsiya."
+      },
+      "inputs": {
+        "label": "Formaty tablichnogo vhoda",
+        "text": "Gotovo dlya CSV i TXT naborov dannyh."
+      },
+      "workspace": {
+        "label": "Integrirovannaya sreda",
+        "text": "Odno mesto dlya polnogo tsikla podgotovki dannyh."
+      }
+    },
+    "workflowSection": {
+      "kicker": "Kak eto rabotaet",
+      "title": "Yasnyy workflow ot pervoy zagruzki do finalnogo resheniya.",
+      "description": "Kazhdyy etap prednamerenno prost, poetomu platforma podhodit dlya diplomnyh demonstratsiy, zanyatiy i bystrogo eksploratornogo analiza."
+    },
+    "workflow": {
+      "steps": {
+        "create": {
+          "title": "Sozdayte proekt",
+          "text": "Otkroyte chistoe rabochee prostranstvo dlya odnogo nabora dannyh ili issledovatelskogo voprosa."
+        },
+        "import": {
+          "title": "Importiruyte nabor dannyh",
+          "text": "Zagruzite CSV ili TXT fayly i nachnite s vidimoy tablichnoy struktury."
+        },
+        "validate": {
+          "title": "Provalidiruyte i prover'te",
+          "text": "Prosmotrite stolbtsy, kachestvo znacheniy i pervye proverki soglasovannosti."
+        },
+        "analyze": {
+          "title": "Redaktiruyte i analiziruyte",
+          "text": "Ochischayte stroki napryamuyu i smotrite svodnuyu statistiku dlya dalshego napravleniya."
+        },
+        "visualize": {
+          "title": "Vizualiziruyte i predstavlyayte",
+          "text": "Stroyte ponyatnye grafiki i prevrashchayte nahodki v poleznye vyvody."
+        }
+      }
+    },
+    "demo": {
+      "section": {
+        "kicker": "Demo sozdaniya grafikov",
+        "title": "Sozdayte vizualnye istorii za sekundy s pomoschyu vedomogo potoka.",
+        "description": "Eto mini-demo pokazyvaet, kak bystro mozhno pereklyuchat tipy grafikov i vse ravno poluchat chistyy, chitaemyy i gotovyy k prezentatsii rezultat."
+      },
+      "controls": {
+        "dataset": "Demo-nabor dannyh",
+        "chartType": "Tip grafika",
+        "openWorkspace": "Otkryt polnoe rabochee prostranstvo grafikov"
+      },
+      "benefits": {
+        "refresh": "Mgnovennoe obnovlenie prevyu bez ruchnoy perenastroyki.",
+        "visuals": "Edinye temnye vizualy dlya otchetov i demonstratsiy.",
+        "workflow": "Te zhe printsipy workflow, chto i v polnom workspace proekta."
+      },
+      "loading": "Zagruzhaetsya interaktivnoe demo grafika...",
+      "chartTypes": {
+        "line": "Liniya",
+        "bar": "Stolbtsy",
+        "scatter": "Scatter",
+        "boxplot": "Boxplot",
+        "pie": "Krugovaya"
+      },
+      "weeks": {
+        "week1": "Nedelya 1",
+        "week2": "Nedelya 2",
+        "week3": "Nedelya 3",
+        "week4": "Nedelya 4",
+        "week5": "Nedelya 5"
+      },
+      "scenarios": {
+        "quality": {
+          "label": "Trend kachestva",
+          "title": "Kachestvo validatsii uluchshaetsya posle kazhdoi iteratsii",
+          "subtitle": "Skor konsistentnosti datasetu po sprintam"
+        },
+        "distribution": {
+          "label": "Smes kategoriy",
+          "title": "Raspredelenie ochishchennyh dannyh po segmentam",
+          "subtitle": "Stroki, sohranennye posle validatsii i redaktirovaniya"
+        },
+        "impact": {
+          "label": "Rost insightov",
+          "title": "Kolichestvo prakticheskih nahodok v kazhdom tsikle analiza",
+          "subtitle": "Kak bystro rastut insights v odnom workspace"
+        }
+      }
+    },
+    "finalCta": {
+      "kicker": "Gotovy nachat",
+      "title": "Soberite sleduyuschuyu istoriyu nabora dannyh bez pereklyucheniya mezhdu instrumentami.",
+      "description": "Sozdayte proekt, zagruzite dannye i perehodite pryamo k validatsii, analizu i vizualnoy otchetnosti.",
+      "viewWorkflow": "Posmotret workflow"
+    }
+  },
   "errors": {
     "requestFailed": "Zapros zavershilsya oshibkoy.",
     "sessionExpired": "Sessiya istekla ili CSRF-token nedeystvitelen. Povtorite popytku.",

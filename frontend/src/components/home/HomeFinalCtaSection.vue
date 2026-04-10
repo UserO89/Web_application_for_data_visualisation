@@ -3,9 +3,9 @@
     <span class="final-cta-glow" aria-hidden="true"></span>
 
     <HomeSectionHeader
-      kicker="Ready To Start"
-      title="Build your next dataset story without tool switching."
-      description="Create a project, load your data, and move directly into validation, analysis, and visual reporting."
+      :kicker="$t('home.finalCta.kicker')"
+      :title="$t('home.finalCta.title')"
+      :description="$t('home.finalCta.description')"
       variant="large"
       description-max-width="64ch"
       class="final-cta-head"
@@ -15,7 +15,7 @@
       <router-link :to="primaryAction.to" class="btn primary final-btn">
         {{ primaryAction.label }}
       </router-link>
-      <a href="#workflow" class="btn final-btn final-btn-secondary">View Workflow</a>
+      <a href="#workflow" class="btn final-btn final-btn-secondary">{{ $t('home.finalCta.viewWorkflow') }}</a>
     </div>
   </section>
 </template>

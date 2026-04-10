@@ -122,6 +122,211 @@
       "importReview": "Kontrola importu"
     }
   },
+  "home": {
+    "actions": {
+      "openDashboard": "Otvorit dashboard",
+      "startAnalyzing": "Zacat analyzu",
+      "tryDemo": "Vyskusat verejne demo"
+    },
+    "hero": {
+      "eyebrow": "Integrovany pracovny priestor pre analyzu dat",
+      "title": "Prejdite od surovych tabuliek k jasnym zaverom v jednom sustredenom procese.",
+      "lead": "DataViz vam pomaha importovat, validovat, upravovat, sumarizovat a vizualizovat tabulkove data na jednom mieste. Je vytvoreny pre prakticke studentske projekty, akademicke ukazky a rychlu analyzu.",
+      "exploreCapabilities": "Preskumat moznosti",
+      "points": {
+        "import": "Import CSV/TXT",
+        "validation": "Validacia pred grafmi",
+        "editing": "Upravy s tabulkou na prvom mieste",
+        "summary": "Sumarne statistiky"
+      },
+      "snapshot": {
+        "kicker": "Prehlad workflow",
+        "title": "Import -> Validacia -> Uprava -> Analyza -> Vizualizacia"
+      },
+      "stages": {
+        "import": "Import",
+        "validate": "Validacia",
+        "edit": "Uprava",
+        "analyze": "Analyza",
+        "chart": "Graf"
+      },
+      "highlights": {
+        "oneValue": "Jedno",
+        "fastValue": "Rychlo",
+        "cleanValue": "Ciste",
+        "clearValue": "Jasne",
+        "workspace": "Integrovany workspace",
+        "summary": "Generovanie sumarov",
+        "tableFirst": "Tabulkove upravy",
+        "chartReady": "Vystupy pripravene pre grafy"
+      }
+    },
+    "capabilitiesSection": {
+      "kicker": "Moznosti",
+      "title": "Vsetko potrebne pre pracu s datami orientovanu na tabulky.",
+      "description": "Platforma drzi jadro analyzy v jednom strukturovanom pracovnom priestore, aby sa pouzivatelia mohli sustredit na porozumenie dat a nie na prepajanie nastrojov."
+    },
+    "capabilities": {
+      "import": {
+        "title": "Import CSV alebo TXT datasetov",
+        "text": "Zacnite rychlo s tabulkovymi subormi a preneste surove data do samostatneho projektoveho priestoru."
+      },
+      "validate": {
+        "title": "Validacia struktury a hodnot",
+        "text": "Skontrolujte odhadnute stlpce a odhalte problemy skor, nez investujete cas do grafov a interpretacie."
+      },
+      "edit": {
+        "title": "Priama kontrola a uprava riadkov",
+        "text": "Opravte zaznamy v rozhrani zameranom na tabulku, aby cistenie dat zostalo blizko povodnych hodnot."
+      },
+      "stats": {
+        "title": "Generovanie sumarnej statistiky",
+        "text": "Ziskajte rychle deskriptivne metriky na pochopenie rozdeleni a smerovanie dalsich krokov analyzy."
+      },
+      "chart": {
+        "title": "Tvorba uzitocnych vizualizacii",
+        "text": "Vytvorte grafy z vycistenych dat a prejdite od hodnot k zrozumitelnym vizualnym pribehom."
+      },
+      "workspace": {
+        "title": "Praca v jednom prepojenom procese",
+        "text": "Vyhnite sa roztriestenym retazcom nastrojov a udrzte import, cistenie, analyzu a grafy zosuladene."
+      }
+    },
+    "advantagesSection": {
+      "kicker": "Preco tato platforma",
+      "title": "Vytvorena pre prakticku analyzu, nie pre roztriestene workflow.",
+      "description": "Typicke workflow delia cistenie dat, validaciu a tvorbu grafov do oddelenych nastrojov. DataViz tieto kroky prepaja, aby bolo rozhodovanie dohladatelne a rychlejsie overitelne."
+    },
+    "advantages": {
+      "workspace": {
+        "title": "Jeden workspace namiesto rozhadzanych nastrojov",
+        "text": "Znizte prepnutia medzi tabulkami, skriptami a nastrojmi na tvorbu grafov."
+      },
+      "validation": {
+        "title": "Validacia pred vizualizaciou",
+        "text": "Zachytte problemy so schemou a hodnotami skoro a chrante kvalitu grafov aj interpretacie."
+      },
+      "tableFirst": {
+        "title": "Upravy s tabulkou na prvom mieste",
+        "text": "Robte rychle opravy dat tam, kde su riadky viditelne, bez odchodu z analyzy."
+      },
+      "feedback": {
+        "title": "Rychla analyticka spatna vazba",
+        "text": "Sumarne statistiky poskytuju okamzite kontrolne body pri uprave datasetov."
+      },
+      "foundation": {
+        "title": "Stabilny zaklad pre akademicke rozsirenie",
+        "text": "Architektura je pripravena na diplomove ukazky a iterativny rast funkcionality."
+      }
+    },
+    "statsSection": {
+      "kicker": "Metriky postupu",
+      "title": "Od vstupu k insightu s mensim poctom pohyblivych casti.",
+      "description": "Tieto cisla sumarizuju rozsah hlavneho workflow a ukazuju, ako platforma drzi analyzu strucnu a zrozumitelnu."
+    },
+    "stats": {
+      "steps": {
+        "label": "Fazy workflow",
+        "text": "Od prveho importu po zavery podlozene grafmi."
+      },
+      "actions": {
+        "label": "Hlavne akcie platformy",
+        "text": "Import, validacia, kontrola, uprava, analyza, vizualizacia."
+      },
+      "inputs": {
+        "label": "Formaty tabulkovych vstupov",
+        "text": "Pripravene pre CSV a TXT datasety."
+      },
+      "workspace": {
+        "label": "Integrovane prostredie",
+        "text": "Jedno miesto pre cely cyklus pripravy dat."
+      }
+    },
+    "workflowSection": {
+      "kicker": "Ako to funguje",
+      "title": "Jasny workflow od prveho nahratia po finalne rozhodnutie.",
+      "description": "Kazda faza je zamerne jednoducha, vdaka comu je platforma vhodna pre diplomove ukazky, vyucbu aj rychlu exploracnu analyzu."
+    },
+    "workflow": {
+      "steps": {
+        "create": {
+          "title": "Vytvorte projekt",
+          "text": "Otvorte cisty pracovny priestor pre jeden dataset alebo vyskumne zadanie."
+        },
+        "import": {
+          "title": "Importujte dataset",
+          "text": "Nacitajte CSV alebo TXT subory a zacnite s viditelnou tabulkovou strukturou."
+        },
+        "validate": {
+          "title": "Validujte a skontrolujte",
+          "text": "Prezrite stlpce, kvalitu hodnot a prve kontroly konzistencie."
+        },
+        "analyze": {
+          "title": "Upravte a analyzujte",
+          "text": "Cistite riadky priamo a sledujte sumarne statistiky pre dalsi smer."
+        },
+        "visualize": {
+          "title": "Vizualizujte a prezentujte",
+          "text": "Vytvorte jasne grafy a premente zistenia na uzitocne zavery."
+        }
+      }
+    },
+    "demo": {
+      "section": {
+        "kicker": "Demo tvorby grafov",
+        "title": "Vytvorte vizualne pribehy za sekundy pomocou vedeneho postupu.",
+        "description": "Toto mini demo ukazuje, ako rychlo mozu pouzivatelia prepnut typ grafu a stale udrzat vysledok cisty, citatelny a pripraveny na prezentaciu."
+      },
+      "controls": {
+        "dataset": "Demo dataset",
+        "chartType": "Typ grafu",
+        "openWorkspace": "Otvorit plny pracovny priestor grafov"
+      },
+      "benefits": {
+        "refresh": "Okamzita obnova nahliadu bez manualnej rekonfiguracie.",
+        "visuals": "Konzistentne tmave vizualy pre reporty a ukazky.",
+        "workflow": "Rovnake principy workflow ako v plnom projektovom workspaci."
+      },
+      "loading": "Nacitava sa interaktivne demo grafu...",
+      "chartTypes": {
+        "line": "Ciara",
+        "bar": "Stlpce",
+        "scatter": "Bodovy",
+        "boxplot": "Boxplot",
+        "pie": "Kolacovy"
+      },
+      "weeks": {
+        "week1": "Tyzden 1",
+        "week2": "Tyzden 2",
+        "week3": "Tyzden 3",
+        "week4": "Tyzden 4",
+        "week5": "Tyzden 5"
+      },
+      "scenarios": {
+        "quality": {
+          "label": "Trend kvality",
+          "title": "Kvalita validacie sa po kazdej iteracii zlepsuje",
+          "subtitle": "Skore konzistencie datasetu podla sprintu"
+        },
+        "distribution": {
+          "label": "Mix kategorii",
+          "title": "Rozdelenie vycistenych dat podla segmentu",
+          "subtitle": "Riadky zachovane po validacii a uprave"
+        },
+        "impact": {
+          "label": "Rast insightov",
+          "title": "Pocet akcieschopnych zisteni v kazdom cykle analyzy",
+          "subtitle": "Ako rychlo rastu insighty v jednom workspaci"
+        }
+      }
+    },
+    "finalCta": {
+      "kicker": "Pripraveny zacat",
+      "title": "Vytvorte dalsi pribeh datasetu bez prepajania nastrojov.",
+      "description": "Vytvorte projekt, nacitajte data a prejdite priamo do validacie, analyzy a vizualneho reportingu.",
+      "viewWorkflow": "Zobrazit workflow"
+    }
+  },
   "errors": {
     "requestFailed": "Poziadavka zlyhala.",
     "sessionExpired": "Platnost relacie vyprsala alebo token CSRF nie je platny. Skuste to znova.",

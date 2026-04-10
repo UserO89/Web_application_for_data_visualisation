@@ -1,9 +1,9 @@
 <template>
   <section id="workflow" class="section-block workflow" data-reveal>
     <HomeSectionHeader
-      kicker="How It Works"
-      title="A clear workflow from first upload to final decision."
-      description="Each stage is intentionally simple, making the platform suitable for thesis demos, classroom exercises, and quick exploratory analysis sessions."
+      :kicker="$t('home.workflowSection.kicker')"
+      :title="$t('home.workflowSection.title')"
+      :description="$t('home.workflowSection.description')"
     />
 
     <div class="workflow-grid">

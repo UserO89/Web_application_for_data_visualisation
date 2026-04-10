@@ -1,39 +1,59 @@
 import { computed, reactive, ref } from 'vue'
 import {
-  HOME_HERO_STAGES,
-  HOME_HERO_HIGHLIGHTS,
-  HOME_CAPABILITIES,
-  HOME_ADVANTAGES,
-  HOME_STATS_ITEMS,
-  HOME_WORKFLOW_STEPS,
-  HOME_DEMO_SCENARIOS,
-  HOME_DEMO_CHART_TYPES,
+  buildHomeHeroStages,
+  buildHomeHeroHighlights,
+  buildHomeCapabilities,
+  buildHomeAdvantages,
+  buildHomeStatsItems,
+  buildHomeWorkflowSteps,
+  buildHomeDemoScenarios,
+  buildHomeDemoChartTypes,
   buildHomeDemoChartOption,
 } from '../../utils/home'
+import i18n, { translate } from '../../i18n'
 
 export const useHomeContent = ({ authStore } = {}) => {
-  const activeDemoScenarioKey = ref(HOME_DEMO_SCENARIOS[0]?.key || 'quality')
-  const activeDemoChartType = ref(HOME_DEMO_CHART_TYPES[0]?.key || 'line')
+  const activeDemoScenarioKey = ref('quality')
+  const activeDemoChartType = ref('line')
+  const currentLocale = computed(() => i18n.global.locale.value)
 
-  const primaryAction = computed(() => {
-    return authStore?.isAuthenticated
-      ? { label: 'Open Dashboard', to: { name: 'projects' } }
-      : { label: 'Start Analyzing', to: { name: 'login' } }
+  const createTranslatedContent = (builder) => computed(() => {
+    currentLocale.value
+    return builder(translate)
   })
 
-  const demoAction = computed(() => ({
-    label: 'Try Public Demo',
-    to: { name: 'project-demo' },
-  }))
+  const heroStages = createTranslatedContent(buildHomeHeroStages)
+  const heroHighlights = createTranslatedContent(buildHomeHeroHighlights)
+  const capabilities = createTranslatedContent(buildHomeCapabilities)
+  const advantages = createTranslatedContent(buildHomeAdvantages)
+  const statsItems = createTranslatedContent(buildHomeStatsItems)
+  const workflowSteps = createTranslatedContent(buildHomeWorkflowSteps)
+  const demoScenarios = createTranslatedContent(buildHomeDemoScenarios)
+  const demoChartTypes = createTranslatedContent(buildHomeDemoChartTypes)
+
+  const primaryAction = computed(() => {
+    currentLocale.value
+    return authStore?.isAuthenticated
+      ? { label: translate('home.actions.openDashboard'), to: { name: 'projects' } }
+      : { label: translate('home.actions.startAnalyzing'), to: { name: 'login' } }
+  })
+
+  const demoAction = computed(() => {
+    currentLocale.value
+    return {
+      label: translate('home.actions.tryDemo'),
+      to: { name: 'project-demo' },
+    }
+  })
 
   const currentDemoScenario = computed(() => {
-    return HOME_DEMO_SCENARIOS.find((scenario) => scenario.key === activeDemoScenarioKey.value)
-      || HOME_DEMO_SCENARIOS[0]
+    return demoScenarios.value.find((scenario) => scenario.key === activeDemoScenarioKey.value)
+      || demoScenarios.value[0]
   })
 
   const activeDemoChartTypeLabel = computed(() => {
-    const selected = HOME_DEMO_CHART_TYPES.find((item) => item.key === activeDemoChartType.value)
-    return selected?.label || 'Line'
+    const selected = demoChartTypes.value.find((item) => item.key === activeDemoChartType.value)
+    return selected?.label || translate('home.demo.chartTypes.line')
   })
 
   const demoChartOption = computed(() => buildHomeDemoChartOption({
@@ -42,10 +62,12 @@ export const useHomeContent = ({ authStore } = {}) => {
   }))
 
   const displayedStats = reactive(
-    HOME_STATS_ITEMS.reduce((acc, item) => {
-      acc[item.key] = 0
-      return acc
-    }, {})
+    {
+      steps: 0,
+      actions: 0,
+      inputs: 0,
+      workspace: 0,
+    }
   )
 
   const formatStat = (value) => Number(value || 0).toLocaleString()
@@ -53,14 +75,14 @@ export const useHomeContent = ({ authStore } = {}) => {
   return {
     primaryAction,
     demoAction,
-    heroStages: HOME_HERO_STAGES,
-    heroHighlights: HOME_HERO_HIGHLIGHTS,
-    capabilities: HOME_CAPABILITIES,
-    advantages: HOME_ADVANTAGES,
-    statsItems: HOME_STATS_ITEMS,
-    workflowSteps: HOME_WORKFLOW_STEPS,
-    demoScenarios: HOME_DEMO_SCENARIOS,
-    demoChartTypes: HOME_DEMO_CHART_TYPES,
+    heroStages,
+    heroHighlights,
+    capabilities,
+    advantages,
+    statsItems,
+    workflowSteps,
+    demoScenarios,
+    demoChartTypes,
     activeDemoScenarioKey,
     activeDemoChartType,
     currentDemoScenario,

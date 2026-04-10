@@ -122,6 +122,211 @@
       "importReview": "Perevirka importu"
     }
   },
+  "home": {
+    "actions": {
+      "openDashboard": "Vidkryty dashboard",
+      "startAnalyzing": "Pochaty analiz",
+      "tryDemo": "Sprobuvaty publichne demo"
+    },
+    "hero": {
+      "eyebrow": "Integrovanyi robochyi prostir dlya analizu danyh",
+      "title": "Perekhodte vid syryh tablyts do zrozumilyh vysnovkiv v odnom zibranomu protsesi.",
+      "lead": "DataViz dopomagae importuvaty, validuvaty, redaguvaty, pidsumovuvaty ta vizualizuvaty tablychni dani v odnom mistsi. Platforma pidkhodyt dlya studentskyh proektiv, akademichnyh demonstratsiy ta shvydkyh analitychnyh iteratsiy.",
+      "exploreCapabilities": "Perehlyanuty mozhlyvosti",
+      "points": {
+        "import": "Import CSV/TXT",
+        "validation": "Validatsiya do grafikiv",
+        "editing": "Redaguvannya cherez tablytsyu",
+        "summary": "Pidsumkova statystyka"
+      },
+      "snapshot": {
+        "kicker": "Zriz workflow",
+        "title": "Import -> Validatsiya -> Redaguvannya -> Analiz -> Vizualizatsiya"
+      },
+      "stages": {
+        "import": "Import",
+        "validate": "Validatsiya",
+        "edit": "Redaguvannya",
+        "analyze": "Analiz",
+        "chart": "Grafik"
+      },
+      "highlights": {
+        "oneValue": "Odne",
+        "fastValue": "Shvydko",
+        "cleanValue": "Chysto",
+        "clearValue": "Yasno",
+        "workspace": "Integrovanyi workspace",
+        "summary": "Formuvannya summary",
+        "tableFirst": "Tablytsya v tsentri roboty",
+        "chartReady": "Rezultaty gotovi do grafikiv"
+      }
+    },
+    "capabilitiesSection": {
+      "kicker": "Mozhlyvosti",
+      "title": "Use neobhidne dlya roboty z danymy u tablychnomu formati.",
+      "description": "Platforma trymae osnovnyi shlyah analizu v odnom strukturovanomu robochomu prostori, shchob korystuvach fokusuvavsya na danyh, a ne na skleyuvanni instrumentiv."
+    },
+    "capabilities": {
+      "import": {
+        "title": "Import CSV abo TXT naboriv danyh",
+        "text": "Shvydko startuyte z tablychnymy faylamy i perenosit syri dani v okremyi proektnyi prostir."
+      },
+      "validate": {
+        "title": "Validatsiya struktury ta znachen",
+        "text": "Pereviryayte vyznacheni stovptsi ta znakhodte problemy do toho, yak vytrachaty chas na grafiky ta interpretatsiyu."
+      },
+      "edit": {
+        "title": "Perehlyad i redaguvannya ryadkiv",
+        "text": "Vypravlyayte zapysy v interfeisi, de tablytsya ye osnovoyu roboty z danymy."
+      },
+      "stats": {
+        "title": "Pobudova pidsumkovoi statystyky",
+        "text": "Otrymujte shvydki opysovi metryky, shchob zrozumity rozpodyly ta vyznachyty nastupnyi krok analizu."
+      },
+      "chart": {
+        "title": "Stvorennya korysnyh vizualizatsiy",
+        "text": "Buduyte grafiky na osnovi ochyshchenyh danyh i perehodyte vid znachen do zrozumilyh vizualnyh istoriy."
+      },
+      "workspace": {
+        "title": "Robota v odnom povyazanomu protsesi",
+        "text": "Unykayte rozrizanogo lantsyuga instrumentiv i trymayte import, ochystku, analiz i grafiky v odnom konteksti."
+      }
+    },
+    "advantagesSection": {
+      "kicker": "Chomu tsya platforma",
+      "title": "Stvorena dlya praktychnoho analizu, a ne dlya fragmentovanyh workflow.",
+      "description": "Typovi workflow roznosyat ochystku danyh, validatsiyu ta pobudovu grafikiv po riznyh instrumentah. DataViz z'yednue tsi etapy, shchob kozhne rishennya bulo prozorym i shvydko pereviryalosya."
+    },
+    "advantages": {
+      "workspace": {
+        "title": "Odyn prostir zamist rozkydanyh instrumentiv",
+        "text": "Zmenshit kilkist peremykan mizh tablytsyamy, skryptamy ta konstruktory grafykiv."
+      },
+      "validation": {
+        "title": "Validatsiya do vizualizatsii",
+        "text": "Znakhodte problemy shemy ta znachen rano, shchob zahystyty yakist grafikiv i interpretatsiyu."
+      },
+      "tableFirst": {
+        "title": "Redaguvannya cherez tablytsyu",
+        "text": "Robit shvydki vypravlennya danyh tam, de ryadky vidno odrazu, ne vyhodyachy z analizu."
+      },
+      "feedback": {
+        "title": "Shvydkyi analitychnyi zvorotnyi zv'yazok",
+        "text": "Pidsumkova statystyka dae momentalni kontrolni tochky pid chas utochnennya naboriv danyh."
+      },
+      "foundation": {
+        "title": "Stabilna osnova dlya akademichnogo rozshyrennya",
+        "text": "Arhitektura pidgotovlena dlya demonstratsiy u mezhah dyplomnyh robit i iteratyvnogo rostu funkcionalnosti."
+      }
+    },
+    "statsSection": {
+      "kicker": "Metryky postupu",
+      "title": "Vid vkhodu do insightu z menshoyu kilkistyu ruhomyh chastyn.",
+      "description": "Tsi chysla pidsumovuyut mashtab osnovnogo workflow ta pokazuyut, yak platforma trymae shlyah analizu kompaktnym i zrozumilym."
+    },
+    "stats": {
+      "steps": {
+        "label": "Etapy workflow",
+        "text": "Vid pershoho importu do vysnovkiv na osnovi grafikiv."
+      },
+      "actions": {
+        "label": "Osnovni diyi platformy",
+        "text": "Import, validatsiya, pereglyad, redaguvannya, analiz, vizualizatsiya."
+      },
+      "inputs": {
+        "label": "Formaty tablychnoho vhodu",
+        "text": "Hotovo dlya CSV ta TXT naboriv danyh."
+      },
+      "workspace": {
+        "label": "Integrovane seredovyshche",
+        "text": "Odne mistse dlya povnoho tsyklu pidgotovky danyh."
+      }
+    },
+    "workflowSection": {
+      "kicker": "Yak tse pratsyue",
+      "title": "Yasnyi workflow vid pershoho zavantazhennya do finalnogo rishennya.",
+      "description": "Kozhen etap navmisno prostyi, tomu platforma pidkhodyt dlya dyplomnyh demonstratsiy, zanyat ta shvydkoho eksploratornoho analizu."
+    },
+    "workflow": {
+      "steps": {
+        "create": {
+          "title": "Stvorit proyekt",
+          "text": "Vidkryite chystyi robochyi prostir dlya odnoho naboru danyh abo doslidnytskoho pytannya."
+        },
+        "import": {
+          "title": "Importuite nabir danyh",
+          "text": "Zavantazhite CSV abo TXT fayly ta startuyte z vydymoi tablychnoi struktury."
+        },
+        "validate": {
+          "title": "Provvaliduite ta perevirte",
+          "text": "Perehlyante stovptsi, yakist znachen ta pershi perevirky uzgodzhenosti."
+        },
+        "analyze": {
+          "title": "Redaguite ta analizuite",
+          "text": "Ochyschayte ryadky bezposeredno ta dyvitsya na pidsumkovu statystyku dlya podalshoho napr'yamu."
+        },
+        "visualize": {
+          "title": "Vizualizuite ta prezentuite",
+          "text": "Buduite zrozumili grafiky ta peretvoryuite znakhidky na korysni vysnovky."
+        }
+      }
+    },
+    "demo": {
+      "section": {
+        "kicker": "Demo stvorennya grafikiv",
+        "title": "Stvoryuite vizualni istorii za sekundy za dopomogoyu vedenoho protsesu.",
+        "description": "Tse mini-demo pokazuye, yak shvydko mozhna pereklyuchaty typy grafikiv i vse odno otrymuvaty chystyi, chytabelnyi ta hotovyi do prezentatsii rezultat."
+      },
+      "controls": {
+        "dataset": "Demo-nabir danyh",
+        "chartType": "Typ grafika",
+        "openWorkspace": "Vidkryty povnyi robochyi prostir grafikiv"
+      },
+      "benefits": {
+        "refresh": "Mytteve onovlennya prevyu bez ruchnogo pereformatuvannya.",
+        "visuals": "Yedyni temni vizualy dlya zvitiv ta demonstratsiy.",
+        "workflow": "Ti sami pryntsypy workflow, shcho i v povnomu workspace proektu."
+      },
+      "loading": "Zavantazhuetsya interaktyvne demo grafika...",
+      "chartTypes": {
+        "line": "Liniya",
+        "bar": "Stovptsi",
+        "scatter": "Scatter",
+        "boxplot": "Boxplot",
+        "pie": "Kruhova"
+      },
+      "weeks": {
+        "week1": "Tyzhden 1",
+        "week2": "Tyzhden 2",
+        "week3": "Tyzhden 3",
+        "week4": "Tyzhden 4",
+        "week5": "Tyzhden 5"
+      },
+      "scenarios": {
+        "quality": {
+          "label": "Trend yakosti",
+          "title": "Yakist validatsii polipshuyetsya pislya kozhnoyi iteratsiyi",
+          "subtitle": "Skor konsystentnosti datasetu za sprintamy"
+        },
+        "distribution": {
+          "label": "Miks kategoriy",
+          "title": "Rozpodil ochyshchenyh danyh za segmentamy",
+          "subtitle": "Ryadky, zberezheni pislya validatsiyi ta redaguvannya"
+        },
+        "impact": {
+          "label": "Rist insightiv",
+          "title": "Kilkist praktychnyh znahidok u kozhnomu tsykli analizu",
+          "subtitle": "Yak shvydko rostud insights v odnomu workspace"
+        }
+      }
+    },
+    "finalCta": {
+      "kicker": "Hotovi pochaty",
+      "title": "Zberit nastupnu istoriyu naboru danyh bez peremykannya mizh instrumentamy.",
+      "description": "Stvorit proyekt, zavantazhit dani i perekhodte vidrazu do validatsiyi, analizu ta vizualnoyi zvitnosti.",
+      "viewWorkflow": "Perehlyanuty workflow"
+    }
+  },
   "errors": {
     "requestFailed": "Zapyt zavershyvsya pomylkoyu.",
     "sessionExpired": "Sesiyu zaversheno abo CSRF-token nediyisnyy. Sprobuyte shche raz.",

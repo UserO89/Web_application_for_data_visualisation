@@ -1,9 +1,9 @@
 <template>
   <section id="capabilities" class="section-block" data-reveal>
     <HomeSectionHeader
-      kicker="Capabilities"
-      title="Everything needed for table-first data work."
-      description="The platform keeps the core analysis journey in one structured workspace so users can focus on understanding data instead of stitching tools together."
+      :kicker="$t('home.capabilitiesSection.kicker')"
+      :title="$t('home.capabilitiesSection.title')"
+      :description="$t('home.capabilitiesSection.description')"
     />
 
     <div class="capability-grid">

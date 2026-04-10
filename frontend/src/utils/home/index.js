@@ -1,12 +1,12 @@
 export {
-  HOME_HERO_STAGES,
-  HOME_HERO_HIGHLIGHTS,
-  HOME_CAPABILITIES,
-  HOME_ADVANTAGES,
-  HOME_STATS_ITEMS,
-  HOME_WORKFLOW_STEPS,
-  HOME_DEMO_SCENARIOS,
-  HOME_DEMO_CHART_TYPES,
+  buildHomeHeroStages,
+  buildHomeHeroHighlights,
+  buildHomeCapabilities,
+  buildHomeAdvantages,
+  buildHomeStatsItems,
+  buildHomeWorkflowSteps,
+  buildHomeDemoScenarios,
+  buildHomeDemoChartTypes,
 } from './content'
 
 export { buildHomeDemoChartOption } from './demoChartOptions'

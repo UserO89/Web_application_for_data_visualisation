@@ -1,9 +1,9 @@
 <template>
   <section ref="rootEl" class="panel stats-panel" data-reveal>
     <HomeSectionHeader
-      kicker="Progress Metrics"
-      title="From input to insight with fewer moving parts."
-      description="These numbers summarize the core workflow scope and show how the platform keeps the analysis path concise and understandable."
+      :kicker="$t('home.statsSection.kicker')"
+      :title="$t('home.statsSection.title')"
+      :description="$t('home.statsSection.description')"
       compact
     />
 

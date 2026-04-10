@@ -1,9 +1,9 @@
 <template>
   <section class="panel advantages" data-reveal>
     <HomeSectionHeader
-      kicker="Why This Platform"
-      title="Built for practical analysis, not fragmented workflows."
-      description="Typical workflows split data cleaning, validation, and charting across separate tools. DataViz keeps these steps connected, so each decision remains traceable and faster to verify."
+      :kicker="$t('home.advantagesSection.kicker')"
+      :title="$t('home.advantagesSection.title')"
+      :description="$t('home.advantagesSection.description')"
     />
 
     <div class="advantage-list">

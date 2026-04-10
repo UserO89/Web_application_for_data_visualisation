@@ -1,9 +1,9 @@
 <template>
   <section ref="rootEl" class="panel chart-demo" data-reveal>
     <HomeSectionHeader
-      kicker="Chart Creation Demo"
-      title="Create visual stories in seconds with a guided flow."
-      description="This mini demo shows how quickly users can switch between chart styles and still keep the result clean, readable, and presentation-ready."
+      :kicker="$t('home.demo.section.kicker')"
+      :title="$t('home.demo.section.title')"
+      :description="$t('home.demo.section.description')"
       class="demo-head"
     />
 

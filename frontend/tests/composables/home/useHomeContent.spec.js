@@ -1,7 +1,12 @@
 import { reactive } from 'vue'
 import { useHomeContent } from '../../../src/composables/home/useHomeContent'
+import { setLocale } from '../../../src/i18n'
 
 describe('useHomeContent', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('returns guest and authenticated primary actions from auth state', () => {
     const authStore = reactive({
       isAuthenticated: false,
@@ -24,6 +29,22 @@ describe('useHomeContent', () => {
       label: 'Open Dashboard',
       to: { name: 'projects' },
     })
+  })
+
+  it('updates translated content when the locale changes', () => {
+    const state = useHomeContent({
+      authStore: reactive({ isAuthenticated: false }),
+    })
+
+    expect(state.primaryAction.value.label).toBe('Start Analyzing')
+    expect(state.heroStages.value[0]).toBe('Import')
+    expect(state.demoScenarios.value[0].label).toBe('Quality trend')
+
+    setLocale('sk')
+
+    expect(state.primaryAction.value.label).toBe('Zacat analyzu')
+    expect(state.heroStages.value[0]).toBe('Import')
+    expect(state.demoScenarios.value[0].label).toBe('Trend kvality')
   })
 
   it('tracks active demo scenario and chart type in computed chart state', () => {

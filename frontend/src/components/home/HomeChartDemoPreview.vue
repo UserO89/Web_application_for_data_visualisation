@@ -11,7 +11,7 @@
     <div class="demo-chart-wrap">
       <BaseEChart v-if="showDemoChart" :option="demoChartOption" />
       <div v-else class="demo-chart-placeholder">
-        Loading interactive chart demo...
+        {{ $t('home.demo.loading') }}
       </div>
     </div>
   </div>
