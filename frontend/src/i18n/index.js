@@ -47,6 +47,10 @@ export function getLocale() {
   return resolveLocale(i18n.global.locale.value)
 }
 
+export function translate(key, params = {}) {
+  return i18n.global.t(key, params)
+}
+
 syncDocumentLanguage(i18n.global.locale.value)
 
 export { SUPPORTED_LOCALES }

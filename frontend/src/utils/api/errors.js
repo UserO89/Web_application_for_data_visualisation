@@ -1,3 +1,5 @@
+import { translate } from '../../i18n'
+
 const joinValidationMessages = (errors) => {
   if (!errors || typeof errors !== 'object') return ''
 
@@ -9,7 +11,7 @@ const joinValidationMessages = (errors) => {
   return values.join(' ')
 }
 
-export const extractApiErrorMessage = (error, fallback = 'Request failed.') => {
+export const extractApiErrorMessage = (error, fallback = null) => {
   const apiData = error?.response?.data
 
   if (typeof apiData?.message === 'string' && apiData.message.trim()) {
@@ -20,12 +22,12 @@ export const extractApiErrorMessage = (error, fallback = 'Request failed.') => {
   if (validationMessage) return validationMessage
 
   if (Number(error?.response?.status || 0) === 419) {
-    return 'Session expired or CSRF token is invalid. Please try again.'
+    return translate('errors.sessionExpired')
   }
 
   if (error?.code === 'ERR_NETWORK') {
-    return 'Cannot connect to API. Please check your network and backend server.'
+    return translate('errors.networkUnavailable')
   }
 
-  return String(fallback || 'Request failed.')
+  return String(fallback || translate('errors.requestFailed'))
 }
