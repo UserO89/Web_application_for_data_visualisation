@@ -25,6 +25,7 @@ return [
     'attributes' => [
         'name' => 'name',
         'email' => 'email',
+        'locale' => 'language',
         'password' => 'password',
         'current_password' => 'current password',
         'password_confirmation' => 'password confirmation',

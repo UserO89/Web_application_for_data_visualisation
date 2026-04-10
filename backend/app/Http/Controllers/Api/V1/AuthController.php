@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -58,11 +59,20 @@ class AuthController extends Controller
     public function updateProfile(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['sometimes', 'required', 'string', 'max:120'],
+            'locale' => ['sometimes', 'string', Rule::in(config('app.supported_locales', ['en', 'sk', 'ru', 'uk']))],
         ]);
 
         $user = $request->user();
-        $user->name = $validated['name'];
+
+        if (array_key_exists('name', $validated)) {
+            $user->name = $validated['name'];
+        }
+
+        if (array_key_exists('locale', $validated)) {
+            $user->locale = $validated['locale'];
+        }
+
         $user->save();
 
         return response()->json(['user' => $user->fresh()]);

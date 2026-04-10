@@ -25,6 +25,7 @@ return [
     'attributes' => [
         'name' => 'ім’я',
         'email' => 'email',
+        'locale' => 'мова',
         'password' => 'пароль',
         'current_password' => 'поточний пароль',
         'password_confirmation' => 'підтвердження пароля',

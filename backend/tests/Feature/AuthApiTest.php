@@ -17,6 +17,7 @@ class AuthApiTest extends TestCase
     {
         $response = $this
             ->withSession([])
+            ->withHeader('X-Locale', 'uk')
             ->postJson('/api/v1/auth/register', [
                 'name' => 'Registered User',
                 'email' => 'registered@example.test',
@@ -26,11 +27,13 @@ class AuthApiTest extends TestCase
         $response
             ->assertOk()
             ->assertJsonPath('user.name', 'Registered User')
-            ->assertJsonPath('user.email', 'registered@example.test');
+            ->assertJsonPath('user.email', 'registered@example.test')
+            ->assertJsonPath('user.locale', 'uk');
 
         $user = User::query()->where('email', 'registered@example.test')->first();
         $this->assertNotNull($user);
         $this->assertTrue(Hash::check('password123', $user->password));
+        $this->assertSame('uk', $user->locale);
         $this->assertAuthenticatedAs($user);
     }
 
@@ -89,20 +92,31 @@ class AuthApiTest extends TestCase
 
     public function test_authenticated_user_can_fetch_profile_update_name_and_change_password(): void
     {
-        $user = $this->createUser();
+        $user = $this->createUser([
+            'locale' => 'ru',
+        ]);
 
         $this->actingAs($user);
 
         $this->getJson('/api/v1/auth/me')
             ->assertOk()
             ->assertJsonPath('user.id', $user->id)
-            ->assertJsonPath('user.name', $user->name);
+            ->assertJsonPath('user.name', $user->name)
+            ->assertJsonPath('user.locale', 'ru');
 
         $this->patchJson('/api/v1/auth/profile', [
             'name' => 'Updated Name',
         ])
             ->assertOk()
-            ->assertJsonPath('user.name', 'Updated Name');
+            ->assertJsonPath('user.name', 'Updated Name')
+            ->assertJsonPath('user.locale', 'ru');
+
+        $this->patchJson('/api/v1/auth/profile', [
+            'locale' => 'sk',
+        ])
+            ->assertOk()
+            ->assertJsonPath('user.name', 'Updated Name')
+            ->assertJsonPath('user.locale', 'sk');
 
         $this->patchJson('/api/v1/auth/password', [
             'current_password' => 'password123',
@@ -113,6 +127,7 @@ class AuthApiTest extends TestCase
             ->assertJsonPath('ok', true);
 
         $this->assertTrue(Hash::check('new-password123', $user->fresh()->password));
+        $this->assertSame('sk', $user->fresh()->locale);
     }
 
     public function test_password_and_account_endpoints_reject_incorrect_current_password(): void
@@ -201,6 +216,7 @@ class AuthApiTest extends TestCase
             'name' => 'Test User',
             'email' => 'test-' . uniqid('', true) . '@example.test',
             'role' => 'user',
+            'locale' => 'en',
             'password' => 'password123',
         ], $overrides));
     }

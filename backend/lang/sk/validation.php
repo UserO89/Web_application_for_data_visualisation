@@ -25,6 +25,7 @@ return [
     'attributes' => [
         'name' => 'meno',
         'email' => 'email',
+        'locale' => 'jazyk',
         'password' => 'heslo',
         'current_password' => 'aktualne heslo',
         'password_confirmation' => 'potvrdenie hesla',
