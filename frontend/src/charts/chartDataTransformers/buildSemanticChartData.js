@@ -1,3 +1,5 @@
+import { chartAggregationLabel, chartCommonLabel, formatChartNumber } from '../ui/i18n'
+
 const toCleanString = (value) => {
   if (value === null || value === undefined) return null
   const text = String(value).trim()
@@ -90,7 +92,9 @@ const buildLineOrBar = ({ type, definition, schemaColumns, rows, getSeriesColor 
     const x = toCleanString(xRaw)
     if (!x) return
 
-    const group = groupColumn ? (toCleanString(rowValue(row, groupColumn)) || 'Unknown') : 'Series'
+      const group = groupColumn
+        ? (toCleanString(rowValue(row, groupColumn)) || chartCommonLabel('unknown', 'Unknown'))
+        : chartCommonLabel('series', 'Series')
     let y = null
     if (yBinding.aggregation === 'count') {
       y = 1
@@ -132,8 +136,8 @@ const buildLineOrBar = ({ type, definition, schemaColumns, rows, getSeriesColor 
     meta: {
       xAxisLabel: xColumn?.name || '',
       yAxisLabel: yBinding.aggregation === 'count'
-        ? 'Count'
-        : `${yBinding.aggregation.toUpperCase()}(${yColumn?.name || ''})`,
+        ? chartAggregationLabel('count')
+        : `${chartAggregationLabel(yBinding.aggregation).toUpperCase()}(${yColumn?.name || ''})`,
     },
   }
 }
@@ -149,7 +153,9 @@ const buildScatter = ({ definition, schemaColumns, rows, getSeriesColor }) => {
     const y = toNumber(rowValue(row, yColumn))
     if (!Number.isFinite(x) || !Number.isFinite(y)) return
 
-    const group = groupColumn ? (toCleanString(rowValue(row, groupColumn)) || 'Unknown') : 'Series'
+    const group = groupColumn
+      ? (toCleanString(rowValue(row, groupColumn)) || chartCommonLabel('unknown', 'Unknown'))
+      : chartCommonLabel('series', 'Series')
     if (!grouped.has(group)) grouped.set(group, [])
     grouped.get(group).push({ x, y })
   })
@@ -191,13 +197,15 @@ const buildHistogram = ({ definition, schemaColumns, rows, getSeriesColor }) => 
       type: 'histogram',
       labels: [String(min)],
       datasets: [{
-        label: `${valueColumn?.name || 'Value'} frequency`,
+        label: `${valueColumn?.name || chartCommonLabel('value', 'Value')} ${chartCommonLabel('frequency', 'frequency').toLowerCase()}`,
         data: [values.length],
-        color: getSeriesColor(valueColumn?.name || 'Value', 0),
+        color: getSeriesColor(valueColumn?.name || chartCommonLabel('value', 'Value'), 0),
       }],
       meta: {
-        xAxisLabel: valueColumn?.name || 'Value',
-        yAxisLabel: settings.densityMode === 'density' ? 'Density' : 'Frequency',
+        xAxisLabel: valueColumn?.name || chartCommonLabel('value', 'Value'),
+        yAxisLabel: settings.densityMode === 'density'
+          ? chartCommonLabel('density', 'Density')
+          : chartCommonLabel('frequency', 'Frequency'),
       },
     }
   }
@@ -216,7 +224,7 @@ const buildHistogram = ({ definition, schemaColumns, rows, getSeriesColor }) => 
   const labels = bins.map((_, index) => {
     const start = min + index * width
     const end = index === binCount - 1 ? max : start + width
-    return `${start.toFixed(2)}-${end.toFixed(2)}`
+    return `${formatChartNumber(start, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}-${formatChartNumber(end, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   })
 
   const densityMode = settings?.densityMode === 'density' ? 'density' : 'frequency'
@@ -233,23 +241,29 @@ const buildHistogram = ({ definition, schemaColumns, rows, getSeriesColor }) => 
   const markerIndex = (markerValue) => Math.min(binCount - 1, Math.max(0, Math.floor((markerValue - min) / width)))
   const markers = []
   if (settings?.showMeanMarker) {
-    markers.push({ name: 'Mean', index: markerIndex(mean), value: mean })
+    markers.push({ name: chartAggregationLabel('avg'), index: markerIndex(mean), value: mean })
   }
   if (settings?.showMedianMarker) {
-    markers.push({ name: 'Median', index: markerIndex(median), value: median })
+    markers.push({ name: chartAggregationLabel('median'), index: markerIndex(median), value: median })
   }
 
   return {
     type: 'histogram',
     labels,
     datasets: [{
-      label: `${valueColumn?.name || 'Value'} ${densityMode === 'density' ? 'density' : 'frequency'}`,
+      label: `${valueColumn?.name || chartCommonLabel('value', 'Value')} ${
+        densityMode === 'density'
+          ? chartCommonLabel('density', 'density').toLowerCase()
+          : chartCommonLabel('frequency', 'frequency').toLowerCase()
+      }`,
       data: outputValues,
-      color: getSeriesColor(valueColumn?.name || 'Value', 0),
+      color: getSeriesColor(valueColumn?.name || chartCommonLabel('value', 'Value'), 0),
     }],
     meta: {
-      xAxisLabel: valueColumn?.name || 'Value',
-      yAxisLabel: densityMode === 'density' ? 'Density' : 'Frequency',
+      xAxisLabel: valueColumn?.name || chartCommonLabel('value', 'Value'),
+      yAxisLabel: densityMode === 'density'
+        ? chartCommonLabel('density', 'Density')
+        : chartCommonLabel('frequency', 'Frequency'),
       histogramMarkers: markers,
     },
   }
@@ -264,7 +278,9 @@ const buildBoxplot = ({ definition, schemaColumns, rows, getSeriesColor }) => {
   rows.forEach((row) => {
     const value = toNumber(rowValue(row, valueColumn))
     if (!Number.isFinite(value)) return
-    const key = groupColumn ? (toCleanString(rowValue(row, groupColumn)) || 'Unknown') : (valueColumn?.name || 'Values')
+    const key = groupColumn
+      ? (toCleanString(rowValue(row, groupColumn)) || chartCommonLabel('unknown', 'Unknown'))
+      : (valueColumn?.name || chartCommonLabel('values', 'Values'))
     if (!groups.has(key)) groups.set(key, [])
     groups.get(key).push(value)
   })
@@ -325,10 +341,10 @@ const buildPie = ({ definition, schemaColumns, rows, getSeriesColor }) => {
     labels,
     datasets: [{
       label: valueBinding.aggregation === 'count'
-        ? 'Count'
-        : `${valueBinding.aggregation.toUpperCase()}(${valueColumn?.name || ''})`,
+        ? chartAggregationLabel('count')
+        : `${chartAggregationLabel(valueBinding.aggregation).toUpperCase()}(${valueColumn?.name || ''})`,
       data,
-      color: getSeriesColor(categoryColumn?.name || 'Category', 0),
+      color: getSeriesColor(categoryColumn?.name || chartCommonLabel('category', 'Category'), 0),
     }],
     meta: {},
   }

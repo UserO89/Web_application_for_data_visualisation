@@ -1,4 +1,6 @@
 import { buildSemanticChartData } from '../../../src/charts/chartDataTransformers/buildSemanticChartData'
+import { beforeEach } from 'vitest'
+import { setLocale } from '../../../src/i18n'
 
 const buildSchemaColumns = () => ([
   { id: 1, name: 'Order Date', fieldKey: 'orderDate', semanticType: 'temporal' },
@@ -10,6 +12,10 @@ const buildSchemaColumns = () => ([
 const getSeriesColor = (label, index) => `${label}:${index}`
 
 describe('buildSemanticChartData', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('builds grouped line series with temporal label sorting and aggregation', () => {
     const definition = {
       chartType: 'line',

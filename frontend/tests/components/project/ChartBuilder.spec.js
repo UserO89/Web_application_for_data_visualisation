@@ -2,6 +2,7 @@ import { nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import ChartBuilder from '../../../src/components/project/ChartBuilder.vue'
 import { createDefaultChartDefinition } from '../../../src/charts/chartDefinitions/createUniversalChartDefinition'
+import { withI18n } from '../../support/i18n'
 
 const buildSchemaColumns = () => ([
   { id: 1, name: 'Date', semanticType: 'temporal' },
@@ -11,13 +12,13 @@ const buildSchemaColumns = () => ([
 
 describe('ChartBuilder', () => {
   it('does not emit update:modelValue for equivalent modelValue updates', async () => {
-    const wrapper = mount(ChartBuilder, {
+    const wrapper = mount(ChartBuilder, withI18n({
       props: {
         schemaColumns: buildSchemaColumns(),
         modelValue: createDefaultChartDefinition('line'),
         suggestions: [],
       },
-    })
+    }))
 
     const equivalentValue = JSON.parse(JSON.stringify(createDefaultChartDefinition('line')))
     await wrapper.setProps({ modelValue: equivalentValue })
@@ -28,13 +29,13 @@ describe('ChartBuilder', () => {
   })
 
   it('emits update:modelValue when local chart type changes', async () => {
-    const wrapper = mount(ChartBuilder, {
+    const wrapper = mount(ChartBuilder, withI18n({
       props: {
         schemaColumns: buildSchemaColumns(),
         modelValue: createDefaultChartDefinition('line'),
         suggestions: [],
       },
-    })
+    }))
 
     const chartTypeSelect = wrapper.find('select.field-select')
     await chartTypeSelect.setValue('bar')

@@ -9,7 +9,7 @@
       :disabled="disabled"
       @change="$emit('update:modelValue', normalizeValue($event.target.value))"
     >
-      <option value="">{{ placeholder || 'Not selected' }}</option>
+      <option value="">{{ placeholder || $t('charts.builder.notSelected') }}</option>
       <option
         v-for="column in options"
         :key="column.id"
@@ -24,7 +24,9 @@
 
 <script>
 import { computed, ref } from 'vue'
-import { SEMANTIC_TYPE_LABELS } from '../../charts/ui/typeLabels'
+import { useI18n } from 'vue-i18n'
+import { semanticTypeLabel } from '../../charts/ui/typeLabels'
+import { chartCommonLabel } from '../../charts/ui/i18n'
 
 let chartFieldSelectorSeed = 0
 
@@ -42,6 +44,7 @@ export default {
   },
   emits: ['update:modelValue'],
   setup(props) {
+    const { locale } = useI18n({ useScope: 'global' })
     const selectorId = ref(props.id || `chart-field-${++chartFieldSelectorSeed}`)
     const selectorName = computed(() => props.name || selectorId.value)
 
@@ -50,7 +53,10 @@ export default {
       const parsed = Number(value)
       return Number.isFinite(parsed) ? parsed : null
     }
-    const typeLabel = (semanticType) => SEMANTIC_TYPE_LABELS[semanticType] || semanticType || 'Unknown'
+    const typeLabel = (value) => {
+      locale.value
+      return semanticTypeLabel(value) || value || chartCommonLabel('unknown', 'Unknown')
+    }
     return { selectorId, selectorName, normalizeValue, typeLabel }
   },
 }

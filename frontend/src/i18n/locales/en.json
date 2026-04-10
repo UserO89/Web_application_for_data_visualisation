@@ -129,6 +129,41 @@
       "workspace": "Workspace",
       "savedCharts": "Saved Charts",
       "importReview": "Import Review"
+    },
+    "workspace": {
+      "table": {
+        "rotateTitle": "Rotate device to landscape",
+        "rotateText": "Table editing is optimized for horizontal view on phones.",
+        "rotateContinue": "Continue without rotating",
+        "exportCsv": "Export Table CSV"
+      },
+      "chart": {
+        "refreshData": "Refresh Data",
+        "exportCsv": "Export CSV",
+        "heightLabel": "Chart height",
+        "heights": {
+          "compact": "Compact",
+          "medium": "Medium",
+          "tall": "Tall",
+          "xl": "XL",
+          "custom": "Custom (drag)"
+        },
+        "seriesColors": "Series Colors",
+        "resetColors": "Reset Colors",
+        "seriesFallback": "Series {index}",
+        "seriesColorAria": "Series color {name}"
+      },
+      "library": {
+        "title": "Saved Charts",
+        "refresh": "Refresh",
+        "loading": "Loading saved charts...",
+        "empty": "No saved charts yet. Build a chart in Visualization and click Save Chart.",
+        "titleAria": "Saved chart title for chart {id}",
+        "saveTitle": "Save",
+        "untitledChart": "Untitled chart",
+        "chartFallback": "chart",
+        "download": "Download PNG"
+      }
     }
   },
   "profile": {
@@ -392,6 +427,137 @@
       "rangeMinutes": "{value} min",
       "rangeHours": "{value} h",
       "rangeDays": "{value} days"
+    }
+  },
+  "charts": {
+    "types": {
+      "line": "Line",
+      "bar": "Bar",
+      "scatter": "Scatter",
+      "histogram": "Histogram",
+      "boxplot": "Box plot",
+      "pie": "Pie"
+    },
+    "aggregations": {
+      "none": "Value",
+      "sum": "Sum",
+      "avg": "Mean",
+      "min": "Min",
+      "max": "Max",
+      "median": "Median",
+      "count": "Count"
+    },
+    "common": {
+      "unknown": "Unknown",
+      "series": "Series",
+      "value": "Value",
+      "values": "Values",
+      "category": "Category",
+      "frequency": "Frequency",
+      "density": "Density",
+      "groups": {
+        "numeric": "Numeric columns",
+        "category": "Category columns",
+        "date": "Date columns",
+        "ordered": "Ordered columns",
+        "hidden": "Hidden / Excluded columns"
+      }
+    },
+    "semanticTypes": {
+      "metric": "Numeric",
+      "nominal": "Category",
+      "ordinal": "Ordered category",
+      "temporal": "Date/Time",
+      "identifier": "ID",
+      "binary": "Category",
+      "ignored": "Hidden"
+    },
+    "builder": {
+      "title": "Create Visualization",
+      "subtitle": "Choose columns first, then chart-specific options.",
+      "chartType": "Chart type",
+      "valueMode": "Value mode",
+      "groupNone": "No grouping",
+      "notSelected": "Not selected",
+      "readyHint": "All required fields are selected. You can build the chart.",
+      "quickActions": "Quick chart actions",
+      "line": {
+        "xLabel": "X-axis (Date/Time or ordered)",
+        "xPlaceholder": "Select one date/time column",
+        "yLabel": "Y-axis (Numeric)",
+        "yPlaceholder": "Select one numeric column",
+        "groupLabel": "Breakdown (optional)"
+      },
+      "bar": {
+        "categoryLabel": "Category",
+        "categoryPlaceholder": "Select one category column",
+        "valueLabel": "Numeric column",
+        "valuePlaceholder": "Select one numeric column",
+        "groupLabel": "Breakdown (optional)"
+      },
+      "scatter": {
+        "xLabel": "X-axis (Numeric)",
+        "xPlaceholder": "Select one numeric column",
+        "yLabel": "Y-axis (Numeric)",
+        "yPlaceholder": "Select one numeric column",
+        "groupLabel": "Group (optional)"
+      },
+      "histogram": {
+        "valueLabel": "Variable (Numeric)",
+        "valuePlaceholder": "Select one numeric variable",
+        "bins": "Bins",
+        "displayMode": "Display mode",
+        "showMeanMarker": "Show mean marker",
+        "showMedianMarker": "Show median marker"
+      },
+      "boxplot": {
+        "valueLabel": "Variable (Numeric)",
+        "valuePlaceholder": "Select one numeric variable",
+        "groupLabel": "Group by (optional)",
+        "orientation": "Orientation",
+        "vertical": "Vertical",
+        "horizontal": "Horizontal",
+        "showOutliers": "Show outliers",
+        "showMean": "Show mean"
+      },
+      "pie": {
+        "categoryLabel": "Category",
+        "categoryPlaceholder": "Select one category column",
+        "valueLabel": "Numeric column",
+        "valuePlaceholder": "Select one numeric column"
+      }
+    },
+    "panel": {
+      "title": "Visualization",
+      "subtitle": "Interactive area",
+      "hoverHint": "Hover over the chart for details.",
+      "quickActions": "Quick Actions",
+      "save": "Save Chart",
+      "export": "Export PNG",
+      "build": "Build Chart"
+    },
+    "hints": {
+      "lineX": "Select one date/time or ordered column for X-axis.",
+      "lineY": "Select one numeric column for Y-axis.",
+      "barX": "Select one category column.",
+      "barY": "Select one numeric column for value mode.",
+      "scatterX": "Select one numeric column for X-axis.",
+      "scatterY": "Select one numeric column for Y-axis.",
+      "histogramValue": "Select one numeric variable.",
+      "boxplotValue": "Select one numeric variable.",
+      "pieCategory": "Select one category column.",
+      "pieValue": "Select one numeric column for pie values.",
+      "fallback": "Complete required fields to build chart."
+    },
+    "quickActions": {
+      "unknownColumn": "Unknown",
+      "line": "Line: {x} vs {y}",
+      "bar": "Bar: {x} by {y}",
+      "scatter": "Scatter: {x} vs {y}",
+      "histogram": "Histogram: {value}",
+      "boxplot": "Box plot: {value}",
+      "boxplotGrouped": "Box plot: {value} by {group}",
+      "pie": "Pie: {category} by {value}"
     }
   },
   "home": {

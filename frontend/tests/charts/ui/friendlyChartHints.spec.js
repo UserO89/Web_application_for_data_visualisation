@@ -1,4 +1,6 @@
 import { getFriendlyBuildHint } from '../../../src/charts/ui/friendlyChartHints'
+import { beforeEach } from 'vitest'
+import { setLocale } from '../../../src/i18n'
 
 const buildSchemaColumns = () => ([
   { id: 1, name: 'Order Date', semanticType: 'temporal' },
@@ -9,6 +11,10 @@ const buildSchemaColumns = () => ([
 ])
 
 describe('getFriendlyBuildHint', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('returns the line X-axis hint when X is missing', () => {
     const hint = getFriendlyBuildHint({
       chartType: 'line',

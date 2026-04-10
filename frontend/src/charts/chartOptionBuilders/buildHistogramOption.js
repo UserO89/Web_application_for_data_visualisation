@@ -1,4 +1,5 @@
 import { buildBarOption } from './buildBarOption'
+import { formatChartNumber } from '../ui/i18n'
 
 export const buildHistogramOption = (definition) => {
   const option = buildBarOption(definition)
@@ -12,7 +13,7 @@ export const buildHistogramOption = (definition) => {
         lineStyle: { type: 'dashed', width: 1.2 },
         label: { formatter: '{b}', position: 'insideEndTop', color: '#d0f5dd' },
         data: markers.map((marker) => ({
-          name: `${marker.name}: ${Number(marker.value).toLocaleString(undefined, { maximumFractionDigits: 3 })}`,
+          name: `${marker.name}: ${formatChartNumber(marker.value, { maximumFractionDigits: 3 })}`,
           xAxis: marker.index,
         })),
       }

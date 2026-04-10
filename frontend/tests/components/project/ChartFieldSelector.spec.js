@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import ChartFieldSelector from '../../../src/components/project/ChartFieldSelector.vue'
+import { withI18n } from '../../support/i18n'
 
 const buildProps = (overrides = {}) => ({
   label: 'X axis',
@@ -16,11 +17,11 @@ const buildProps = (overrides = {}) => ({
 
 describe('ChartFieldSelector', () => {
   it('renders label, placeholder, semantic labels, and hint text', () => {
-    const wrapper = mount(ChartFieldSelector, {
+    const wrapper = mount(ChartFieldSelector, withI18n({
       props: buildProps({
         hint: 'Select a supported field.',
       }),
-    })
+    }))
 
     expect(wrapper.text()).toContain('X axis')
     expect(wrapper.text()).toContain('Pick a column')
@@ -30,9 +31,9 @@ describe('ChartFieldSelector', () => {
   })
 
   it('emits normalized numeric values and null for empty selections', async () => {
-    const wrapper = mount(ChartFieldSelector, {
+    const wrapper = mount(ChartFieldSelector, withI18n({
       props: buildProps(),
-    })
+    }))
 
     const select = wrapper.find('select')
     await select.setValue('2')
@@ -42,13 +43,13 @@ describe('ChartFieldSelector', () => {
   })
 
   it('uses provided id and name and supports disabled mode', () => {
-    const wrapper = mount(ChartFieldSelector, {
+    const wrapper = mount(ChartFieldSelector, withI18n({
       props: buildProps({
         id: 'chart-x',
         name: 'chart_x',
         disabled: true,
       }),
-    })
+    }))
 
     const label = wrapper.find('label')
     const select = wrapper.find('select')

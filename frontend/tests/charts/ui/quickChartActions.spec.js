@@ -1,4 +1,6 @@
 import { buildQuickChartActions } from '../../../src/charts/ui/quickChartActions'
+import { beforeEach } from 'vitest'
+import { setLocale } from '../../../src/i18n'
 
 const buildSchemaColumns = () => ([
   { id: 1, name: 'Order Date', semanticType: 'temporal' },
@@ -9,6 +11,10 @@ const buildSchemaColumns = () => ([
 ])
 
 describe('buildQuickChartActions', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('builds labels for all supported chart types', () => {
     const actions = buildQuickChartActions([
       {
@@ -67,12 +73,12 @@ describe('buildQuickChartActions', () => {
     ], buildSchemaColumns())
 
     expect(actions.map((action) => action.label)).toEqual([
-      'Line: Order Date vs sum(Revenue)',
-      'Bar: Region by count',
+      'Line: Order Date vs Sum(Revenue)',
+      'Bar: Region by Count',
       'Scatter: Revenue vs Cost',
       'Histogram: Revenue',
       'Box plot: Revenue by Stage',
-      'Pie: Region by avg(Revenue)',
+      'Pie: Region by Mean(Revenue)',
     ])
     expect(actions.map((action) => action.id)).toEqual([
       'line-0',
@@ -141,7 +147,7 @@ describe('buildQuickChartActions', () => {
     expect(actions).toHaveLength(1)
     expect(actions[0]).toMatchObject({
       id: 'pie-1',
-      label: 'Pie: Unknown by count',
+      label: 'Pie: Unknown by Count',
     })
   })
 })

@@ -26,12 +26,12 @@
                 <path d="M4 18a8 8 0 0 0 13 2M20 6a8 8 0 0 0-13-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
               </svg>
             </div>
-            <div class="rotate-device-title">Rotate device to landscape</div>
+            <div class="rotate-device-title">{{ $t('project.workspace.table.rotateTitle') }}</div>
             <div class="rotate-device-text">
-              Table editing is optimized for horizontal view on phones.
+              {{ $t('project.workspace.table.rotateText') }}
             </div>
             <button class="btn rotate-device-continue" type="button" @click="allowPortraitTable">
-              Continue without rotating
+              {{ $t('project.workspace.table.rotateContinue') }}
             </button>
           </div>
           <template v-else>
@@ -45,7 +45,7 @@
               />
             </div>
             <div class="table-bottom-actions">
-              <button class="btn" type="button" @click="$emit('export-csv')">Export Table CSV</button>
+              <button class="btn" type="button" @click="$emit('export-csv')">{{ $t('project.workspace.table.exportCsv') }}</button>
             </div>
           </template>
         </template>
@@ -74,9 +74,9 @@
             </div>
             <div class="chart-tools">
               <div class="controls">
-                <button class="btn" type="button" @click="$emit('refresh-data')">Refresh Data</button>
-                <button class="btn" type="button" @click="$emit('export-csv')">Export CSV</button>
-                <label class="chart-size-control" for="chart-height-select">Chart height</label>
+                <button class="btn" type="button" @click="$emit('refresh-data')">{{ $t('project.workspace.chart.refreshData') }}</button>
+                <button class="btn" type="button" @click="$emit('export-csv')">{{ $t('project.workspace.chart.exportCsv') }}</button>
+                <label class="chart-size-control" for="chart-height-select">{{ $t('project.workspace.chart.heightLabel') }}</label>
                 <select
                   id="chart-height-select"
                   name="chart_height"
@@ -84,11 +84,11 @@
                   :value="chartViewportPresetValue"
                   @change="$emit('set-chart-height', $event.target.value)"
                 >
-                  <option value="320">Compact</option>
-                  <option value="420">Medium</option>
-                  <option value="520">Tall</option>
-                  <option value="620">XL</option>
-                  <option v-if="chartViewportPresetValue === 'custom'" value="custom">Custom (drag)</option>
+                  <option value="320">{{ $t('project.workspace.chart.heights.compact') }}</option>
+                  <option value="420">{{ $t('project.workspace.chart.heights.medium') }}</option>
+                  <option value="520">{{ $t('project.workspace.chart.heights.tall') }}</option>
+                  <option value="620">{{ $t('project.workspace.chart.heights.xl') }}</option>
+                  <option v-if="chartViewportPresetValue === 'custom'" value="custom">{{ $t('project.workspace.chart.heights.custom') }}</option>
                 </select>
               </div>
               <ChartBuilder
@@ -99,17 +99,17 @@
               />
               <div v-if="chartDatasets.length" class="series-colors">
                 <div class="series-colors-head">
-                  <div class="analysis-title">Series Colors</div>
-                  <button type="button" class="btn" @click="$emit('reset-series-colors')">Reset Colors</button>
+                  <div class="analysis-title">{{ $t('project.workspace.chart.seriesColors') }}</div>
+                  <button type="button" class="btn" @click="$emit('reset-series-colors')">{{ $t('project.workspace.chart.resetColors') }}</button>
                 </div>
                 <div class="series-colors-grid">
                   <div v-for="(ds, i) in chartDatasets" :key="`series-color-${ds.label}-${i}`" class="series-color-item">
-                    <span class="series-color-name">{{ ds.label || `Series ${i + 1}` }}</span>
+                    <span class="series-color-name">{{ ds.label || $t('project.workspace.chart.seriesFallback', { index: i + 1 }) }}</span>
                     <input
                       type="color"
                       class="series-color-input"
                       :name="`series_color_${i}`"
-                      :aria-label="`Series color ${ds.label || `Series ${i + 1}`}`"
+                      :aria-label="seriesColorAriaLabel(ds, i)"
                       :value="getSeriesColor(ds.label, i)"
                       @input="$emit('set-series-color', { label: ds.label, index: i, color: $event.target.value })"
                     />
@@ -143,14 +143,14 @@
         <template v-else-if="panelId === 'library'">
           <div class="library-shell">
             <div class="library-head">
-              <div class="analysis-title">Saved Charts</div>
-              <button class="btn" type="button" @click="$emit('refresh-saved-charts')">Refresh</button>
+              <div class="analysis-title">{{ $t('project.workspace.library.title') }}</div>
+              <button class="btn" type="button" @click="$emit('refresh-saved-charts')">{{ $t('project.workspace.library.refresh') }}</button>
             </div>
 
-            <div v-if="savedChartsLoading" class="library-empty">Loading saved charts...</div>
+            <div v-if="savedChartsLoading" class="library-empty">{{ $t('project.workspace.library.loading') }}</div>
             <div v-else-if="savedChartsError" class="library-empty">{{ savedChartsError }}</div>
             <div v-else-if="!savedCharts.length" class="library-empty">
-              No saved charts yet. Build a chart in Visualization and click Save Chart.
+              {{ $t('project.workspace.library.empty') }}
             </div>
 
             <div v-else class="saved-charts-grid">
@@ -166,7 +166,7 @@
                         class="saved-chart-title-input-inline"
                         type="text"
                         :name="`saved_chart_title_${savedChart.id}`"
-                        :aria-label="`Saved chart title for chart ${savedChart.id}`"
+                        :aria-label="$t('project.workspace.library.titleAria', { id: savedChart.id })"
                         maxlength="255"
                         :value="getSavedChartTitleDraft(savedChart)"
                         @input="setSavedChartTitleDraft(savedChart.id, $event.target.value)"
@@ -180,11 +180,11 @@
                         type="button"
                         @click="saveSavedChartTitle(savedChart)"
                       >
-                        Save
+                        {{ $t('project.workspace.library.saveTitle') }}
                       </button>
                     </div>
                     <div class="saved-chart-meta">
-                      {{ savedChart.type || 'chart' }} - {{ savedChart.created_at || '-' }}
+                      {{ savedChartMeta(savedChart) }}
                     </div>
                   </div>
                 </div>
@@ -199,8 +199,8 @@
                   />
                 </div>
                 <div class="saved-chart-actions">
-                  <button class="btn" type="button" @click="$emit('download-saved-chart', savedChart)">Download PNG</button>
-                  <button class="btn" type="button" @click="$emit('delete-saved-chart', savedChart.id)">Delete</button>
+                  <button class="btn" type="button" @click="$emit('download-saved-chart', savedChart)">{{ $t('project.workspace.library.download') }}</button>
+                  <button class="btn" type="button" @click="$emit('delete-saved-chart', savedChart.id)">{{ $t('common.delete') }}</button>
                 </div>
               </article>
             </div>
@@ -222,6 +222,7 @@
 
 <script>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ChartPanel from './ChartPanel.vue'
 import ChartBuilder from './ChartBuilder.vue'
 import DataTable from './DataTable.vue'
@@ -297,6 +298,7 @@ export default {
     'update-chart-definition',
   ],
   setup(props, { emit }) {
+    const { t, locale } = useI18n({ useScope: 'global' })
     const panelIds = computed(() => Object.keys(props.panelConfig || {}))
     const isPanelVisible = (panelId) => props.visiblePanelIds.includes(panelId)
     const canvasStyle = computed(() =>
@@ -336,7 +338,18 @@ export default {
 
     const normalizedSavedChartTitle = (savedChart) => {
       const value = String(savedChart?.title || '').trim()
-      return value || 'Untitled chart'
+      return value || t('project.workspace.library.untitledChart')
+    }
+
+    const savedChartMeta = (savedChart) => {
+      locale.value
+      const typeLabel = String(savedChart?.type || '').trim() || t('project.workspace.library.chartFallback')
+      return `${typeLabel} - ${savedChart?.created_at || '-'}`
+    }
+
+    const seriesColorAriaLabel = (dataset, index) => {
+      const seriesLabel = dataset?.label || t('project.workspace.chart.seriesFallback', { index: index + 1 })
+      return t('project.workspace.chart.seriesColorAria', { name: seriesLabel })
     }
 
     watch(
@@ -441,6 +454,8 @@ export default {
       allowPortraitTable,
       getSavedChartTitleDraft,
       setSavedChartTitleDraft,
+      savedChartMeta,
+      seriesColorAriaLabel,
       selectAllInputText,
       hasSavedChartTitleChanges,
       saveSavedChartTitle,

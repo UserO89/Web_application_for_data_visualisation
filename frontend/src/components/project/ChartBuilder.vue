@@ -2,14 +2,14 @@
   <div class="chart-builder panel">
     <div class="chart-builder-head">
       <div>
-        <div class="section-title">Create Visualization</div>
-        <div class="section-subtitle">Choose columns first, then chart-specific options.</div>
+        <div class="section-title">{{ $t('charts.builder.title') }}</div>
+        <div class="section-subtitle">{{ $t('charts.builder.subtitle') }}</div>
       </div>
     </div>
 
     <div class="chart-builder-grid">
       <div class="field-selector">
-        <label for="chart-builder-type">Chart type</label>
+        <label for="chart-builder-type">{{ $t('charts.builder.chartType') }}</label>
         <select id="chart-builder-type" name="chart_type" class="field-select" :value="localDefinition.chartType" @change="changeChartType($event.target.value)">
           <option v-for="typeOption in chartTypeOptions" :key="typeOption.key" :value="typeOption.key">
             {{ typeOption.label }}
@@ -19,94 +19,94 @@
 
       <template v-if="localDefinition.chartType === 'line'">
         <ChartFieldSelector
-          label="X-axis (Date/Time or ordered)"
+          :label="$t('charts.builder.line.xLabel')"
           v-model="localDefinition.bindings.x"
           :options="allowedColumns('x')"
-          placeholder="Select one date/time column"
+          :placeholder="$t('charts.builder.line.xPlaceholder')"
         />
         <ChartFieldSelector
-          label="Y-axis (Numeric)"
+          :label="$t('charts.builder.line.yLabel')"
           v-model="localDefinition.bindings.y.field"
           :options="allowedColumns('y')"
-          placeholder="Select one numeric column"
+          :placeholder="$t('charts.builder.line.yPlaceholder')"
         />
         <div class="field-selector">
-          <label for="chart-line-value-mode">Value mode</label>
+          <label for="chart-line-value-mode">{{ $t('charts.builder.valueMode') }}</label>
           <select id="chart-line-value-mode" name="line_value_mode" class="field-select" :value="localDefinition.bindings.y.aggregation" @change="changeAggregation('y', $event.target.value)">
-            <option value="sum">Sum</option>
-            <option value="avg">Mean</option>
-            <option value="min">Min</option>
-            <option value="max">Max</option>
+            <option value="sum">{{ $t('charts.aggregations.sum') }}</option>
+            <option value="avg">{{ $t('charts.aggregations.avg') }}</option>
+            <option value="min">{{ $t('charts.aggregations.min') }}</option>
+            <option value="max">{{ $t('charts.aggregations.max') }}</option>
           </select>
         </div>
         <ChartFieldSelector
-          label="Breakdown (optional)"
+          :label="$t('charts.builder.line.groupLabel')"
           v-model="localDefinition.bindings.group"
           :options="allowedColumns('group')"
-          placeholder="No breakdown"
+          :placeholder="$t('charts.builder.groupNone')"
         />
       </template>
 
       <template v-else-if="localDefinition.chartType === 'bar'">
         <ChartFieldSelector
-          label="Category"
+          :label="$t('charts.builder.bar.categoryLabel')"
           v-model="localDefinition.bindings.x"
           :options="allowedColumns('x')"
-          placeholder="Select one category column"
+          :placeholder="$t('charts.builder.bar.categoryPlaceholder')"
         />
         <div class="field-selector">
-          <label for="chart-bar-value-mode">Value mode</label>
+          <label for="chart-bar-value-mode">{{ $t('charts.builder.valueMode') }}</label>
           <select id="chart-bar-value-mode" name="bar_value_mode" class="field-select" :value="barValueMode" @change="setBarValueMode($event.target.value)">
-            <option value="count">Count</option>
-            <option value="sum">Sum</option>
-            <option value="avg">Mean</option>
+            <option value="count">{{ $t('charts.aggregations.count') }}</option>
+            <option value="sum">{{ $t('charts.aggregations.sum') }}</option>
+            <option value="avg">{{ $t('charts.aggregations.avg') }}</option>
           </select>
         </div>
         <ChartFieldSelector
           v-if="barValueMode !== 'count'"
-          label="Numeric column"
+          :label="$t('charts.builder.bar.valueLabel')"
           v-model="localDefinition.bindings.y.field"
           :options="allowedColumns('y')"
-          placeholder="Select one numeric column"
+          :placeholder="$t('charts.builder.bar.valuePlaceholder')"
         />
         <ChartFieldSelector
-          label="Breakdown (optional)"
+          :label="$t('charts.builder.bar.groupLabel')"
           v-model="localDefinition.bindings.group"
           :options="allowedColumns('group')"
-          placeholder="No breakdown"
+          :placeholder="$t('charts.builder.groupNone')"
         />
       </template>
 
       <template v-else-if="localDefinition.chartType === 'scatter'">
         <ChartFieldSelector
-          label="X-axis (Numeric)"
+          :label="$t('charts.builder.scatter.xLabel')"
           v-model="localDefinition.bindings.x"
           :options="allowedColumns('x')"
-          placeholder="Select one numeric column"
+          :placeholder="$t('charts.builder.scatter.xPlaceholder')"
         />
         <ChartFieldSelector
-          label="Y-axis (Numeric)"
+          :label="$t('charts.builder.scatter.yLabel')"
           v-model="localDefinition.bindings.y.field"
           :options="allowedColumns('y')"
-          placeholder="Select one numeric column"
+          :placeholder="$t('charts.builder.scatter.yPlaceholder')"
         />
         <ChartFieldSelector
-          label="Group (optional)"
+          :label="$t('charts.builder.scatter.groupLabel')"
           v-model="localDefinition.bindings.group"
           :options="allowedColumns('group')"
-          placeholder="No grouping"
+          :placeholder="$t('charts.builder.groupNone')"
         />
       </template>
 
       <template v-else-if="localDefinition.chartType === 'histogram'">
         <ChartFieldSelector
-          label="Variable (Numeric)"
+          :label="$t('charts.builder.histogram.valueLabel')"
           v-model="localDefinition.bindings.value.field"
           :options="allowedColumns('value')"
-          placeholder="Select one numeric variable"
+          :placeholder="$t('charts.builder.histogram.valuePlaceholder')"
         />
         <div class="field-selector">
-          <label for="chart-histogram-bins">Bins</label>
+          <label for="chart-histogram-bins">{{ $t('charts.builder.histogram.bins') }}</label>
           <input
             id="chart-histogram-bins"
             name="histogram_bins"
@@ -119,10 +119,10 @@
           />
         </div>
         <div class="field-selector">
-          <label for="chart-histogram-display-mode">Display mode</label>
+          <label for="chart-histogram-display-mode">{{ $t('charts.builder.histogram.displayMode') }}</label>
           <select id="chart-histogram-display-mode" name="histogram_display_mode" class="field-select" :value="localDefinition.settings.densityMode" @change="updateHistogramSetting('densityMode', $event.target.value)">
-            <option value="frequency">Frequency</option>
-            <option value="density">Density</option>
+            <option value="frequency">{{ $t('charts.common.frequency') }}</option>
+            <option value="density">{{ $t('charts.common.density') }}</option>
           </select>
         </div>
         <label class="check-row">
@@ -132,7 +132,7 @@
             :checked="localDefinition.settings.showMeanMarker"
             @change="updateHistogramSetting('showMeanMarker', $event.target.checked)"
           />
-          Show mean marker
+          {{ $t('charts.builder.histogram.showMeanMarker') }}
         </label>
         <label class="check-row">
           <input
@@ -141,28 +141,28 @@
             :checked="localDefinition.settings.showMedianMarker"
             @change="updateHistogramSetting('showMedianMarker', $event.target.checked)"
           />
-          Show median marker
+          {{ $t('charts.builder.histogram.showMedianMarker') }}
         </label>
       </template>
 
       <template v-else-if="localDefinition.chartType === 'boxplot'">
         <ChartFieldSelector
-          label="Variable (Numeric)"
+          :label="$t('charts.builder.boxplot.valueLabel')"
           v-model="localDefinition.bindings.value.field"
           :options="allowedColumns('value')"
-          placeholder="Select one numeric variable"
+          :placeholder="$t('charts.builder.boxplot.valuePlaceholder')"
         />
         <ChartFieldSelector
-          label="Group by (optional)"
+          :label="$t('charts.builder.boxplot.groupLabel')"
           v-model="localDefinition.bindings.group"
           :options="allowedColumns('group')"
-          placeholder="No grouping"
+          :placeholder="$t('charts.builder.groupNone')"
         />
         <div class="field-selector">
-          <label for="chart-boxplot-orientation">Orientation</label>
+          <label for="chart-boxplot-orientation">{{ $t('charts.builder.boxplot.orientation') }}</label>
           <select id="chart-boxplot-orientation" name="boxplot_orientation" class="field-select" :value="localDefinition.settings.orientation" @change="updateBoxplotSetting('orientation', $event.target.value)">
-            <option value="vertical">Vertical</option>
-            <option value="horizontal">Horizontal</option>
+            <option value="vertical">{{ $t('charts.builder.boxplot.vertical') }}</option>
+            <option value="horizontal">{{ $t('charts.builder.boxplot.horizontal') }}</option>
           </select>
         </div>
         <label class="check-row">
@@ -172,7 +172,7 @@
             :checked="localDefinition.settings.showOutliers"
             @change="updateBoxplotSetting('showOutliers', $event.target.checked)"
           />
-          Show outliers
+          {{ $t('charts.builder.boxplot.showOutliers') }}
         </label>
         <label class="check-row">
           <input
@@ -181,39 +181,39 @@
             :checked="localDefinition.settings.showMean"
             @change="updateBoxplotSetting('showMean', $event.target.checked)"
           />
-          Show mean
+          {{ $t('charts.builder.boxplot.showMean') }}
         </label>
       </template>
 
       <template v-else-if="localDefinition.chartType === 'pie'">
         <ChartFieldSelector
-          label="Category"
+          :label="$t('charts.builder.pie.categoryLabel')"
           v-model="localDefinition.bindings.category"
           :options="allowedColumns('category')"
-          placeholder="Select one category column"
+          :placeholder="$t('charts.builder.pie.categoryPlaceholder')"
         />
         <div class="field-selector">
-          <label for="chart-pie-value-mode">Value mode</label>
+          <label for="chart-pie-value-mode">{{ $t('charts.builder.valueMode') }}</label>
           <select id="chart-pie-value-mode" name="pie_value_mode" class="field-select" :value="pieValueMode" @change="setPieValueMode($event.target.value)">
-            <option value="count">Count</option>
-            <option value="sum">Sum</option>
-            <option value="avg">Mean</option>
+            <option value="count">{{ $t('charts.aggregations.count') }}</option>
+            <option value="sum">{{ $t('charts.aggregations.sum') }}</option>
+            <option value="avg">{{ $t('charts.aggregations.avg') }}</option>
           </select>
         </div>
         <ChartFieldSelector
           v-if="pieValueMode !== 'count'"
-          label="Numeric column"
+          :label="$t('charts.builder.pie.valueLabel')"
           v-model="localDefinition.bindings.value.field"
           :options="allowedColumns('value')"
-          placeholder="Select one numeric column"
+          :placeholder="$t('charts.builder.pie.valuePlaceholder')"
         />
       </template>
     </div>
 
-    <div class="chart-hint">{{ buildHint || 'All required fields are selected. You can build the chart.' }}</div>
+    <div class="chart-hint">{{ buildHint || $t('charts.builder.readyHint') }}</div>
 
     <div v-if="quickActions.length" class="suggestions">
-      <div class="suggestions-title">Quick chart actions</div>
+      <div class="suggestions-title">{{ $t('charts.builder.quickActions') }}</div>
       <div class="suggestions-list">
         <button
           v-for="action in quickActions.slice(0, 8)"
@@ -231,12 +231,14 @@
 
 <script>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ChartFieldSelector from './ChartFieldSelector.vue'
 import { CHART_TYPE_OPTIONS } from '../../charts/rules/chartRules'
 import { getAllowedColumnsForBinding, normalizeChartDefinition } from '../../charts/rules/chartDefinitionValidator'
 import { createDefaultChartDefinition, mergeChartDefinition } from '../../charts/chartDefinitions/createUniversalChartDefinition'
 import { getFriendlyBuildHint } from '../../charts/ui/friendlyChartHints'
 import { buildQuickChartActions } from '../../charts/ui/quickChartActions'
+import { chartTypeLabel } from '../../charts/ui/i18n'
 
 export default {
   name: 'ChartBuilder',
@@ -257,6 +259,7 @@ export default {
   },
   emits: ['update:modelValue', 'build'],
   setup(props, { emit }) {
+    const { locale } = useI18n({ useScope: 'global' })
     const normalizeDefinition = (definition) =>
       normalizeChartDefinition(definition || createDefaultChartDefinition('line'))
 
@@ -264,7 +267,13 @@ export default {
       left === right || JSON.stringify(normalizeDefinition(left)) === JSON.stringify(normalizeDefinition(right))
 
     const localDefinition = ref(normalizeDefinition(props.modelValue))
-    const chartTypeOptions = CHART_TYPE_OPTIONS
+    const chartTypeOptions = computed(() => {
+      locale.value
+      return CHART_TYPE_OPTIONS.map((option) => ({
+        ...option,
+        label: chartTypeLabel(option.key),
+      }))
+    })
 
     const allowedColumns = (bindingKey) =>
       getAllowedColumnsForBinding(localDefinition.value.chartType, bindingKey, props.schemaColumns)
@@ -343,10 +352,16 @@ export default {
       localDefinition.value = mergeChartDefinition(base, { chartType })
     }
 
-    const buildHint = computed(() => getFriendlyBuildHint(localDefinition.value, props.schemaColumns))
+    const buildHint = computed(() => {
+      locale.value
+      return getFriendlyBuildHint(localDefinition.value, props.schemaColumns)
+    })
     const canBuild = computed(() => !buildHint.value)
 
-    const quickActions = computed(() => buildQuickChartActions(props.suggestions, props.schemaColumns))
+    const quickActions = computed(() => {
+      locale.value
+      return buildQuickChartActions(props.suggestions, props.schemaColumns)
+    })
 
     const applyQuickAction = (action) => {
       if (!action?.definition) return

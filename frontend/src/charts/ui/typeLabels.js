@@ -1,3 +1,5 @@
+import { chartCommonLabel, chartSemanticTypeLabel } from './i18n'
+
 export const SEMANTIC_TYPE_LABELS = {
   metric: 'Numeric',
   nominal: 'Category',
@@ -7,6 +9,8 @@ export const SEMANTIC_TYPE_LABELS = {
   binary: 'Category',
   ignored: 'Hidden',
 }
+
+export const semanticTypeLabel = (semanticType) => chartSemanticTypeLabel(semanticType)
 
 export const semanticTypeToGroup = (column) => {
   if (!column) return 'hidden'
@@ -26,3 +30,5 @@ export const GROUP_LABELS = {
   ordered: 'Ordered columns',
   hidden: 'Hidden / Excluded columns',
 }
+
+export const groupLabel = (groupKey) => chartCommonLabel(`groups.${groupKey}`, GROUP_LABELS[groupKey] || groupKey)

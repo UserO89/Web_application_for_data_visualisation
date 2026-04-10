@@ -147,7 +147,7 @@ export default {
     ProjectWorkspaceCanvas,
   },
   setup(props) {
-    const { t } = useI18n({ useScope: 'global' })
+    const { locale, t } = useI18n({ useScope: 'global' })
     const route = useRoute()
     const router = useRouter()
     const isReadOnly = computed(() => props.mode === 'demo')
@@ -327,7 +327,7 @@ export default {
       if (!value) return '-'
       const parsed = new Date(value)
       if (Number.isNaN(parsed.getTime())) return '-'
-      return parsed.toLocaleString()
+      return parsed.toLocaleString(locale.value)
     }
 
     const normalizeSavedChart = (savedChart) => {
@@ -350,7 +350,7 @@ export default {
     }
 
     const buildSavedChartTitle = (type) =>
-      `${String(type || t('project.page.chartTitlePrefix')).toUpperCase()} ${new Date().toLocaleString()}`
+      `${String(type || t('project.page.chartTitlePrefix')).toUpperCase()} ${new Date().toLocaleString(locale.value)}`
 
     const setWorkspaceCanvasRef = (element) => {
       workspaceRef.value = element

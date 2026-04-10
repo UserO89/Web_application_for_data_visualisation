@@ -1,14 +1,16 @@
 import { normalizeChartDefinition } from '../rules/chartDefinitionValidator'
+import { chartAggregationLabel, chartQuickActionLabel, chartTypeLabel } from './i18n'
 
 const columnNameById = (schemaColumns, id) =>
-  (schemaColumns || []).find((column) => Number(column.id) === Number(id))?.name || 'Unknown'
+  (schemaColumns || []).find((column) => Number(column.id) === Number(id))?.name
+  || chartQuickActionLabel('unknownColumn', 'Unknown')
 
 const metricLabel = (measureBinding, schemaColumns) => {
   const aggregation = measureBinding?.aggregation || 'sum'
-  if (aggregation === 'count') return 'count'
+  if (aggregation === 'count') return chartAggregationLabel('count')
   const fieldName = columnNameById(schemaColumns, measureBinding?.field)
   if (aggregation === 'none') return fieldName
-  return `${aggregation}(${fieldName})`
+  return `${chartAggregationLabel(aggregation)}(${fieldName})`
 }
 
 const buildActionLabel = (definition, schemaColumns) => {
@@ -16,25 +18,45 @@ const buildActionLabel = (definition, schemaColumns) => {
   const bindings = definition?.bindings || {}
 
   if (chartType === 'line') {
-    return `Line: ${columnNameById(schemaColumns, bindings.x)} vs ${metricLabel(bindings.y, schemaColumns)}`
+    return chartQuickActionLabel('line', 'Line: {x} vs {y}', {
+      x: columnNameById(schemaColumns, bindings.x),
+      y: metricLabel(bindings.y, schemaColumns),
+    })
   }
   if (chartType === 'bar') {
-    return `Bar: ${columnNameById(schemaColumns, bindings.x)} by ${metricLabel(bindings.y, schemaColumns)}`
+    return chartQuickActionLabel('bar', 'Bar: {x} by {y}', {
+      x: columnNameById(schemaColumns, bindings.x),
+      y: metricLabel(bindings.y, schemaColumns),
+    })
   }
   if (chartType === 'scatter') {
-    return `Scatter: ${columnNameById(schemaColumns, bindings.x)} vs ${columnNameById(schemaColumns, bindings?.y?.field)}`
+    return chartQuickActionLabel('scatter', 'Scatter: {x} vs {y}', {
+      x: columnNameById(schemaColumns, bindings.x),
+      y: columnNameById(schemaColumns, bindings?.y?.field),
+    })
   }
   if (chartType === 'histogram') {
-    return `Histogram: ${columnNameById(schemaColumns, bindings?.value?.field)}`
+    return chartQuickActionLabel('histogram', 'Histogram: {value}', {
+      value: columnNameById(schemaColumns, bindings?.value?.field),
+    })
   }
   if (chartType === 'boxplot') {
-    const group = bindings.group ? ` by ${columnNameById(schemaColumns, bindings.group)}` : ''
-    return `Box plot: ${columnNameById(schemaColumns, bindings?.value?.field)}${group}`
+    return bindings.group
+      ? chartQuickActionLabel('boxplotGrouped', 'Box plot: {value} by {group}', {
+          value: columnNameById(schemaColumns, bindings?.value?.field),
+          group: columnNameById(schemaColumns, bindings.group),
+        })
+      : chartQuickActionLabel('boxplot', 'Box plot: {value}', {
+          value: columnNameById(schemaColumns, bindings?.value?.field),
+        })
   }
   if (chartType === 'pie') {
-    return `Pie: ${columnNameById(schemaColumns, bindings.category)} by ${metricLabel(bindings.value, schemaColumns)}`
+    return chartQuickActionLabel('pie', 'Pie: {category} by {value}', {
+      category: columnNameById(schemaColumns, bindings.category),
+      value: metricLabel(bindings.value, schemaColumns),
+    })
   }
-  return `${chartType}`
+  return chartTypeLabel(chartType)
 }
 
 export const buildQuickChartActions = (suggestions, schemaColumns) =>

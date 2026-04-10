@@ -2,6 +2,7 @@ import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
 import ChartPanel from '../../../src/components/project/ChartPanel.vue'
+import { withI18n } from '../../support/i18n'
 
 const buildEChartOptionSpy = vi.hoisted(() => vi.fn())
 const exportPngSpy = vi.hoisted(() => vi.fn())
@@ -54,8 +55,10 @@ describe('ChartPanel', () => {
 
   it('does not build chart options and disables save when no renderable data exists', () => {
     const wrapper = mount(ChartPanel, {
-      props: buildProps({
-        allowSave: true,
+      ...withI18n({
+        props: buildProps({
+          allowSave: true,
+        }),
       }),
     })
 
@@ -75,7 +78,7 @@ describe('ChartPanel', () => {
     }
     buildEChartOptionSpy.mockReturnValue(builtOption)
 
-    const wrapper = mount(ChartPanel, {
+    const wrapper = mount(ChartPanel, withI18n({
       props: buildProps({
         labels: ['Jan'],
         datasets: [{ label: 'Revenue', data: [100], color: '#123456' }],
@@ -86,12 +89,12 @@ describe('ChartPanel', () => {
         quickActions: [
           {
             id: 'line-0',
-            label: 'Line: Month vs sum(Revenue)',
+            label: 'Line: Month vs Sum(Revenue)',
             definition: { chartType: 'line', bindings: { x: 1, y: { field: 2, aggregation: 'sum' } } },
           },
         ],
       }),
-    })
+    }))
 
     expect(buildEChartOptionSpy).toHaveBeenCalledTimes(1)
     expect(buildEChartOptionSpy).toHaveBeenCalledWith({
@@ -118,7 +121,7 @@ describe('ChartPanel', () => {
     expect(wrapper.emitted('quick-action')).toEqual([[
       {
         id: 'line-0',
-        label: 'Line: Month vs sum(Revenue)',
+        label: 'Line: Month vs Sum(Revenue)',
         definition: { chartType: 'line', bindings: { x: 1, y: { field: 2, aggregation: 'sum' } } },
       },
     ]])
@@ -129,13 +132,13 @@ describe('ChartPanel', () => {
       series: [{ type: 'boxplot', data: [] }],
     })
 
-    const wrapper = mount(ChartPanel, {
+    const wrapper = mount(ChartPanel, withI18n({
       props: buildProps({
         type: 'boxplot',
         embedded: true,
         datasets: [{ label: 'Revenue', values: [10, 20, 30] }],
       }),
-    })
+    }))
 
     expect(wrapper.classes()).toContain('embedded')
     expect(wrapper.text()).not.toContain('Visualization')
@@ -157,13 +160,13 @@ describe('ChartPanel', () => {
       series: [{ type: 'scatter', data: [[1, 2]] }],
     })
 
-    const wrapper = mount(ChartPanel, {
+    const wrapper = mount(ChartPanel, withI18n({
       props: buildProps({
         type: 'scatter',
         allowSave: true,
         datasets: [{ label: 'Revenue vs Cost', data: [{ x: 1, y: 2 }] }],
       }),
-    })
+    }))
 
     expect(buildEChartOptionSpy).toHaveBeenCalledTimes(1)
     expect(wrapper.findComponent({ name: 'BaseEChart' }).props('option')).toEqual({
@@ -175,12 +178,12 @@ describe('ChartPanel', () => {
   })
 
   it('renders a disabled build button when build action is blocked', () => {
-    const wrapper = mount(ChartPanel, {
+    const wrapper = mount(ChartPanel, withI18n({
       props: buildProps({
         allowBuild: true,
         buildDisabled: true,
       }),
-    })
+    }))
 
     const buildButton = wrapper.findAll('button').find((button) => button.text() === 'Build Chart')
     expect(buildButton.attributes('disabled')).toBeDefined()

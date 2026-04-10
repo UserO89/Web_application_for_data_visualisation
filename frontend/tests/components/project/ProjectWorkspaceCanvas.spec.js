@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
+import { withI18n } from '../../support/i18n'
 
 vi.mock('../../../src/components/project/DataTable.vue', async () => {
   const { defineComponent, h } = await import('vue')
@@ -192,7 +193,9 @@ const buildProps = (overrides = {}) => ({
 
 const mountCanvas = (props = {}) =>
   mount(ProjectWorkspaceCanvas, {
-    props: buildProps(props),
+    ...withI18n({
+      props: buildProps(props),
+    }),
   })
 
 describe('ProjectWorkspaceCanvas', () => {

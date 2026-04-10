@@ -129,6 +129,41 @@
       "workspace": "Pracovny priestor",
       "savedCharts": "Ulozene grafy",
       "importReview": "Kontrola importu"
+    },
+    "workspace": {
+      "table": {
+        "rotateTitle": "Otocit zariadenie na sirku",
+        "rotateText": "Uprava tabulky je na telefonoch optimalizovana pre horizontalne zobrazenie.",
+        "rotateContinue": "Pokracovat bez otocenia",
+        "exportCsv": "Exportovat CSV tabulky"
+      },
+      "chart": {
+        "refreshData": "Obnovit data",
+        "exportCsv": "Exportovat CSV",
+        "heightLabel": "Vyska grafu",
+        "heights": {
+          "compact": "Kompaktny",
+          "medium": "Stredny",
+          "tall": "Vysoky",
+          "xl": "XL",
+          "custom": "Vlastna (tahanim)"
+        },
+        "seriesColors": "Farby serii",
+        "resetColors": "Resetovat farby",
+        "seriesFallback": "Seria {index}",
+        "seriesColorAria": "Farba serie {name}"
+      },
+      "library": {
+        "title": "Ulozene grafy",
+        "refresh": "Obnovit",
+        "loading": "Nacitavaju sa ulozene grafy...",
+        "empty": "Zatial nie su ulozene ziadne grafy. Vytvorte graf vo Vizualizacii a kliknite na Ulozit graf.",
+        "titleAria": "Nazov ulozeneho grafu {id}",
+        "saveTitle": "Ulozit",
+        "untitledChart": "Graf bez nazvu",
+        "chartFallback": "graf",
+        "download": "Stiahnut PNG"
+      }
     }
   },
   "profile": {
@@ -392,6 +427,137 @@
       "rangeMinutes": "{value} min",
       "rangeHours": "{value} h",
       "rangeDays": "{value} dni"
+    }
+  },
+  "charts": {
+    "types": {
+      "line": "Ciara",
+      "bar": "Stlpce",
+      "scatter": "Scatter",
+      "histogram": "Histogram",
+      "boxplot": "Box plot",
+      "pie": "Kolac"
+    },
+    "aggregations": {
+      "none": "Hodnota",
+      "sum": "Sucet",
+      "avg": "Priemer",
+      "min": "Min",
+      "max": "Max",
+      "median": "Median",
+      "count": "Pocet"
+    },
+    "common": {
+      "unknown": "Nezname",
+      "series": "Seria",
+      "value": "Hodnota",
+      "values": "Hodnoty",
+      "category": "Kategoria",
+      "frequency": "Frekvencia",
+      "density": "Hustota",
+      "groups": {
+        "numeric": "Numericke stlpce",
+        "category": "Kategoriove stlpce",
+        "date": "Datumove stlpce",
+        "ordered": "Usporiadane stlpce",
+        "hidden": "Skryte / vylucene stlpce"
+      }
+    },
+    "semanticTypes": {
+      "metric": "Numericke",
+      "nominal": "Kategoria",
+      "ordinal": "Usporiadana kategoria",
+      "temporal": "Datum/Cas",
+      "identifier": "ID",
+      "binary": "Kategoria",
+      "ignored": "Skryte"
+    },
+    "builder": {
+      "title": "Vytvorit vizualizaciu",
+      "subtitle": "Najprv vyberte stlpce, potom moznosti konkretneho grafu.",
+      "chartType": "Typ grafu",
+      "valueMode": "Rezim hodnot",
+      "groupNone": "Bez zoskupenia",
+      "notSelected": "Nevybrane",
+      "readyHint": "Vsetky povinne polia su vybrane. Mozete vytvorit graf.",
+      "quickActions": "Rychle akcie grafov",
+      "line": {
+        "xLabel": "Os X (Datum/Cas alebo poradie)",
+        "xPlaceholder": "Vyberte jeden datumovy/casovy stlpec",
+        "yLabel": "Os Y (Numericka)",
+        "yPlaceholder": "Vyberte jeden numericky stlpec",
+        "groupLabel": "Rozdelenie (volitelne)"
+      },
+      "bar": {
+        "categoryLabel": "Kategoria",
+        "categoryPlaceholder": "Vyberte jeden kategoriovy stlpec",
+        "valueLabel": "Numericky stlpec",
+        "valuePlaceholder": "Vyberte jeden numericky stlpec",
+        "groupLabel": "Rozdelenie (volitelne)"
+      },
+      "scatter": {
+        "xLabel": "Os X (Numericka)",
+        "xPlaceholder": "Vyberte jeden numericky stlpec",
+        "yLabel": "Os Y (Numericka)",
+        "yPlaceholder": "Vyberte jeden numericky stlpec",
+        "groupLabel": "Skupina (volitelne)"
+      },
+      "histogram": {
+        "valueLabel": "Premenna (Numericka)",
+        "valuePlaceholder": "Vyberte jednu numericku premennu",
+        "bins": "Binov",
+        "displayMode": "Rezim zobrazenia",
+        "showMeanMarker": "Zobrazit marker priemeru",
+        "showMedianMarker": "Zobrazit marker medianu"
+      },
+      "boxplot": {
+        "valueLabel": "Premenna (Numericka)",
+        "valuePlaceholder": "Vyberte jednu numericku premennu",
+        "groupLabel": "Zoskupit podla (volitelne)",
+        "orientation": "Orientacia",
+        "vertical": "Vertikalna",
+        "horizontal": "Horizontalna",
+        "showOutliers": "Zobrazit odlahle hodnoty",
+        "showMean": "Zobrazit priemer"
+      },
+      "pie": {
+        "categoryLabel": "Kategoria",
+        "categoryPlaceholder": "Vyberte jeden kategoriovy stlpec",
+        "valueLabel": "Numericky stlpec",
+        "valuePlaceholder": "Vyberte jeden numericky stlpec"
+      }
+    },
+    "panel": {
+      "title": "Vizualizacia",
+      "subtitle": "Interaktivna oblast",
+      "hoverHint": "Pre detaily prejdite kurzorom nad graf.",
+      "quickActions": "Rychle akcie",
+      "save": "Ulozit graf",
+      "export": "Exportovat PNG",
+      "build": "Vytvorit graf"
+    },
+    "hints": {
+      "lineX": "Vyberte jeden datumovy/casovy alebo usporiadany stlpec pre os X.",
+      "lineY": "Vyberte jeden numericky stlpec pre os Y.",
+      "barX": "Vyberte jeden kategoriovy stlpec.",
+      "barY": "Vyberte jeden numericky stlpec pre rezim hodnot.",
+      "scatterX": "Vyberte jeden numericky stlpec pre os X.",
+      "scatterY": "Vyberte jeden numericky stlpec pre os Y.",
+      "histogramValue": "Vyberte jednu numericku premennu.",
+      "boxplotValue": "Vyberte jednu numericku premennu.",
+      "pieCategory": "Vyberte jeden kategoriovy stlpec.",
+      "pieValue": "Vyberte jeden numericky stlpec pre hodnoty kolaca.",
+      "fallback": "Doplnte povinne polia pre vytvorenie grafu."
+    },
+    "quickActions": {
+      "unknownColumn": "Nezname",
+      "line": "Ciara: {x} vs {y}",
+      "bar": "Stlpce: {x} podla {y}",
+      "scatter": "Scatter: {x} vs {y}",
+      "histogram": "Histogram: {value}",
+      "boxplot": "Box plot: {value}",
+      "boxplotGrouped": "Box plot: {value} podla {group}",
+      "pie": "Kolac: {category} podla {value}"
     }
   },
   "home": {

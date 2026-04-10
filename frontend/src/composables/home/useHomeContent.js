@@ -10,7 +10,7 @@ import {
   buildHomeDemoChartTypes,
   buildHomeDemoChartOption,
 } from '../../utils/home'
-import i18n, { translate } from '../../i18n'
+import i18n, { getLocale, translate } from '../../i18n'
 
 export const useHomeContent = ({ authStore } = {}) => {
   const activeDemoScenarioKey = ref('quality')
@@ -70,7 +70,7 @@ export const useHomeContent = ({ authStore } = {}) => {
     }
   )
 
-  const formatStat = (value) => Number(value || 0).toLocaleString()
+  const formatStat = (value) => Number(value || 0).toLocaleString(getLocale())
 
   return {
     primaryAction,

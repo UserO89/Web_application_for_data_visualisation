@@ -1,3 +1,5 @@
+import { chartCommonLabel, formatChartNumber } from '../ui/i18n'
+
 const emptyDefinition = (type) => ({ type, labels: [], datasets: [] })
 
 const buildNumericColumns = (rows, columns, parseNumericCell) =>
@@ -42,8 +44,8 @@ const buildScatterDefinition = (numericColumns, rows, parseNumericCell, getSerie
 const formatBinLabel = (value) => {
   const rounded = Math.round(value * 100) / 100
   return Number.isInteger(rounded)
-    ? rounded.toLocaleString()
-    : rounded.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+    ? formatChartNumber(rounded)
+    : formatChartNumber(rounded, { minimumFractionDigits: 0, maximumFractionDigits: 2 })
 }
 
 const buildHistogramDefinition = (numericColumns, getSeriesColor) => {
@@ -65,7 +67,10 @@ const buildHistogramDefinition = (numericColumns, getSeriesColor) => {
         data: [values.length],
         color: getSeriesColor(target.name, 0),
       }],
-      meta: { xAxisLabel: target.name, yAxisLabel: 'Frequency' },
+      meta: {
+        xAxisLabel: target.name,
+        yAxisLabel: chartCommonLabel('frequency', 'Frequency'),
+      },
     }
   }
 
@@ -92,7 +97,10 @@ const buildHistogramDefinition = (numericColumns, getSeriesColor) => {
       data: bins,
       color: getSeriesColor(target.name, 0),
     }],
-    meta: { xAxisLabel: target.name, yAxisLabel: 'Frequency' },
+    meta: {
+      xAxisLabel: target.name,
+      yAxisLabel: chartCommonLabel('frequency', 'Frequency'),
+    },
   }
 }
 
@@ -127,9 +135,9 @@ const buildCategoryDefinition = (chartType, rows, columns, parseNumericCell, get
   })
 
   const fallbackDataset = {
-    label: 'Values',
+    label: chartCommonLabel('values', 'Values'),
     data: rows.map((row) => parseNumericCell(row[labelField]) || 0),
-    color: getSeriesColor('Values', 0),
+    color: getSeriesColor(chartCommonLabel('values', 'Values'), 0),
   }
 
   return {

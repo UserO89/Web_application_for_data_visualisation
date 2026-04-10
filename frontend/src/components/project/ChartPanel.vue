@@ -4,8 +4,8 @@
       v-if="!embedded"
       style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;"
     >
-      <div style="font-weight: 700;">Visualization</div>
-      <div style="color: var(--muted); font-size: 13px;">Interactive area</div>
+      <div style="font-weight: 700;">{{ $t('charts.panel.title') }}</div>
+      <div style="color: var(--muted); font-size: 13px;">{{ $t('charts.panel.subtitle') }}</div>
     </div>
 
     <div class="chart-canvas">
@@ -13,10 +13,10 @@
     </div>
 
     <div class="chart-footer">
-      <div style="color: var(--muted); font-size: 13px;">Hover over the chart for details.</div>
+      <div style="color: var(--muted); font-size: 13px;">{{ $t('charts.panel.hoverHint') }}</div>
       <div class="chart-footer-actions">
         <details v-if="quickActions.length" class="chart-quick-actions">
-          <summary class="btn chart-quick-actions-toggle">Quick Actions</summary>
+          <summary class="btn chart-quick-actions-toggle">{{ $t('charts.panel.quickActions') }}</summary>
           <div class="chart-quick-actions-menu">
             <button
               v-for="action in quickActions"
@@ -29,9 +29,9 @@
             </button>
           </div>
         </details>
-        <button v-if="allowSave" class="btn" type="button" :disabled="!hasRenderableData" @click="$emit('save')">Save Chart</button>
-        <button v-if="allowExport" class="btn" type="button" @click="exportPNG">Export PNG</button>
-        <button v-if="allowBuild" class="btn primary" type="button" :disabled="buildDisabled" @click="$emit('build')">Build Chart</button>
+        <button v-if="allowSave" class="btn" type="button" :disabled="!hasRenderableData" @click="$emit('save')">{{ $t('charts.panel.save') }}</button>
+        <button v-if="allowExport" class="btn" type="button" @click="exportPNG">{{ $t('charts.panel.export') }}</button>
+        <button v-if="allowBuild" class="btn primary" type="button" :disabled="buildDisabled" @click="$emit('build')">{{ $t('charts.panel.build') }}</button>
       </div>
     </div>
   </div>
