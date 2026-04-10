@@ -12,6 +12,7 @@ const mockAuthStore = vi.hoisted(() => ({
   loading: false,
   fetchUser: vi.fn(),
   updateProfile: vi.fn(),
+  updatePreferredLocale: vi.fn(),
   changePassword: vi.fn(),
   deleteAccount: vi.fn(),
   uploadAvatar: vi.fn(),
@@ -66,6 +67,7 @@ describe('ProfilePage', () => {
       id: 3,
       name: 'Jane Doe',
       email: 'jane@example.com',
+      locale: 'en',
       avatar_url: null,
       created_at: '2026-01-15T10:20:30Z',
     }
@@ -74,6 +76,8 @@ describe('ProfilePage', () => {
     mockAuthStore.fetchUser.mockResolvedValue(undefined)
     mockAuthStore.updateProfile.mockReset()
     mockAuthStore.updateProfile.mockResolvedValue(undefined)
+    mockAuthStore.updatePreferredLocale.mockReset()
+    mockAuthStore.updatePreferredLocale.mockResolvedValue(undefined)
     mockAuthStore.changePassword.mockReset()
     mockAuthStore.changePassword.mockResolvedValue(undefined)
     mockAuthStore.deleteAccount.mockReset()
@@ -110,11 +114,23 @@ describe('ProfilePage', () => {
     await flushPromises()
 
     await wrapper.get('input[name="nickname"]').setValue('  Jane Analytics  ')
-    await wrapper.findAll('form.settings-form')[0].trigger('submit')
+    await wrapper.get('form[data-form="profile"]').trigger('submit')
     await flushPromises()
 
     expect(mockAuthStore.updateProfile).toHaveBeenCalledWith({ name: 'Jane Analytics' })
     expect(mockNotifications.success).toHaveBeenCalledWith('Nickname updated successfully.')
+  })
+
+  it('updates the persisted locale preference from the profile page', async () => {
+    const wrapper = mountPage()
+    await flushPromises()
+
+    await wrapper.get('select[name="locale"]').setValue('uk')
+    await wrapper.get('form[data-form="language"]').trigger('submit')
+    await flushPromises()
+
+    expect(mockAuthStore.updatePreferredLocale).toHaveBeenCalledWith('uk')
+    expect(mockNotifications.success).toHaveBeenCalledWith('Language preference updated successfully.')
   })
 
   it('rejects oversized avatar uploads before calling the API', async () => {
@@ -148,7 +164,7 @@ describe('ProfilePage', () => {
     await wrapper.get('input[name="current_password"]').setValue('oldpass123')
     await wrapper.get('input[name="new_password"]').setValue('newpass123')
     await wrapper.get('input[name="new_password_confirmation"]').setValue('different123')
-    await wrapper.findAll('form.settings-form')[1].trigger('submit')
+    await wrapper.get('form[data-form="password"]').trigger('submit')
     await flushPromises()
 
     expect(mockAuthStore.changePassword).not.toHaveBeenCalled()

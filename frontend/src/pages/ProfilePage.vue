@@ -53,7 +53,7 @@
             </div>
           </div>
 
-          <form class="settings-form" @submit.prevent="handleProfileUpdate">
+          <form class="settings-form" data-form="profile" @submit.prevent="handleProfileUpdate">
             <div style="font-weight: 700; margin-bottom: 10px;">{{ $t('profile.publicProfile.title') }}</div>
             <div class="form-group">
               <label for="profile-nickname">{{ $t('profile.publicProfile.nickname') }}</label>
@@ -67,7 +67,30 @@
             </div>
           </form>
 
-          <form class="settings-form" @submit.prevent="handlePasswordUpdate">
+          <form class="settings-form" data-form="language" @submit.prevent="handleLocaleUpdate">
+            <div style="font-weight: 700; margin-bottom: 10px;">{{ $t('profile.language.title') }}</div>
+            <div class="form-hint">{{ $t('profile.language.description') }}</div>
+            <div class="form-group">
+              <label for="profile-locale">{{ $t('common.language') }}</label>
+              <select id="profile-locale" v-model="localeForm.locale" name="locale">
+                <option
+                  v-for="localeOption in supportedLocales"
+                  :key="localeOption.code"
+                  :value="localeOption.code"
+                >
+                  {{ localeOption.nativeLabel }}
+                </option>
+              </select>
+            </div>
+            <div v-if="localeError" class="form-error">{{ localeError }}</div>
+            <div class="settings-actions">
+              <button class="btn primary" type="submit" :disabled="localeUpdating">
+                {{ localeUpdating ? $t('profile.language.saving') : $t('profile.language.save') }}
+              </button>
+            </div>
+          </form>
+
+          <form class="settings-form" data-form="password" @submit.prevent="handlePasswordUpdate">
             <div style="font-weight: 700; margin-bottom: 10px;">{{ $t('profile.password.title') }}</div>
             <div class="form-group">
               <label for="profile-current-password">{{ $t('profile.password.currentPassword') }}</label>
@@ -142,6 +165,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useProjectsStore } from '../stores/projects'
 import { useNotifications } from '../composables/useNotifications'
+import { SUPPORTED_LOCALES } from '../i18n'
 import { extractApiErrorMessage } from '../utils/api/errors'
 import { getInitials } from '../utils/display'
 
@@ -158,12 +182,17 @@ export default {
     const avatarError = ref('')
     const profileUpdating = ref(false)
     const profileError = ref('')
+    const localeUpdating = ref(false)
+    const localeError = ref('')
     const passwordUpdating = ref(false)
     const passwordError = ref('')
     const deletingAccount = ref(false)
     const deleteError = ref('')
     const profileForm = ref({
       name: '',
+    })
+    const localeForm = ref({
+      locale: locale.value,
     })
     const passwordForm = ref({
       current_password: '',
@@ -180,6 +209,7 @@ export default {
 
       if (authStore.user) {
         profileForm.value.name = authStore.user.name || ''
+        localeForm.value.locale = authStore.user.locale || locale.value
       }
     })
 
@@ -187,6 +217,13 @@ export default {
       () => authStore.user?.name,
       (name) => {
         profileForm.value.name = name || ''
+      }
+    )
+
+    watch(
+      () => authStore.user?.locale,
+      (nextLocale) => {
+        localeForm.value.locale = nextLocale || locale.value
       }
     )
 
@@ -268,6 +305,27 @@ export default {
       }
     }
 
+    const handleLocaleUpdate = async () => {
+      const nextLocale = localeForm.value.locale
+      if (!nextLocale) {
+        localeError.value = t('profile.language.required')
+        return
+      }
+
+      localeUpdating.value = true
+      localeError.value = ''
+
+      try {
+        await authStore.updatePreferredLocale(nextLocale)
+        notify.success(t('profile.language.updated'))
+      } catch (error) {
+        localeError.value = extractApiErrorMessage(error, t('profile.language.updateFailed'))
+        notify.error(localeError.value)
+      } finally {
+        localeUpdating.value = false
+      }
+    }
+
     const handleDeleteAccount = async () => {
       const currentPassword = deleteForm.value.current_password
       if (!currentPassword) {
@@ -310,17 +368,22 @@ export default {
       avatarError,
       profileUpdating,
       profileError,
+      localeUpdating,
+      localeError,
       passwordUpdating,
       passwordError,
       deletingAccount,
       deleteError,
       profileForm,
+      localeForm,
       passwordForm,
       deleteForm,
+      supportedLocales: SUPPORTED_LOCALES,
       initials,
       pickAvatar,
       handleAvatarChange,
       handleProfileUpdate,
+      handleLocaleUpdate,
       handlePasswordUpdate,
       handleDeleteAccount,
       formatDate,
@@ -416,6 +479,13 @@ export default {
 .settings-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.form-hint {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
 
 .form-error {
