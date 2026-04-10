@@ -8,8 +8,11 @@ export {
 
 export {
   METRIC_OPTIONS,
+  buildMetricOptions,
   DEFAULT_SELECTED_METRICS,
   SEMANTIC_OVERRIDE_OPTIONS,
+  buildSemanticOverrideOptions,
+  semanticTypeLabel,
   metricLabel,
 } from './options'
 

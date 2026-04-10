@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { vi } from 'vitest'
+import { withI18n } from '../../support/i18n'
 
 const mockStatisticsWorkspace = vi.hoisted(() => ({
   openAdvanced: vi.fn(),
@@ -159,12 +160,12 @@ describe('StatisticsWorkspace', () => {
   })
 
   it('shows the load rows note and emits load-rows from the header button', async () => {
-    const wrapper = mount(StatisticsWorkspace, {
+    const wrapper = mount(StatisticsWorkspace, withI18n({
       props: buildProps({
         rowsReady: false,
         rowsLoading: false,
       }),
-    })
+    }))
 
     expect(wrapper.text()).toContain('Descriptive Statistics')
     expect(wrapper.text()).toContain('Summary cards use backend statistics.')
@@ -177,13 +178,13 @@ describe('StatisticsWorkspace', () => {
   })
 
   it('renders error states and loading state text from props', () => {
-    const wrapper = mount(StatisticsWorkspace, {
+    const wrapper = mount(StatisticsWorkspace, withI18n({
       props: buildProps({
         loading: true,
         error: 'Backend statistics failed.',
         rowsError: 'Browser rows failed.',
       }),
-    })
+    }))
 
     expect(wrapper.text()).toContain('Refreshing...')
     expect(wrapper.text()).toContain('Backend statistics failed.')
@@ -192,11 +193,11 @@ describe('StatisticsWorkspace', () => {
   })
 
   it('forwards statistics child events into composable methods and parent emits', async () => {
-    const wrapper = mount(StatisticsWorkspace, {
+    const wrapper = mount(StatisticsWorkspace, withI18n({
       props: buildProps({
         readOnly: false,
       }),
-    })
+    }))
 
     await wrapper.find('.stats-toggle-column').trigger('click')
     expect(mockStatisticsWorkspace.state.toggleColumn).toHaveBeenCalledWith(2, true)
@@ -226,11 +227,11 @@ describe('StatisticsWorkspace', () => {
   })
 
   it('hides advanced settings in read-only mode and blocks open-advanced requests', async () => {
-    const wrapper = mount(StatisticsWorkspace, {
+    const wrapper = mount(StatisticsWorkspace, withI18n({
       props: buildProps({
         readOnly: true,
       }),
-    })
+    }))
 
     expect(wrapper.find('.stats-advanced-modal-stub').exists()).toBe(false)
 

@@ -2,8 +2,8 @@
   <div class="stats-workspace panel">
     <div class="stats-head">
       <div>
-        <div class="section-title">Descriptive Statistics</div>
-        <div class="section-subtitle">Select columns, choose measures, and review results.</div>
+        <div class="section-title">{{ $t('statistics.workspace.title') }}</div>
+        <div class="section-subtitle">{{ $t('statistics.workspace.subtitle') }}</div>
       </div>
       <div class="stats-head-actions">
         <button
@@ -12,16 +12,20 @@
           :disabled="rowsLoading"
           @click="$emit('load-rows')"
         >
-          {{ rowsLoading ? 'Loading full dataset...' : (rowsReady ? 'Reload full dataset' : 'Load full dataset') }}
+          {{
+            rowsLoading
+              ? $t('statistics.workspace.loadingRows')
+              : (rowsReady ? $t('statistics.workspace.reloadRows') : $t('statistics.workspace.loadRows'))
+          }}
         </button>
-        <div v-if="loading" class="stats-status">Refreshing...</div>
+        <div v-if="loading" class="stats-status">{{ $t('statistics.workspace.refreshing') }}</div>
       </div>
     </div>
 
     <div v-if="error" class="stats-error">{{ error }}</div>
     <div v-if="rowsError" class="stats-error">{{ rowsError }}</div>
     <div v-else-if="!rowsReady" class="stats-note">
-      Summary cards use backend statistics. Grouped statistics need the full dataset loaded in the browser.
+      {{ $t('statistics.workspace.rowsNote') }}
     </div>
 
     <StatisticsColumnGroups

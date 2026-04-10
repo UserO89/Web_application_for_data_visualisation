@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { StatisticsMetricSelector } from '../../../../src/components/project/statistics/index.js'
+import { withI18n } from '../../../support/i18n'
 
 describe('StatisticsMetricSelector', () => {
   it('renders metric groups and emits toggle/grouping events', async () => {
-    const wrapper = mount(StatisticsMetricSelector, {
+    const wrapper = mount(StatisticsMetricSelector, withI18n({
       props: {
         metricOptions: {
           numeric: [{ key: 'mean', label: 'Mean' }],
@@ -22,7 +23,7 @@ describe('StatisticsMetricSelector', () => {
         },
         groupByColumnId: 5,
       },
-    })
+    }))
 
     expect(wrapper.text()).toContain('Measures to calculate')
     expect(wrapper.get('input[name="metric_numeric_mean"]').element.checked).toBe(true)

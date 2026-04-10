@@ -1,9 +1,10 @@
 import { mount } from '@vue/test-utils'
 import { StatisticsColumnGroups } from '../../../../src/components/project/statistics/index.js'
+import { withI18n } from '../../../support/i18n'
 
 describe('StatisticsColumnGroups', () => {
   it('renders visible and hidden column groups and emits selection events', async () => {
-    const wrapper = mount(StatisticsColumnGroups, {
+    const wrapper = mount(StatisticsColumnGroups, withI18n({
       props: {
         groupedColumns: {
           numeric: [{ id: 1, name: 'Revenue', semanticType: 'metric' }],
@@ -16,7 +17,7 @@ describe('StatisticsColumnGroups', () => {
         typeLabel: (value) => `type:${value}`,
         readOnly: false,
       },
-    })
+    }))
 
     expect(wrapper.text()).toContain('Numeric columns')
     expect(wrapper.text()).toContain('No date columns.')
@@ -34,7 +35,7 @@ describe('StatisticsColumnGroups', () => {
   })
 
   it('locks advanced actions in read-only mode', async () => {
-    const wrapper = mount(StatisticsColumnGroups, {
+    const wrapper = mount(StatisticsColumnGroups, withI18n({
       props: {
         groupedColumns: {
           numeric: [{ id: 1, name: 'Revenue', semanticType: 'metric' }],
@@ -45,7 +46,7 @@ describe('StatisticsColumnGroups', () => {
         },
         readOnly: true,
       },
-    })
+    }))
 
     const button = wrapper.get('button.btn.tiny')
     expect(button.text()).toBe('Locked')

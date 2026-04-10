@@ -252,6 +252,89 @@
       }
     }
   },
+  "statistics": {
+    "workspace": {
+      "title": "Deskriptivna statistika",
+      "subtitle": "Vyberte stlpce, zvolte miery a skontrolujte vysledky.",
+      "loadRows": "Nacitat cely dataset",
+      "reloadRows": "Znovu nacitat cely dataset",
+      "loadingRows": "Nacitava sa cely dataset...",
+      "refreshing": "Obnovuje sa...",
+      "rowsNote": "Suhrnne karty vyuzivaju backend statistiky. Zoskupena statistika potrebuje cely dataset nacitany v prehliadaci."
+    },
+    "selector": {
+      "title": "Miery na vypocet",
+      "groupedTitle": "Zoskupena deskriptivna statistika (volitelne)",
+      "groupLabel": "Zoskupit numericke stlpce podla kategorie",
+      "noGrouping": "Bez zoskupenia",
+      "groups": {
+        "numeric": "Numericke",
+        "category": "Kategoria",
+        "date": "Datum",
+        "ordered": "Usporiadane"
+      }
+    },
+    "columns": {
+      "numericTitle": "Numericke stlpce",
+      "categoryTitle": "Kategoricke stlpce",
+      "dateTitle": "Datumove stlpce",
+      "orderedTitle": "Usporiadane stlpce",
+      "hiddenTitle": "Skryte / vylucene stlpce ({count})",
+      "numericEmpty": "Ziadne numericke stlpce.",
+      "categoryEmpty": "Ziadne kategoricke stlpce.",
+      "dateEmpty": "Ziadne datumove stlpce.",
+      "orderedEmpty": "Ziadne usporiadane stlpce.",
+      "hiddenEmpty": "Ziadne skryte stlpce.",
+      "locked": "Zamknute",
+      "advanced": "Pokrocile",
+      "unknownType": "Neznamy"
+    },
+    "advanced": {
+      "title": "Pokrocile nastavenia stlpca",
+      "close": "Zavriet",
+      "detectedType": "Zisteny typ",
+      "finalType": "Finalny typ",
+      "confidence": "Istota",
+      "source": "Zdroj",
+      "physicalType": "Fyzicky typ",
+      "notAvailable": "n/a",
+      "sourceAuto": "auto",
+      "unknownPhysicalType": "neznamy",
+      "finalTypeOverride": "Prepis finalneho typu",
+      "excludeFromAnalysis": "Vylucit z analyzy",
+      "orderedValues": "Usporiadane hodnoty",
+      "orderedPlaceholder": "Nizka, Stredna, Vysoka",
+      "saveSettings": "Ulozit nastavenia",
+      "saveOrder": "Ulozit poradie"
+    },
+    "semanticTypes": {
+      "metric": "Numericke",
+      "nominal": "Kategoria",
+      "ordinal": "Usporiadana kategoria",
+      "temporal": "Datum/Cas",
+      "identifier": "ID",
+      "binary": "Kategoria (binarna)",
+      "ignored": "Skryte"
+    },
+    "metricLabels": {
+      "mean": "Priemer",
+      "median": "Median",
+      "min": "Min",
+      "max": "Max",
+      "q1": "Q1",
+      "q2": "Q2",
+      "q3": "Q3",
+      "stdDev": "Std odchylka",
+      "variance": "Rozptyl",
+      "range": "Rozsah",
+      "count": "Pocet",
+      "distinctCount": "Pocet rozlicnych",
+      "frequency": "Frekvencia",
+      "earliest": "Najskor",
+      "latest": "Najneskor",
+      "medianRank": "Medianove poradie"
+    }
+  },
   "home": {
     "actions": {
       "openDashboard": "Otvorit dashboard",

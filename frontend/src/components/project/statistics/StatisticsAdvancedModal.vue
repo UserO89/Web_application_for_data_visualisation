@@ -3,22 +3,22 @@
     <div class="advanced-modal panel">
       <div class="advanced-head">
         <div>
-          <div class="section-title">Advanced column settings</div>
+          <div class="section-title">{{ $t('statistics.advanced.title') }}</div>
           <div class="section-subtitle">{{ advancedColumn.name }}</div>
         </div>
-        <button type="button" class="btn" @click="$emit('close')">Close</button>
+        <button type="button" class="btn" @click="$emit('close')">{{ $t('statistics.advanced.close') }}</button>
       </div>
 
       <div class="advanced-meta">
-        <div>Detected type: <strong>{{ advancedColumn.detectedSemanticType || 'n/a' }}</strong></div>
-        <div>Final type: <strong>{{ advancedDraft.semanticType }}</strong></div>
-        <div>Confidence: <strong>{{ formatConfidence(advancedColumn.semanticConfidence) }}</strong></div>
-        <div>Source: <strong>{{ advancedColumn.typeSource || 'auto' }}</strong></div>
-        <div>Physical type: <strong>{{ advancedColumn.physicalType || 'unknown' }}</strong></div>
+        <div>{{ $t('statistics.advanced.detectedType') }}: <strong>{{ semanticTypeLabel(advancedColumn.detectedSemanticType) }}</strong></div>
+        <div>{{ $t('statistics.advanced.finalType') }}: <strong>{{ semanticTypeLabel(advancedDraft.semanticType) }}</strong></div>
+        <div>{{ $t('statistics.advanced.confidence') }}: <strong>{{ confidenceLabel(advancedColumn.semanticConfidence) }}</strong></div>
+        <div>{{ $t('statistics.advanced.source') }}: <strong>{{ advancedColumn.typeSource || $t('statistics.advanced.sourceAuto') }}</strong></div>
+        <div>{{ $t('statistics.advanced.physicalType') }}: <strong>{{ advancedColumn.physicalType || $t('statistics.advanced.unknownPhysicalType') }}</strong></div>
       </div>
 
       <div class="advanced-row">
-        <label for="advanced-semantic-type">Final type override</label>
+        <label for="advanced-semantic-type">{{ $t('statistics.advanced.finalTypeOverride') }}</label>
         <select
           id="advanced-semantic-type"
           name="advanced_semantic_type"
@@ -39,25 +39,25 @@
           :checked="Boolean(advancedDraft.isExcludedFromAnalysis)"
           @change="$emit('update-excluded', $event.target.checked)"
         />
-        Exclude from analysis
+        {{ $t('statistics.advanced.excludeFromAnalysis') }}
       </label>
 
       <div v-if="advancedDraft.semanticType === 'ordinal'" class="advanced-row">
-        <label for="advanced-ordinal-order">Ordered values</label>
+        <label for="advanced-ordinal-order">{{ $t('statistics.advanced.orderedValues') }}</label>
         <input
           id="advanced-ordinal-order"
           name="advanced_ordinal_order"
           class="field-input"
           type="text"
           :value="advancedDraft.ordinalOrderText"
-          placeholder="Low, Medium, High"
+          :placeholder="$t('statistics.advanced.orderedPlaceholder')"
           @input="$emit('update-ordinal-order-text', $event.target.value)"
         />
       </div>
 
       <div class="advanced-actions">
         <button type="button" class="btn primary" :disabled="updatingColumnId === advancedColumn.id" @click="$emit('save-settings')">
-          Save settings
+          {{ $t('statistics.advanced.saveSettings') }}
         </button>
         <button
           v-if="advancedDraft.semanticType === 'ordinal'"
@@ -66,7 +66,7 @@
           :disabled="updatingColumnId === advancedColumn.id"
           @click="$emit('save-order')"
         >
-          Save order
+          {{ $t('statistics.advanced.saveOrder') }}
         </button>
       </div>
     </div>
@@ -74,7 +74,7 @@
 </template>
 
 <script>
-const defaultFormatter = (value) => String(value ?? 'n/a')
+const defaultFormatter = (value) => String(value ?? '')
 
 export default {
   name: 'StatisticsAdvancedModal',
@@ -112,6 +112,16 @@ export default {
     'save-settings',
     'save-order',
   ],
+  methods: {
+    confidenceLabel(value) {
+      return this.formatConfidence(value) || this.$t('statistics.advanced.notAvailable')
+    },
+    semanticTypeLabel(value) {
+      if (!value) return this.$t('statistics.advanced.notAvailable')
+      const translated = this.$t(`statistics.semanticTypes.${value}`)
+      return translated !== `statistics.semanticTypes.${value}` ? translated : value
+    },
+  },
 }
 </script>
 

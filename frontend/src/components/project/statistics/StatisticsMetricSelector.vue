@@ -1,9 +1,9 @@
 <template>
   <div class="stats-metrics">
-    <div class="stats-group-title">Measures to calculate</div>
+    <div class="stats-group-title">{{ $t('statistics.selector.title') }}</div>
 
     <div class="metrics-row">
-      <div class="metrics-title">Numeric</div>
+      <div class="metrics-title">{{ $t('statistics.selector.groups.numeric') }}</div>
       <label v-for="metric in metricOptions.numeric" :key="`mn-${metric.key}`" class="metric-item">
         <input
           :name="`metric_numeric_${metric.key}`"
@@ -16,7 +16,7 @@
     </div>
 
     <div class="metrics-row">
-      <div class="metrics-title">Category</div>
+      <div class="metrics-title">{{ $t('statistics.selector.groups.category') }}</div>
       <label v-for="metric in metricOptions.category" :key="`mc-${metric.key}`" class="metric-item">
         <input
           :name="`metric_category_${metric.key}`"
@@ -29,7 +29,7 @@
     </div>
 
     <div class="metrics-row">
-      <div class="metrics-title">Date</div>
+      <div class="metrics-title">{{ $t('statistics.selector.groups.date') }}</div>
       <label v-for="metric in metricOptions.date" :key="`md-${metric.key}`" class="metric-item">
         <input
           :name="`metric_date_${metric.key}`"
@@ -42,7 +42,7 @@
     </div>
 
     <div class="metrics-row">
-      <div class="metrics-title">Ordered</div>
+      <div class="metrics-title">{{ $t('statistics.selector.groups.ordered') }}</div>
       <label v-for="metric in metricOptions.ordered" :key="`mo-${metric.key}`" class="metric-item">
         <input
           :name="`metric_ordered_${metric.key}`"
@@ -56,9 +56,9 @@
   </div>
 
   <div class="grouped-stats">
-    <div class="stats-group-title">Grouped descriptive statistics (optional)</div>
+    <div class="stats-group-title">{{ $t('statistics.selector.groupedTitle') }}</div>
     <div class="grouped-controls">
-      <label class="field-label" for="stats-group-by-column">Group numeric columns by category</label>
+      <label class="field-label" for="stats-group-by-column">{{ $t('statistics.selector.groupLabel') }}</label>
       <select
         id="stats-group-by-column"
         name="group_by_column"
@@ -66,7 +66,7 @@
         :value="groupByColumnId || ''"
         @change="$emit('update-group-by-column', $event.target.value)"
       >
-        <option value="">No grouping</option>
+        <option value="">{{ $t('statistics.selector.noGrouping') }}</option>
         <option v-for="column in groupedColumns.category" :key="`group-${column.id}`" :value="column.id">
           {{ column.name }}
         </option>

@@ -24,7 +24,7 @@
             :disabled="readOnly"
             @click.stop="$emit('open-advanced', column.id)"
           >
-            {{ readOnly ? 'Locked' : 'Advanced' }}
+            {{ readOnly ? $t('statistics.columns.locked') : $t('statistics.columns.advanced') }}
           </button>
         </div>
       </div>
@@ -32,7 +32,7 @@
     </section>
 
     <details class="stats-group collapsed">
-      <summary>Hidden / Excluded columns ({{ groupedColumns.hidden?.length || 0 }})</summary>
+      <summary>{{ $t('statistics.columns.hiddenTitle', { count: groupedColumns.hidden?.length || 0 }) }}</summary>
       <div v-if="groupedColumns.hidden?.length" class="stats-column-list">
         <div v-for="column in groupedColumns.hidden" :key="`hidden-${column.id}`" class="stats-column-item no-check">
           <span class="stats-column-name">{{ column.name }}</span>
@@ -43,22 +43,18 @@
             :disabled="readOnly"
             @click="$emit('open-advanced', column.id)"
           >
-            {{ readOnly ? 'Locked' : 'Advanced' }}
+            {{ readOnly ? $t('statistics.columns.locked') : $t('statistics.columns.advanced') }}
           </button>
         </div>
       </div>
-      <div v-else class="muted">No hidden columns.</div>
+      <div v-else class="muted">{{ $t('statistics.columns.hiddenEmpty') }}</div>
     </details>
   </div>
 </template>
 
 <script>
-const VISIBLE_SECTIONS = [
-  { key: 'numeric', title: 'Numeric columns', emptyText: 'No numeric columns.' },
-  { key: 'category', title: 'Category columns', emptyText: 'No category columns.' },
-  { key: 'date', title: 'Date columns', emptyText: 'No date columns.' },
-  { key: 'ordered', title: 'Ordered columns', emptyText: 'No ordered columns.' },
-]
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default {
   name: 'StatisticsColumnGroups',
@@ -88,8 +84,16 @@ export default {
   },
   emits: ['toggle-column', 'open-advanced'],
   setup() {
+    const { t } = useI18n({ useScope: 'global' })
+    const visibleSections = computed(() => ([
+      { key: 'numeric', title: t('statistics.columns.numericTitle'), emptyText: t('statistics.columns.numericEmpty') },
+      { key: 'category', title: t('statistics.columns.categoryTitle'), emptyText: t('statistics.columns.categoryEmpty') },
+      { key: 'date', title: t('statistics.columns.dateTitle'), emptyText: t('statistics.columns.dateEmpty') },
+      { key: 'ordered', title: t('statistics.columns.orderedTitle'), emptyText: t('statistics.columns.orderedEmpty') },
+    ]))
+
     return {
-      visibleSections: VISIBLE_SECTIONS,
+      visibleSections,
     }
   },
 }

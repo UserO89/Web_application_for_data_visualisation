@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue'
-import { SEMANTIC_TYPE_LABELS, semanticTypeToGroup } from '../../charts/ui/typeLabels'
+import i18n, { translate } from '../../i18n'
+import { semanticTypeToGroup } from '../../charts/ui/typeLabels'
 import {
   buildCategorySummaries,
   buildDateSummaries,
@@ -7,9 +8,10 @@ import {
   buildOrderedSummaries,
 } from '../../statistics/presentation/buildStatisticsSections'
 import {
-  METRIC_OPTIONS,
+  buildMetricOptions,
   DEFAULT_SELECTED_METRICS,
-  SEMANTIC_OVERRIDE_OPTIONS,
+  buildSemanticOverrideOptions,
+  semanticTypeLabel,
   metricLabel,
   buildGroupedSummaryRows,
 } from '../../utils/statistics'
@@ -52,6 +54,7 @@ export const useStatisticsWorkspace = ({
   const selectedColumnIds = ref([])
   const metricSelected = ref({ ...DEFAULT_SELECTED_METRICS })
   const groupByColumnId = ref(null)
+  const currentLocale = computed(() => i18n.global.locale.value)
 
   const advancedColumnId = ref(null)
   const advancedDraft = ref({
@@ -179,7 +182,25 @@ export const useStatisticsWorkspace = ({
     groupByColumnId.value = normalizeId(value)
   }
 
-  const typeLabel = (semanticType) => SEMANTIC_TYPE_LABELS[semanticType] || semanticType || 'Unknown'
+  const metricOptions = computed(() => {
+    currentLocale.value
+    return buildMetricOptions(translate)
+  })
+
+  const semanticOverrideOptions = computed(() => {
+    currentLocale.value
+    return buildSemanticOverrideOptions(translate)
+  })
+
+  const typeLabel = (semanticType) => {
+    currentLocale.value
+    return semanticTypeLabel(semanticType, translate) || translate('statistics.columns.unknownType')
+  }
+
+  const localizedMetricLabel = (metricKey) => {
+    currentLocale.value
+    return metricLabel(metricKey, translate)
+  }
 
   const openAdvanced = (columnId) => {
     const column = columns.value.find((item) => Number(item.id) === Number(columnId))
@@ -268,7 +289,7 @@ export const useStatisticsWorkspace = ({
   )
 
   return {
-    metricOptions: METRIC_OPTIONS,
+    metricOptions,
     metricSelected,
     groupedColumns,
     selectedNumericColumns,
@@ -287,7 +308,7 @@ export const useStatisticsWorkspace = ({
     groupedSummaryRows,
     groupByColumnId,
     groupByColumnName,
-    semanticOverrideOptions: SEMANTIC_OVERRIDE_OPTIONS,
+    semanticOverrideOptions,
     advancedColumn,
     advancedDraft,
     isSelected,
@@ -295,7 +316,7 @@ export const useStatisticsWorkspace = ({
     toggleMetric,
     updateGroupByColumn,
     typeLabel,
-    metricLabel,
+    metricLabel: localizedMetricLabel,
     openAdvanced,
     closeAdvanced,
     setAdvancedSemanticType,

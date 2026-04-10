@@ -1,5 +1,6 @@
 import { nextTick, ref } from 'vue'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
+import { setLocale } from '../../../src/i18n'
 import { useStatisticsWorkspace } from '../../../src/composables/project/useStatisticsWorkspace'
 
 const buildSchemaColumns = () => ([
@@ -43,6 +44,10 @@ const createWorkspace = (overrides = {}) => {
 }
 
 describe('useStatisticsWorkspace', () => {
+  beforeEach(() => {
+    setLocale('en')
+  })
+
   it('auto-selects valid statistic-compatible columns on initial schema load', async () => {
     const { state } = createWorkspace()
     await nextTick()
@@ -169,5 +174,19 @@ describe('useStatisticsWorkspace', () => {
     state.saveOrdinalOrder()
 
     expect(onChangeOrdinalOrder).not.toHaveBeenCalled()
+  })
+
+  it('updates localized metric and semantic labels when the locale changes', async () => {
+    const { state } = createWorkspace()
+    await nextTick()
+
+    expect(state.metricOptions.value.numeric[0].label).toBe('Mean')
+    expect(state.typeLabel('metric')).toBe('Numeric')
+
+    setLocale('sk')
+    await nextTick()
+
+    expect(state.metricOptions.value.numeric[0].label).toBe('Priemer')
+    expect(state.typeLabel('metric')).toBe('Numericke')
   })
 })
