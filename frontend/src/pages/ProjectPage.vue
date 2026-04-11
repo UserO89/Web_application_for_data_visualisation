@@ -127,8 +127,10 @@ import { demoProjectsApi } from '../api/demo'
 import { useDatasetSchemaStore } from '../stores/datasetSchema'
 import { createDefaultChartDefinition, mergeChartDefinition } from '../charts/chartDefinitions/createUniversalChartDefinition'
 import { normalizeChartDefinition } from '../charts/rules/chartDefinitionValidator'
-import { cellField, buildCsvLines, buildRowUpdateValues, downloadSavedChartPng } from '../utils/project'
+import { cellField, buildCsvLines, buildRowUpdateValues } from '../utils/project'
 import { useManualDatasetBuilder, useValidationReport, useProjectDataLoader, useProjectWorkspace, useProjectChartState, } from '../composables/project'
+import { useProjectSavedCharts } from '../composables/project/useProjectSavedCharts'
+import { useProjectChartViewportObserver } from '../composables/project/useProjectChartViewportObserver'
 import { useNotifications } from '../composables/useNotifications'
 import { extractApiErrorMessage } from '../utils/api/errors'
 
@@ -173,9 +175,6 @@ export default {
     const importing = ref(false)
     const importOptions = ref({ has_header: true, delimiter: ',' })
     const importMode = ref('file')
-    const savedCharts = ref([])
-    const savedChartsLoading = ref(false)
-    const savedChartsError = ref('')
 
     const {
       manualHeaders,
@@ -302,6 +301,36 @@ export default {
       analysisRows,
     })
 
+    const {
+      savedCharts,
+      savedChartsLoading,
+      savedChartsError,
+      loadSavedCharts,
+      saveCurrentChart,
+      downloadSavedChart,
+      renameSavedChart,
+      deleteSavedChart,
+      resetSavedChartsState,
+    } = useProjectSavedCharts({
+      projectId,
+      project,
+      isReadOnly,
+      chartType,
+      chartDefinition,
+      chartLabels,
+      chartDatasets,
+      chartMeta,
+      locale,
+      setViewMode,
+      notify,
+      t,
+    })
+
+    const {
+      observeChartViewport,
+      disconnectChartViewportObserver,
+    } = useProjectChartViewportObserver(syncViewportHeightFromResize)
+
     const nullAwareFormatter = (cell) => {
       const value = cell.getValue()
       const el = cell.getElement()
@@ -322,35 +351,6 @@ export default {
         formatter: nullAwareFormatter,
       }))
     )
-
-    const formatSavedChartCreatedAt = (value) => {
-      if (!value) return '-'
-      const parsed = new Date(value)
-      if (Number.isNaN(parsed.getTime())) return '-'
-      return parsed.toLocaleString(locale.value)
-    }
-
-    const normalizeSavedChart = (savedChart) => {
-      const config = savedChart?.config && typeof savedChart.config === 'object' ? savedChart.config : {}
-      const rendered = config?.rendered && typeof config.rendered === 'object' ? config.rendered : {}
-      const chartDefinition = config?.chartDefinition && typeof config.chartDefinition === 'object'
-        ? config.chartDefinition
-        : createDefaultChartDefinition(savedChart?.type || rendered?.type || 'line')
-
-      return {
-        id: Number(savedChart?.id || 0),
-        title: String(savedChart?.title || '').trim(),
-        type: String(savedChart?.type || rendered?.type || chartDefinition?.chartType || 'line'),
-        created_at: formatSavedChartCreatedAt(savedChart?.created_at),
-        chartDefinition,
-        labels: Array.isArray(rendered?.labels) ? rendered.labels : [],
-        datasets: Array.isArray(rendered?.datasets) ? rendered.datasets : [],
-        meta: rendered?.meta && typeof rendered.meta === 'object' ? rendered.meta : {},
-      }
-    }
-
-    const buildSavedChartTitle = (type) =>
-      `${String(type || t('project.page.chartTitlePrefix')).toUpperCase()} ${new Date().toLocaleString(locale.value)}`
 
     const setWorkspaceCanvasRef = (element) => {
       workspaceRef.value = element
@@ -383,124 +383,6 @@ export default {
 
     const handleSetSeriesColor = ({ label, index, color }) => {
       setSeriesColor(label, index, color)
-    }
-
-    const loadSavedCharts = async () => {
-      if (savedChartsLoading.value) return
-      if (isReadOnly.value) {
-        savedCharts.value = []
-        return
-      }
-
-      if (!project.value?.dataset) {
-        savedCharts.value = []
-        return
-      }
-
-      savedChartsLoading.value = true
-      savedChartsError.value = ''
-      try {
-        const response = await projectsApi.listSavedCharts(projectId.value)
-        const nextCharts = Array.isArray(response?.charts) ? response.charts.map(normalizeSavedChart) : []
-        savedCharts.value = nextCharts
-      } catch (e) {
-        savedChartsError.value = extractApiErrorMessage(e, t('project.page.charts.loadFailed'))
-      } finally {
-        savedChartsLoading.value = false
-      }
-    }
-
-    const saveCurrentChart = async () => {
-      if (isReadOnly.value) {
-        notify.info(t('project.page.readOnly.saveChartsDisabled'))
-        return
-      }
-
-      if (!chartDatasets.value.length) {
-        notify.warning(t('project.page.charts.buildBeforeSaving'))
-        return
-      }
-
-      try {
-        await projectsApi.saveChart(projectId.value, {
-          type: chartType.value || 'line',
-          title: buildSavedChartTitle(chartType.value),
-          config: {
-            chartDefinition: chartDefinition.value,
-            rendered: {
-              type: chartType.value || 'line',
-              labels: chartLabels.value || [],
-              datasets: chartDatasets.value || [],
-              meta: chartMeta.value || {},
-            },
-          },
-        })
-        await loadSavedCharts()
-        setViewMode('library')
-        notify.success(t('project.page.charts.saved'))
-      } catch (e) {
-        notify.error(extractApiErrorMessage(e, t('project.page.charts.saveFailed')))
-      }
-    }
-
-    const downloadSavedChart = async (savedChart) => {
-      if (!savedChart) return
-      try {
-        await downloadSavedChartPng(savedChart, savedChart.title || `chart-${savedChart.id}`)
-      } catch (e) {
-        notify.error(extractApiErrorMessage(e, t('project.page.charts.downloadFailed')))
-      }
-    }
-
-    const renameSavedChart = async ({ chartId, title }) => {
-      if (isReadOnly.value) {
-        notify.info(t('project.page.readOnly.renamingDisabled'))
-        return
-      }
-      if (!chartId) return
-      const nextTitle = String(title || '').trim()
-      if (!nextTitle) {
-        notify.warning(t('project.page.charts.nameCannotBeEmpty'))
-        return
-      }
-
-      try {
-        const response = await projectsApi.updateSavedChart(projectId.value, chartId, {
-          title: nextTitle,
-        })
-
-        const updated = normalizeSavedChart(response?.chart || {})
-        savedCharts.value = savedCharts.value.map((chart) =>
-          Number(chart.id) === Number(chartId)
-            ? {
-                ...chart,
-                ...updated,
-                title: updated.title || nextTitle,
-              }
-            : chart
-        )
-        notify.success(t('project.page.charts.renamed'))
-      } catch (e) {
-        notify.error(extractApiErrorMessage(e, t('project.page.charts.renameFailed')))
-      }
-    }
-
-    const deleteSavedChart = async (savedChartId) => {
-      if (isReadOnly.value) {
-        notify.info(t('project.page.readOnly.deletingDisabled'))
-        return
-      }
-      if (!savedChartId) return
-      const confirmed = window.confirm(t('project.page.charts.deleteConfirm'))
-      if (!confirmed) return
-
-      try {
-        await projectsApi.deleteSavedChart(projectId.value, savedChartId)
-        await loadSavedCharts()
-        notify.success(t('project.page.charts.deleted'))
-      } catch (e) {
-        notify.error(extractApiErrorMessage(e, t('project.page.charts.deleteFailed')))
-      }
     }
 
     let chartBuildFrameId = null
@@ -559,9 +441,7 @@ export default {
       chartDefinition.value = createDefaultChartDefinition('line')
       chartViewportHeight.value = 320
       chartViewportCustom.value = false
-      savedCharts.value = []
-      savedChartsLoading.value = false
-      savedChartsError.value = ''
+      resetSavedChartsState()
       schemaStore.applySchema(null)
     }
 
@@ -777,83 +657,6 @@ export default {
       if (e.key === 'Escape' && validationModalOpen.value) {
         closeValidationModal()
       }
-    }
-
-    const parseCssPx = (value) => {
-      const parsed = Number.parseFloat(value)
-      return Number.isFinite(parsed) ? parsed : 0
-    }
-
-    const readViewportContentHeight = (element) => {
-      if (!element) return 0
-
-      const clientHeight = Number(element.clientHeight || 0)
-      if (
-        clientHeight > 0
-        && typeof window !== 'undefined'
-        && typeof window.getComputedStyle === 'function'
-      ) {
-        const style = window.getComputedStyle(element)
-        const verticalPadding = parseCssPx(style?.paddingTop) + parseCssPx(style?.paddingBottom)
-        const contentHeight = clientHeight - verticalPadding
-        if (contentHeight > 0) return contentHeight
-      }
-
-      return Number(element.getBoundingClientRect?.().height || clientHeight || 0)
-    }
-
-    let chartViewportResizeObserver = null
-    let observedChartViewportElement = null
-    let chartViewportSyncFrameId = null
-    let pendingChartViewportHeight = null
-
-    const syncChartViewportHeight = (height) => {
-      pendingChartViewportHeight = height
-      if (chartViewportSyncFrameId !== null) return
-
-      chartViewportSyncFrameId = requestAnimationFrame(() => {
-        chartViewportSyncFrameId = null
-        const nextHeight = pendingChartViewportHeight
-        pendingChartViewportHeight = null
-        if (!Number.isFinite(nextHeight) || nextHeight <= 0) return
-        syncViewportHeightFromResize(nextHeight)
-      })
-    }
-
-    const disconnectChartViewportObserver = () => {
-      if (chartViewportResizeObserver) {
-        chartViewportResizeObserver.disconnect()
-      }
-      chartViewportResizeObserver = null
-      observedChartViewportElement = null
-      if (chartViewportSyncFrameId !== null) {
-        cancelAnimationFrame(chartViewportSyncFrameId)
-        chartViewportSyncFrameId = null
-      }
-      pendingChartViewportHeight = null
-    }
-
-    const observeChartViewport = (element) => {
-      if (typeof ResizeObserver === 'undefined') return
-      if (!element) {
-        disconnectChartViewportObserver()
-        return
-      }
-      if (observedChartViewportElement === element && chartViewportResizeObserver) return
-
-      if (!chartViewportResizeObserver) {
-        chartViewportResizeObserver = new ResizeObserver((entries) => {
-          const height = entries?.[0]?.contentRect?.height
-          syncChartViewportHeight(height)
-        })
-      } else if (observedChartViewportElement) {
-        chartViewportResizeObserver.unobserve(observedChartViewportElement)
-      }
-
-      chartViewportResizeObserver.observe(element)
-      observedChartViewportElement = element
-      const initialHeight = readViewportContentHeight(element)
-      syncChartViewportHeight(initialHeight)
     }
 
     onMounted(() => {
