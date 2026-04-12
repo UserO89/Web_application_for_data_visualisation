@@ -5,7 +5,7 @@ namespace Tests\Unit\DatasetValidation;
 use App\Services\ColumnTypeInferenceService;
 use App\Services\DatasetValidation\ValueNormalizationService;
 use App\Services\ValueParsingService;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class ValueNormalizationServiceTest extends TestCase
 {
@@ -113,7 +113,7 @@ class ValueNormalizationServiceTest extends TestCase
 
     private function makeService(): ValueNormalizationService
     {
-        $valueParsing = new ValueParsingService();
+        $valueParsing = new ValueParsingService;
 
         return new ValueNormalizationService(
             $valueParsing,

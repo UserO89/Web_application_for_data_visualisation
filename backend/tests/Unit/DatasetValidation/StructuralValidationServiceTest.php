@@ -4,7 +4,7 @@ namespace Tests\Unit\DatasetValidation;
 
 use App\Services\DatasetValidation\StructuralValidationService;
 use App\Services\ValueParsingService;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class StructuralValidationServiceTest extends TestCase
 {
@@ -69,6 +69,6 @@ class StructuralValidationServiceTest extends TestCase
 
     private function makeService(): StructuralValidationService
     {
-        return new StructuralValidationService(new ValueParsingService());
+        return new StructuralValidationService(new ValueParsingService);
     }
 }

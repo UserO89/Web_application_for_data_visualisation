@@ -9,7 +9,7 @@ use App\Services\DatasetValidation\DatasetValidationService;
 use App\Services\DatasetValidation\StructuralValidationService;
 use App\Services\DatasetValidation\ValueNormalizationService;
 use App\Services\ValueParsingService;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class DatasetValidationServiceTest extends TestCase
 {
@@ -99,7 +99,7 @@ class DatasetValidationServiceTest extends TestCase
 
     private function makeService(): DatasetValidationService
     {
-        $valueParsing = new ValueParsingService();
+        $valueParsing = new ValueParsingService;
         $columnTypeInference = new ColumnTypeInferenceService($valueParsing);
         $columnProfiling = new ColumnProfilingService($valueParsing);
 
