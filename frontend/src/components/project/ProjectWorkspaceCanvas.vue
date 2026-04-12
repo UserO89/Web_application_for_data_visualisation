@@ -25,48 +25,23 @@
       </header>
 
       <div :class="['panel-content', `${panelId}-content`]">
-        <template v-if="panelId === 'table'">
-          <div v-if="requiresLandscapeForTable" class="rotate-device-lock">
-            <div class="rotate-device-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M9 4h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.8"/>
-                <path d="M4 18a8 8 0 0 0 13 2M20 6a8 8 0 0 0-13-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <div class="rotate-device-title">{{ $t('project.workspace.table.rotateTitle') }}</div>
-            <div class="rotate-device-text">
-              {{ $t('project.workspace.table.rotateText') }}
-            </div>
-            <button class="btn rotate-device-continue" type="button" @click="allowPortraitTable">
-              {{ $t('project.workspace.table.rotateContinue') }}
-            </button>
-          </div>
-          <template v-else>
-            <div class="table-wrap table-fill">
-              <DataTable
-                :key="`table-${tableHeightMode}`"
-                :columns="tableColumns"
-                :rows="tableRows"
-                :active="isPanelVisible('table')"
-                :editable="tableEditable"
-                :fill-height="!isStandaloneTableView"
-                @cell-edited="$emit('cell-edit', $event)"
-                @cell-editing-state="$emit('table-editing-state', $event)"
-              />
-            </div>
-            <div class="table-bottom-actions">
-              <button class="btn" type="button" @click="$emit('export-csv')">{{ $t('project.workspace.table.exportCsv') }}</button>
-              <button
-                class="btn primary"
-                type="button"
-                :disabled="readOnly || tableSaving || (!tableHasUnsavedChanges && !tableEditing)"
-                @click="handleSaveTableClick"
-              >
-                {{ tableSaving ? $t('project.workspace.table.saving') : $t('project.workspace.table.save') }}
-              </button>
-            </div>
-          </template>
-        </template>
+        <ProjectWorkspaceTablePanel
+          v-if="panelId === 'table'"
+          :view-mode="viewMode"
+          :is-compact-workspace="isCompactWorkspace"
+          :table-columns="tableColumns"
+          :table-rows="tableRows"
+          :table-visible="isPanelVisible('table')"
+          :table-editable="tableEditable"
+          :read-only="readOnly"
+          :table-saving="tableSaving"
+          :table-has-unsaved-changes="tableHasUnsavedChanges"
+          :table-editing="tableEditing"
+          @cell-edit="$emit('cell-edit', $event)"
+          @table-editing-state="$emit('table-editing-state', $event)"
+          @export-csv="$emit('export-csv')"
+          @save-table="$emit('save-table')"
+        />
 
         <template v-else-if="panelId === 'chart'">
           <div class="chart-shell">
@@ -184,12 +159,12 @@
 </template>
 
 <script>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ChartPanel from './ChartPanel.vue'
 import ChartBuilder from './ChartBuilder.vue'
-import DataTable from './DataTable.vue'
 import ProjectSavedChartsLibrary from './ProjectSavedChartsLibrary.vue'
+import ProjectWorkspaceTablePanel from './ProjectWorkspaceTablePanel.vue'
 import StatisticsWorkspace from './StatisticsWorkspace.vue'
 import { getFriendlyBuildHint } from '../../charts/ui/friendlyChartHints'
 import { buildQuickChartActions } from '../../charts/ui/quickChartActions'
@@ -199,10 +174,10 @@ const noop = () => {}
 export default {
   name: 'ProjectWorkspaceCanvas',
   components: {
-    DataTable,
     ChartPanel,
     ChartBuilder,
     ProjectSavedChartsLibrary,
+    ProjectWorkspaceTablePanel,
     StatisticsWorkspace,
   },
   props: {
@@ -276,43 +251,12 @@ export default {
     const usesNaturalFocusLayout = computed(() =>
       isStandaloneTableView.value || isStandaloneStatisticsView.value
     )
-    const tableHeightMode = computed(() =>
-      isStandaloneTableView.value ? 'natural' : 'fill'
-    )
     const canvasStyle = computed(() => {
       if (props.isCompactWorkspace || usesNaturalFocusLayout.value) return {}
       return { height: `${props.workspaceHeight}px` }
     })
     const panelInlineStyle = (panelId) =>
       props.isCompactWorkspace ? {} : props.panelStyle(panelId)
-    const requiresLandscapeForTable = ref(false)
-    const portraitTableBypass = ref(false)
-
-    const detectLandscapeRequirement = () => {
-      if (typeof window === 'undefined') {
-        requiresLandscapeForTable.value = false
-        return
-      }
-
-      const width = window.innerWidth || 0
-      const height = window.innerHeight || 0
-      const isPortrait = height > width
-      const hasCoarsePointer = window.matchMedia?.('(pointer: coarse)')?.matches
-      const likelyPhone = width <= 820
-
-      requiresLandscapeForTable.value = Boolean(
-        hasCoarsePointer &&
-        likelyPhone &&
-        isPortrait &&
-        !portraitTableBypass.value &&
-        (props.viewMode === 'table' || props.viewMode === 'workspace')
-      )
-    }
-
-    const allowPortraitTable = () => {
-      portraitTableBypass.value = true
-      requiresLandscapeForTable.value = false
-    }
 
     const seriesColorAriaLabel = (dataset, index) => {
       const seriesLabel = dataset?.label || t('project.workspace.chart.seriesFallback', { index: index + 1 })
@@ -332,53 +276,24 @@ export default {
       emit('build-chart', chartDefinitionModel.value)
     }
 
-    const handleSaveTableClick = async () => {
-      const activeElement = typeof document !== 'undefined' ? document.activeElement : null
-      if (activeElement && typeof activeElement.blur === 'function') {
-        activeElement.blur()
-      }
-      await nextTick()
-      emit('save-table')
-    }
-
     const handleQuickChartAction = (action) => {
       if (!action?.definition) return
       emit('update-chart-definition', action.definition)
       emit('build-chart', action.definition)
     }
 
-    onMounted(() => {
-      detectLandscapeRequirement()
-      window.addEventListener('resize', detectLandscapeRequirement)
-      window.addEventListener('orientationchange', detectLandscapeRequirement)
-    })
-
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', detectLandscapeRequirement)
-      window.removeEventListener('orientationchange', detectLandscapeRequirement)
-    })
-
-    watch(
-      () => props.viewMode,
-      () => detectLandscapeRequirement()
-    )
-
     return {
       panelIds,
       isPanelVisible,
       isStandaloneTableView,
       isStandaloneStatisticsView,
-      tableHeightMode,
       canvasStyle,
       panelInlineStyle,
-      requiresLandscapeForTable,
-      allowPortraitTable,
       seriesColorAriaLabel,
       chartDefinitionModel,
       canBuildChart,
       quickActions,
       emitBuildChart,
-      handleSaveTableClick,
       handleQuickChartAction,
     }
   },
@@ -395,8 +310,6 @@ export default {
 .panel-content { height: calc(100% - 44px); overflow: hidden; }
 .table-content, .stats-content { overflow: auto; }
 .chart-content { overflow: auto; }
-.table-fill { min-height: 240px; max-height: calc(100% - 42px); }
-
 .chart-shell { display: flex; flex-direction: column; gap: 10px; min-height: 100%; }
 .chart-main { flex: 0 0 auto; min-height: 320px; }
 .chart-main-resizable {
@@ -433,46 +346,7 @@ export default {
 .series-color-input { width: 32px; height: 22px; border: none; border-radius: 6px; background: transparent; padding: 0; cursor: pointer; }
 .series-color-input::-webkit-color-swatch-wrapper { padding: 0; }
 .series-color-input::-webkit-color-swatch { border: 1px solid var(--border); border-radius: 6px; }
-.table-bottom-actions { margin-top: 8px; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
 .analysis-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-.rotate-device-lock {
-  min-height: 260px;
-  height: 100%;
-  border: 1px dashed var(--border);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 8px;
-  background: #151515;
-  color: var(--muted);
-  padding: 18px;
-}
-.rotate-device-icon {
-  width: 34px;
-  height: 34px;
-  color: #93f6b3;
-}
-.rotate-device-icon svg {
-  width: 34px;
-  height: 34px;
-  display: block;
-}
-.rotate-device-title {
-  color: var(--text);
-  font-weight: 700;
-  font-size: 14px;
-}
-.rotate-device-text {
-  font-size: 13px;
-  line-height: 1.35;
-  max-width: 240px;
-}
-.rotate-device-continue {
-  margin-top: 4px;
-}
 
 .resize-handle { position: absolute; z-index: 5; }
 .h-n { top: -4px; left: 12px; right: 12px; height: 8px; cursor: n-resize; }
@@ -509,12 +383,6 @@ export default {
   height: auto;
   min-height: 260px;
   overflow: visible;
-}
-
-.workspace-canvas-compact .table-fill {
-  height: min(62vh, 460px);
-  max-height: none;
-  min-height: 260px;
 }
 
 .workspace-canvas-compact .chart-main {
@@ -555,12 +423,6 @@ export default {
   overflow: visible;
 }
 
-.workspace-canvas-natural-table .table-fill {
-  height: auto !important;
-  max-height: none;
-  min-height: 260px;
-}
-
 .workspace-canvas-natural-stats .stats-shell {
   height: auto;
   overflow: visible;
@@ -568,10 +430,6 @@ export default {
 }
 
 @media (max-width: 760px) {
-  .table-bottom-actions .btn {
-    width: 100%;
-  }
-
   .controls .btn {
     width: 100%;
   }
