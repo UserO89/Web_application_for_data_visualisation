@@ -22,7 +22,7 @@ class ColumnTypeInferenceService
             $headers = $firstRow;
             $dataRows = array_slice($rows, 1);
         } else {
-            $headers = array_map(fn($i) => "Column " . ($i + 1), range(0, $columnCount - 1));
+            $headers = array_map(fn ($i) => 'Column '.($i + 1), range(0, $columnCount - 1));
             $dataRows = $rows;
         }
 
@@ -32,7 +32,7 @@ class ColumnTypeInferenceService
             $physicalType = $this->inferPhysicalType($values, $legacyType);
 
             $columns[] = [
-                'name' => $headers[$i] ?? "Column " . ($i + 1),
+                'name' => $headers[$i] ?? 'Column '.($i + 1),
                 // Keep legacy field for compatibility with existing import validation logic.
                 'type' => $legacyType,
                 'physical_type' => $physicalType,
@@ -45,8 +45,8 @@ class ColumnTypeInferenceService
     private function detectLegacyType(array $values): string
     {
         $nonEmpty = array_values(array_filter(
-            array_map(fn($v) => $this->valueParsingService->normalizeNullableString($v), $values),
-            fn($v) => $v !== null && $v !== ''
+            array_map(fn ($v) => $this->valueParsingService->normalizeNullableString($v), $values),
+            fn ($v) => $v !== null && $v !== ''
         ));
 
         if (empty($nonEmpty)) {
@@ -71,7 +71,7 @@ class ColumnTypeInferenceService
 
         $dateCount = 0;
         foreach ($nonEmpty as $value) {
-            if (!$this->looksDateLike((string) $value)) {
+            if (! $this->looksDateLike((string) $value)) {
                 continue;
             }
             if ($this->valueParsingService->parseTemporal($value) !== null) {
@@ -108,12 +108,13 @@ class ColumnTypeInferenceService
             if ($dateLike > 0 && ($withTime / $dateLike) >= 0.2) {
                 return 'datetime';
             }
+
             return 'date';
         }
 
         $nonNull = array_values(array_filter(
-            array_map(fn($value) => $this->valueParsingService->normalizeNullableString($value), $values),
-            fn($value) => $value !== null
+            array_map(fn ($value) => $this->valueParsingService->normalizeNullableString($value), $values),
+            fn ($value) => $value !== null
         ));
         if (empty($nonNull)) {
             return 'unknown';

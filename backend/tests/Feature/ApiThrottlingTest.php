@@ -16,7 +16,7 @@ class ApiThrottlingTest extends TestCase
 
     public function test_login_endpoint_is_throttled(): void
     {
-        $email = 'login-throttle-' . uniqid('', true) . '@example.test';
+        $email = 'login-throttle-'.uniqid('', true).'@example.test';
         User::query()->create([
             'name' => 'Throttle Login User',
             'email' => $email,
@@ -45,7 +45,7 @@ class ApiThrottlingTest extends TestCase
 
     public function test_register_endpoint_is_throttled(): void
     {
-        $email = 'register-throttle-' . uniqid('', true) . '@example.test';
+        $email = 'register-throttle-'.uniqid('', true).'@example.test';
         $payload = [
             'name' => 'Throttle Register User',
             'email' => $email,
@@ -71,7 +71,7 @@ class ApiThrottlingTest extends TestCase
 
         $user = User::query()->create([
             'name' => 'Throttle Import User',
-            'email' => 'import-throttle-' . uniqid('', true) . '@example.test',
+            'email' => 'import-throttle-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

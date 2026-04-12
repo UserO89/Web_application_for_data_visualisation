@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
                 'TMP',
                 'PATHEXT',
             ] as $variable) {
-                if (!in_array($variable, ServeCommand::$passthroughVariables, true)) {
+                if (! in_array($variable, ServeCommand::$passthroughVariables, true)) {
                     ServeCommand::$passthroughVariables[] = $variable;
                 }
             }
@@ -49,14 +49,14 @@ class AppServiceProvider extends ServiceProvider
             $email = strtolower(trim((string) $request->input('email', '')));
             $identity = $email !== '' ? $email : 'guest';
 
-            return Limit::perMinute(5)->by($identity . '|' . $request->ip());
+            return Limit::perMinute(5)->by($identity.'|'.$request->ip());
         });
 
         RateLimiter::for('auth-register', function (Request $request) {
             $email = strtolower(trim((string) $request->input('email', '')));
             $identity = $email !== '' ? $email : 'guest';
 
-            return Limit::perMinute(3)->by($identity . '|' . $request->ip());
+            return Limit::perMinute(3)->by($identity.'|'.$request->ip());
         });
 
         RateLimiter::for('project-import', function (Request $request) {
@@ -66,10 +66,10 @@ class AppServiceProvider extends ServiceProvider
                 : (string) $project;
             $userEmail = strtolower((string) ($request->user()?->email ?? ''));
             $scope = $userEmail !== ''
-                ? 'user:' . $userEmail
-                : 'ip:' . $request->ip();
+                ? 'user:'.$userEmail
+                : 'ip:'.$request->ip();
 
-            return Limit::perMinute(5)->by($scope . '|project:' . $projectId);
+            return Limit::perMinute(5)->by($scope.'|project:'.$projectId);
         });
     }
 }

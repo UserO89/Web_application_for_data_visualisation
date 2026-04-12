@@ -14,7 +14,7 @@ class ColumnTypeInferenceServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new ColumnTypeInferenceService(new ValueParsingService());
+        $this->service = new ColumnTypeInferenceService(new ValueParsingService);
     }
 
     public function test_infer_returns_empty_array_for_empty_input(): void

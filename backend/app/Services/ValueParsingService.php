@@ -113,6 +113,7 @@ class ValueParsingService
             if ($dayFirst !== null) {
                 return $dayFirst;
             }
+
             return $this->buildDate((int) $matches[3], (int) $matches[1], (int) $matches[2]);
         }
 
@@ -175,12 +176,13 @@ class ValueParsingService
         if ($hasMonthVariation) {
             return 'month';
         }
+
         return 'year';
     }
 
     private function buildDate(int $year, int $month, int $day): ?Carbon
     {
-        if (!checkdate($month, $day, $year)) {
+        if (! checkdate($month, $day, $year)) {
             return null;
         }
 

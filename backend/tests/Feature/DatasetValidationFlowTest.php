@@ -113,7 +113,7 @@ CSV;
                 $this->assertArrayHasKey('reason', $sample);
             }
         }
-        $emptySampleCount = count(array_filter($sampleOriginalValues, fn($value) => $value === null || $value === ''));
+        $emptySampleCount = count(array_filter($sampleOriginalValues, fn ($value) => $value === null || $value === ''));
         $this->assertSame(0, $emptySampleCount);
     }
 
@@ -143,7 +143,7 @@ CSV;
     {
         return User::create([
             'name' => 'Test User',
-            'email' => 'test-' . uniqid('', true) . '@example.test',
+            'email' => 'test-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

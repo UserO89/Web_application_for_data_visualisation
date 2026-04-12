@@ -17,7 +17,7 @@ class DatasetSuggestionController extends Controller
         $this->authorize('view', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset) {
+        if (! $dataset) {
             return response()->json(['message' => __('api.datasets.no_dataset')], 404);
         }
 

@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Chart;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -125,7 +124,7 @@ class ProjectChartControllerTest extends TestCase
     {
         return User::query()->create([
             'name' => 'Chart User',
-            'email' => 'chart-' . uniqid('', true) . '@example.test',
+            'email' => 'chart-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

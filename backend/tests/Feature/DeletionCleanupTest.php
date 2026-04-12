@@ -92,8 +92,8 @@ class DeletionCleanupTest extends TestCase
     private function createUser(string $role): User
     {
         return User::query()->create([
-            'name' => ucfirst($role) . ' User',
-            'email' => $role . '-' . uniqid('', true) . '@example.test',
+            'name' => ucfirst($role).' User',
+            'email' => $role.'-'.uniqid('', true).'@example.test',
             'role' => $role,
             'password' => 'password123',
         ]);

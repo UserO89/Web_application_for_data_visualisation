@@ -7,8 +7,8 @@ use App\Http\Requests\ImportDatasetRequest;
 use App\Models\DatasetColumn;
 use App\Models\DatasetRow;
 use App\Models\Project;
-use App\Services\CsvImportService;
 use App\Services\CsvImportLimitException;
+use App\Services\CsvImportService;
 use App\Services\DatasetSemanticSchemaService;
 use App\Services\DatasetValidation\DatasetValidationService;
 use App\Services\StatisticsService;
@@ -20,6 +20,7 @@ use Throwable;
 class DatasetImportController extends Controller
 {
     private const DEFAULT_COLUMN_INSERT_CHUNK_SIZE = 250;
+
     private const DEFAULT_ROW_INSERT_CHUNK_SIZE = 500;
 
     public function __construct(
@@ -38,11 +39,12 @@ class DatasetImportController extends Controller
         }
 
         $file = $request->file('file');
-        if (!$file) {
+        if (! $file) {
             $report = $this->datasetValidationService->buildFatalReport(
                 'file_missing',
                 __('api.import.file_missing')
             );
+
             return response()->json([
                 'message' => __('api.import.file_missing'),
                 'validation' => $report,
@@ -58,6 +60,7 @@ class DatasetImportController extends Controller
                 'file_empty',
                 __('api.import.file_empty')
             );
+
             return response()->json([
                 'message' => __('api.import.file_empty'),
                 'validation' => $report,
@@ -74,6 +77,7 @@ class DatasetImportController extends Controller
                 summaryOverrides: $e->summaryOverrides(),
                 hasHeader: $hasHeader
             );
+
             return response()->json([
                 'message' => $e->getMessage(),
                 'validation' => $report,
@@ -83,6 +87,7 @@ class DatasetImportController extends Controller
                 'file_unreadable',
                 __('api.import.file_unreadable')
             );
+
             return response()->json([
                 'message' => __('api.import.file_unreadable'),
                 'validation' => $report,
@@ -90,9 +95,10 @@ class DatasetImportController extends Controller
         }
 
         $importPlan = $this->datasetValidationService->buildImportPlan($parsed['rows'], $hasHeader);
-        if (!$importPlan['canImport']) {
+        if (! $importPlan['canImport']) {
             $blockingError = (array) ($importPlan['report']['blocking_error'] ?? []);
             $message = (string) ($blockingError['message'] ?? __('api.import.blocked'));
+
             return response()->json([
                 'message' => $message,
                 'validation' => $importPlan['report'],
@@ -225,7 +231,7 @@ class DatasetImportController extends Controller
 
     private function deleteStoredDatasetFile(?string $path): void
     {
-        if (!$path) {
+        if (! $path) {
             return;
         }
 
@@ -240,8 +246,8 @@ class DatasetImportController extends Controller
         $message = strtolower($exception->getMessage());
 
         if (
-            !in_array($sqlState, ['23000', '23505'], true)
-            && !in_array($driverCode, ['19', '1062'], true)
+            ! in_array($sqlState, ['23000', '23505'], true)
+            && ! in_array($driverCode, ['19', '1062'], true)
         ) {
             return false;
         }

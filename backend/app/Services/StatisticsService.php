@@ -17,7 +17,7 @@ class StatisticsService
 
     public function getStatistics(Dataset $dataset, bool $rebuild = false): array
     {
-        if (!$rebuild && $dataset->statistics_json !== null) {
+        if (! $rebuild && $dataset->statistics_json !== null) {
             return is_array($dataset->statistics_json) ? $dataset->statistics_json : [];
         }
 
@@ -28,7 +28,7 @@ class StatisticsService
     {
         $statistics = $this->calculate($dataset);
 
-        if (!$this->canPersistStatisticsCache()) {
+        if (! $this->canPersistStatisticsCache()) {
             return $statistics;
         }
 
@@ -86,7 +86,7 @@ class StatisticsService
     }
 
     /**
-     * @param DatasetRow[] $rows
+     * @param  DatasetRow[]  $rows
      */
     private function extractColumnValues(array $rows, int $position, string $columnName): array
     {
@@ -95,12 +95,13 @@ class StatisticsService
             $raw = is_string($row->values) ? json_decode($row->values, true) : (is_array($row->values) ? $row->values : []);
             $values[] = $this->readRowValue($raw, $position, $columnName);
         }
+
         return $values;
     }
 
     private function readRowValue(mixed $values, int $position, string $columnName): mixed
     {
-        if (!is_array($values)) {
+        if (! is_array($values)) {
             return null;
         }
         if (array_key_exists($position, $values)) {
@@ -112,6 +113,7 @@ class StatisticsService
         if (array_key_exists($columnName, $values)) {
             return $values[$columnName];
         }
+
         return null;
     }
 
@@ -132,10 +134,10 @@ class StatisticsService
     private function buildBaseCounts(array $values): array
     {
         $normalized = array_map(
-            fn($value) => $this->valueParsingService->normalizeNullableString($value),
+            fn ($value) => $this->valueParsingService->normalizeNullableString($value),
             $values
         );
-        $nonNull = array_values(array_filter($normalized, fn($value) => $value !== null));
+        $nonNull = array_values(array_filter($normalized, fn ($value) => $value !== null));
         $distinctCount = count(array_unique($nonNull));
 
         return [
@@ -236,6 +238,7 @@ class StatisticsService
         if (empty($ordinalOrder)) {
             $nominal['median_rank'] = null;
             $nominal['median_rank_label'] = null;
+
             return $nominal;
         }
 
@@ -259,6 +262,7 @@ class StatisticsService
         if (empty($rankValues)) {
             $nominal['median_rank'] = null;
             $nominal['median_rank_label'] = null;
+
             return $nominal;
         }
 
@@ -299,7 +303,7 @@ class StatisticsService
             ];
         }
 
-        usort($dates, fn($a, $b) => $a->timestamp <=> $b->timestamp);
+        usort($dates, fn ($a, $b) => $a->timestamp <=> $b->timestamp);
         $earliest = $dates[0];
         $latest = $dates[count($dates) - 1];
         $granularity = $this->valueParsingService->inferTemporalGranularity($dates);
@@ -312,7 +316,7 @@ class StatisticsService
             default => 'Y-m-d',
         };
 
-        $periods = array_map(fn($date) => $date->format($periodFormat), $dates);
+        $periods = array_map(fn ($date) => $date->format($periodFormat), $dates);
         $frequencyMap = array_count_values($periods);
         arsort($frequencyMap);
 
@@ -346,6 +350,7 @@ class StatisticsService
             return (float) $sortedValues[$lower];
         }
         $weight = $position - $lower;
+
         return $sortedValues[$lower] * (1 - $weight) + $sortedValues[$upper] * $weight;
     }
 
@@ -357,7 +362,7 @@ class StatisticsService
 
         $sumSq = array_reduce(
             $values,
-            fn($carry, $value) => $carry + (($value - $mean) ** 2),
+            fn ($carry, $value) => $carry + (($value - $mean) ** 2),
             0.0
         );
 

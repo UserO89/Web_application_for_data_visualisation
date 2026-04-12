@@ -17,7 +17,7 @@ class StructuralValidationService
     public function validate(array $rows, bool $hasHeader = true): array
     {
         $rows = array_map(
-            fn($row) => is_array($row) ? array_values($row) : [],
+            fn ($row) => is_array($row) ? array_values($row) : [],
             $rows
         );
 
@@ -101,6 +101,7 @@ class StructuralValidationService
 
             if (isset($seen[$key])) {
                 $duplicates++;
+
                 continue;
             }
 
@@ -131,12 +132,12 @@ class StructuralValidationService
                 $stats['trimmed']++;
             }
 
-            if (!$hasHeader || $candidate === '' || $this->isPlaceholderHeader($candidate)) {
+            if (! $hasHeader || $candidate === '' || $this->isPlaceholderHeader($candidate)) {
                 if ($hasHeader && $this->isPlaceholderHeader($candidate)) {
                     $stats['placeholder_replaced']++;
                 }
 
-                $candidate = 'Column_' . ($position + 1);
+                $candidate = 'Column_'.($position + 1);
                 $stats['generated']++;
             }
 
@@ -196,6 +197,7 @@ class StructuralValidationService
 
             if ($this->isRowEmpty($source)) {
                 $stats['skipped_empty_rows']++;
+
                 continue;
             }
 
@@ -360,7 +362,6 @@ class StructuralValidationService
             return 0;
         }
 
-        return max(array_map(fn($row) => count($row), $rows));
+        return max(array_map(fn ($row) => count($row), $rows));
     }
-
 }

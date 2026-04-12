@@ -52,9 +52,7 @@ class DatasetImportControllerErrorPathsTest extends TestCase
 
         $this->app->instance(StatisticsService::class, new class extends StatisticsService
         {
-            public function __construct()
-            {
-            }
+            public function __construct() {}
 
             public function buildAndPersist(\App\Models\Dataset $dataset): array
             {
@@ -91,9 +89,7 @@ class DatasetImportControllerErrorPathsTest extends TestCase
 
         $this->app->instance(StatisticsService::class, new class extends StatisticsService
         {
-            public function __construct()
-            {
-            }
+            public function __construct() {}
 
             public function buildAndPersist(\App\Models\Dataset $dataset): array
             {
@@ -116,7 +112,7 @@ class DatasetImportControllerErrorPathsTest extends TestCase
     {
         $user = User::query()->create([
             'name' => 'Import User',
-            'email' => 'import-' . uniqid('', true) . '@example.test',
+            'email' => 'import-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

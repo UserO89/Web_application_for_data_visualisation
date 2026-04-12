@@ -23,7 +23,7 @@ class VisualizationSuggestionServiceTest extends TestCase
             ],
         ]);
 
-        $suggestions = $service->suggest(new Dataset());
+        $suggestions = $service->suggest(new Dataset);
 
         $this->assertSame(
             ['line', 'bar', 'scatter', 'histogram', 'boxplot', 'pie'],
@@ -49,7 +49,7 @@ class VisualizationSuggestionServiceTest extends TestCase
             ],
         ]);
 
-        $suggestions = $service->suggest(new Dataset());
+        $suggestions = $service->suggest(new Dataset);
 
         $this->assertSame(['bar', 'pie'], array_column($suggestions, 'type'));
         $this->assertSame(['field' => null, 'aggregation' => 'count'], $suggestions[0]['definition']['bindings']['y']);
@@ -61,9 +61,7 @@ class VisualizationSuggestionServiceTest extends TestCase
     {
         $schemaService = new class($schema) extends DatasetSemanticSchemaService
         {
-            public function __construct(private array $schema)
-            {
-            }
+            public function __construct(private array $schema) {}
 
             public function getSchema(Dataset $dataset, bool $rebuild = false): array
             {

@@ -96,7 +96,7 @@ class DemoProjectApiTest extends TestCase
     {
         return User::query()->create([
             'name' => 'Test User',
-            'email' => 'test-' . uniqid('', true) . '@example.test',
+            'email' => 'test-'.uniqid('', true).'@example.test',
             'role' => $role,
             'password' => 'password123',
         ]);

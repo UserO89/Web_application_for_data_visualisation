@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateDatasetRowRequest;
-use App\Models\Project;
 use App\Models\DatasetRow;
-use Illuminate\Http\Request;
+use App\Models\Project;
 use App\Services\StatisticsService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class DatasetRowController extends Controller
@@ -21,7 +21,7 @@ class DatasetRowController extends Controller
         $this->authorize('view', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset) {
+        if (! $dataset) {
             return response()->json(['message' => __('api.datasets.no_dataset')], 404);
         }
 
@@ -40,7 +40,7 @@ class DatasetRowController extends Controller
         $this->authorize('update', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset || $row->dataset_id !== $dataset->id) {
+        if (! $dataset || $row->dataset_id !== $dataset->id) {
             return response()->json(['message' => __('api.datasets.row_project_mismatch')], 403);
         }
 

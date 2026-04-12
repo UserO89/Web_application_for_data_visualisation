@@ -225,7 +225,7 @@ class StatisticsServiceTest extends TestCase
     ): Dataset {
         $user = User::create([
             'name' => 'Statistics Unit',
-            'email' => 'stats-' . uniqid('', true) . '@example.test',
+            'email' => 'stats-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

@@ -17,9 +17,9 @@ $normalizeOrigin = static function (string $value): ?string {
         $port = is_array($parsed) ? ($parsed['port'] ?? null) : null;
 
         if ($scheme !== '' && $host !== '') {
-            $normalized = strtolower($scheme) . '://' . strtolower($host);
+            $normalized = strtolower($scheme).'://'.strtolower($host);
             if (is_int($port)) {
-                $normalized .= ':' . $port;
+                $normalized .= ':'.$port;
             }
 
             return $normalized;

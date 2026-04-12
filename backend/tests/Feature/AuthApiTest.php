@@ -214,7 +214,7 @@ class AuthApiTest extends TestCase
     {
         return User::query()->create(array_merge([
             'name' => 'Test User',
-            'email' => 'test-' . uniqid('', true) . '@example.test',
+            'email' => 'test-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'locale' => 'en',
             'password' => 'password123',

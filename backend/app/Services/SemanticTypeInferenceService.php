@@ -28,7 +28,7 @@ class SemanticTypeInferenceService
         $parseBoolean = (float) ($profile['parseSuccess']['boolean'] ?? 0.0);
         $nameHints = (array) ($profile['nameHints'] ?? []);
 
-        $hasKnownOrdinalDictionary = !empty($profile['knownOrdinalDictionaryMatch']['matched']);
+        $hasKnownOrdinalDictionary = ! empty($profile['knownOrdinalDictionaryMatch']['matched']);
         $isSequentialLike = (bool) ($profile['isSequentialLike'] ?? false);
 
         if ($nonNullCount === 0 || ($nullCount / max(1, $nonNullCount + $nullCount)) > 0.98) {
@@ -48,7 +48,7 @@ class SemanticTypeInferenceService
             $scores['metric'] += 0.15;
             $reasons['metric'][] = 'Distinct ratio is typical for a measure.';
         }
-        if (!empty($nameHints['metric'])) {
+        if (! empty($nameHints['metric'])) {
             $scores['metric'] += 0.2;
             $reasons['metric'][] = 'Column name looks like a measure.';
         }
@@ -57,7 +57,7 @@ class SemanticTypeInferenceService
             $reasons['metric'][] = 'Too few distinct values for a meaningful metric.';
         }
 
-        if (!empty($nameHints['identifier'])) {
+        if (! empty($nameHints['identifier'])) {
             $scores['identifier'] += 0.5;
             $reasons['identifier'][] = 'Column name looks like an identifier.';
         }
@@ -78,7 +78,7 @@ class SemanticTypeInferenceService
             $scores['nominal'] += 0.26;
             $reasons['nominal'][] = 'Distinct ratio suggests categorical values.';
         }
-        if (!empty($nameHints['categorical'])) {
+        if (! empty($nameHints['categorical'])) {
             $scores['nominal'] += 0.2;
             $reasons['nominal'][] = 'Column name suggests categories.';
         }
@@ -87,7 +87,7 @@ class SemanticTypeInferenceService
             $scores['ordinal'] += 0.56;
             $reasons['ordinal'][] = 'Values match a known ordinal dictionary.';
         }
-        if (!empty($nameHints['ordinal'])) {
+        if (! empty($nameHints['ordinal'])) {
             $scores['ordinal'] += 0.2;
             $reasons['ordinal'][] = 'Column name suggests ordered categories.';
         }
@@ -104,7 +104,7 @@ class SemanticTypeInferenceService
             $scores['temporal'] += 0.25;
             $reasons['temporal'][] = 'Most values parse as temporal.';
         }
-        if (!empty($nameHints['temporal'])) {
+        if (! empty($nameHints['temporal'])) {
             $scores['temporal'] += 0.2;
             $reasons['temporal'][] = 'Column name suggests a time dimension.';
         }
@@ -163,6 +163,7 @@ class SemanticTypeInferenceService
     {
         $margin = max(0.0, $topScore - $secondScore);
         $confidence = min(0.99, max(0.05, 0.45 + ($topScore * 0.35) + ($margin * 0.45)));
+
         return round($confidence, 4);
     }
 
@@ -175,6 +176,7 @@ class SemanticTypeInferenceService
             }
             $result[$type] = array_values(array_slice(array_unique($messages), 0, 6));
         }
+
         return $result;
     }
 

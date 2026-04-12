@@ -88,8 +88,7 @@ class DatasetValidationService
         array $metadata = [],
         array $summaryOverrides = [],
         bool $hasHeader = true
-    ): array
-    {
+    ): array {
         return $this->failedPlan(
             code: $code,
             message: $message,
@@ -159,7 +158,7 @@ class DatasetValidationService
     private function extractBlockingIssue(array $issues): array
     {
         foreach ($issues as $issue) {
-            if (!is_array($issue)) {
+            if (! is_array($issue)) {
                 continue;
             }
             if (($issue['severity'] ?? null) === 'error') {

@@ -10,7 +10,7 @@ class UserAvatarController extends Controller
 {
     public function show(User $user)
     {
-        if (!$user->avatar_path || !Storage::disk('local')->exists($user->avatar_path)) {
+        if (! $user->avatar_path || ! Storage::disk('local')->exists($user->avatar_path)) {
             abort(404);
         }
 

@@ -68,7 +68,7 @@ class User extends Authenticatable
     protected function avatarUrl(): Attribute
     {
         return Attribute::get(function () {
-            if (!$this->avatar_path) {
+            if (! $this->avatar_path) {
                 return null;
             }
 

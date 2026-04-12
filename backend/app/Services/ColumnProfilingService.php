@@ -7,6 +7,7 @@ use Carbon\Carbon;
 class ColumnProfilingService
 {
     private const SAMPLE_LIMIT = 5;
+
     private const TOP_FREQUENCY_LIMIT = 8;
 
     private const KNOWN_ORDINAL_SETS = [
@@ -92,7 +93,7 @@ class ColumnProfilingService
             'nameHints' => $nameHints,
         ];
 
-        if (!empty($numberParsed)) {
+        if (! empty($numberParsed)) {
             $numericStats = $this->buildNumericProfile($numberParsed);
             $profile = [...$profile, ...$numericStats];
         }
@@ -102,7 +103,7 @@ class ColumnProfilingService
             $profile = [...$profile, ...$stringStats];
         }
 
-        if (!empty($dateParsed)) {
+        if (! empty($dateParsed)) {
             $temporalStats = $this->buildTemporalProfile($dateParsed);
             $profile = [...$profile, ...$temporalStats];
         }
@@ -127,7 +128,7 @@ class ColumnProfilingService
         $mean = $count > 0 ? $sum / $count : null;
 
         $isIntegerLike = $count > 0
-            ? (count(array_filter($sorted, fn($value) => floor($value) === $value)) / $count) >= 0.98
+            ? (count(array_filter($sorted, fn ($value) => floor($value) === $value)) / $count) >= 0.98
             : false;
 
         return [
@@ -150,7 +151,7 @@ class ColumnProfilingService
             ];
         }
 
-        $lengths = array_map(fn($v) => mb_strlen((string) $v), $values);
+        $lengths = array_map(fn ($v) => mb_strlen((string) $v), $values);
         $frequencies = array_count_values($values);
         arsort($frequencies);
 
@@ -171,7 +172,7 @@ class ColumnProfilingService
 
     private function buildTemporalProfile(array $dates): array
     {
-        usort($dates, fn(Carbon $a, Carbon $b) => $a->timestamp <=> $b->timestamp);
+        usort($dates, fn (Carbon $a, Carbon $b) => $a->timestamp <=> $b->timestamp);
         $earliest = $dates[0] ?? null;
         $latest = $dates[count($dates) - 1] ?? null;
 
@@ -183,7 +184,7 @@ class ColumnProfilingService
             'minute', 'second' => 'Y-m-d H:i',
             default => 'Y-m-d',
         };
-        $uniquePeriods = count(array_unique(array_map(fn(Carbon $date) => $date->format($periodFormat), $dates)));
+        $uniquePeriods = count(array_unique(array_map(fn (Carbon $date) => $date->format($periodFormat), $dates)));
 
         return [
             'earliest' => $earliest?->toAtomString(),
@@ -215,6 +216,7 @@ class ColumnProfilingService
 
         if ($parseSuccess['date'] >= 0.85) {
             $timeRatio = $nonNullCount > 0 ? $dateLikeWithTime / $nonNullCount : 0.0;
+
             return $timeRatio >= 0.2 ? 'datetime' : 'date';
         }
 
@@ -223,7 +225,7 @@ class ColumnProfilingService
             return 'mixed';
         }
 
-        if (!empty($nonNullRaw) && count(array_filter($nonNullRaw, fn($value) => is_bool($value))) === count($nonNullRaw)) {
+        if (! empty($nonNullRaw) && count(array_filter($nonNullRaw, fn ($value) => is_bool($value))) === count($nonNullRaw)) {
             return 'boolean';
         }
 
@@ -256,7 +258,7 @@ class ColumnProfilingService
         }
 
         $normalizedDistinct = array_values(array_unique(array_map(
-            fn($value) => mb_strtolower(trim((string) $value)),
+            fn ($value) => mb_strtolower(trim((string) $value)),
             $distinctValues
         )));
 
@@ -275,7 +277,7 @@ class ColumnProfilingService
 
             $orderedIntersection = array_values(array_filter(
                 $dictionary,
-                fn($candidate) => in_array($candidate, $intersection, true)
+                fn ($candidate) => in_array($candidate, $intersection, true)
             ));
 
             return [
@@ -290,7 +292,7 @@ class ColumnProfilingService
 
     private function isSequentialLike(array $sortedValues): bool
     {
-        $unique = array_values(array_unique(array_map(fn($v) => (float) $v, $sortedValues)));
+        $unique = array_values(array_unique(array_map(fn ($v) => (float) $v, $sortedValues)));
         if (count($unique) < 4) {
             return false;
         }
@@ -300,7 +302,7 @@ class ColumnProfilingService
         $stepComparisons = 0;
         for ($i = 1; $i < count($unique); $i++) {
             $diff = $unique[$i] - $unique[$i - 1];
-            if (!is_finite($diff) || $diff <= 0) {
+            if (! is_finite($diff) || $diff <= 0) {
                 continue;
             }
             $stepComparisons++;
@@ -328,6 +330,7 @@ class ColumnProfilingService
             return (float) $sortedValues[$lower];
         }
         $weight = $position - $lower;
+
         return $sortedValues[$lower] * (1 - $weight) + $sortedValues[$upper] * $weight;
     }
 }

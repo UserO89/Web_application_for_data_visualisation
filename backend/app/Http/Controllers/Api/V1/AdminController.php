@@ -7,8 +7,8 @@ use App\Models\Dataset;
 use App\Models\DatasetRow;
 use App\Models\Project;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -82,7 +82,7 @@ class AdminController extends Controller
 
         $payload = Arr::except($validated, ['password']);
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $payload['password'] = $validated['password'];
         }
 

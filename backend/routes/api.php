@@ -1,9 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\AdminController;
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\DatasetImportController;
 use App\Http\Controllers\Api\V1\DatasetRowController;
 use App\Http\Controllers\Api\V1\DatasetSchemaController;
@@ -11,7 +9,9 @@ use App\Http\Controllers\Api\V1\DatasetStatisticsController;
 use App\Http\Controllers\Api\V1\DatasetSuggestionController;
 use App\Http\Controllers\Api\V1\DemoProjectController;
 use App\Http\Controllers\Api\V1\ProjectChartController;
+use App\Http\Controllers\Api\V1\ProjectController;
 use App\Http\Controllers\Api\V1\UserAvatarController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('/users/{user}/avatar', [UserAvatarController::class, 'show']);

@@ -24,7 +24,7 @@ class DatasetSchemaController extends Controller
         $this->authorize('view', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset) {
+        if (! $dataset) {
             return response()->json(['message' => __('api.datasets.no_dataset')], 404);
         }
 
@@ -42,7 +42,7 @@ class DatasetSchemaController extends Controller
         $this->authorize('update', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset || (int) $column->dataset_id !== (int) $dataset->id) {
+        if (! $dataset || (int) $column->dataset_id !== (int) $dataset->id) {
             return response()->json(['message' => __('api.datasets.column_project_mismatch')], 403);
         }
 
@@ -73,7 +73,7 @@ class DatasetSchemaController extends Controller
         $this->authorize('update', $project);
 
         $dataset = $project->dataset;
-        if (!$dataset || (int) $column->dataset_id !== (int) $dataset->id) {
+        if (! $dataset || (int) $column->dataset_id !== (int) $dataset->id) {
             return response()->json(['message' => __('api.datasets.column_project_mismatch')], 403);
         }
 

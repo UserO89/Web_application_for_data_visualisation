@@ -18,7 +18,7 @@ class AdminApiTest extends TestCase
 
     public function test_admin_stats_include_active_sessions_and_users_endpoint_supports_search(): void
     {
-        if (!Schema::hasTable('sessions')) {
+        if (! Schema::hasTable('sessions')) {
             Schema::create('sessions', function (Blueprint $table): void {
                 $table->string('id')->primary();
                 $table->foreignId('user_id')->nullable();
@@ -185,8 +185,8 @@ class AdminApiTest extends TestCase
     private function createUser(string $role = 'user', array $overrides = []): User
     {
         return User::query()->create(array_merge([
-            'name' => ucfirst($role) . ' User',
-            'email' => $role . '-' . uniqid('', true) . '@example.test',
+            'name' => ucfirst($role).' User',
+            'email' => $role.'-'.uniqid('', true).'@example.test',
             'role' => $role,
             'password' => 'password123',
         ], $overrides));

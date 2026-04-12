@@ -17,10 +17,10 @@ class DatasetSemanticSchemaService
     {
         $columns = $dataset->columns()->orderBy('position')->get();
         $hasCompleteSchema = $columns->every(
-            fn(DatasetColumn $column) => !empty($column->semantic_type) && !empty($column->physical_type)
+            fn (DatasetColumn $column) => ! empty($column->semantic_type) && ! empty($column->physical_type)
         );
 
-        if ($rebuild || !$hasCompleteSchema) {
+        if ($rebuild || ! $hasCompleteSchema) {
             return $this->buildAndPersist($dataset);
         }
 
@@ -45,17 +45,17 @@ class DatasetSemanticSchemaService
 
             $currentSemanticType = $column->semantic_type;
             $isUserOverridden = $column->type_source === 'user';
-            $finalSemanticType = ($isUserOverridden && !empty($currentSemanticType))
+            $finalSemanticType = ($isUserOverridden && ! empty($currentSemanticType))
                 ? $currentSemanticType
                 : $inference['detectedSemanticType'];
 
             $defaultRole = $this->semanticTypeInferenceService->mapAnalyticalRole($finalSemanticType);
-            $analyticalRole = ($isUserOverridden && !empty($column->analytical_role))
+            $analyticalRole = ($isUserOverridden && ! empty($column->analytical_role))
                 ? $column->analytical_role
                 : $defaultRole;
 
             $detectedOrdinalOrder = $inference['detectedOrdinalOrder'] ?? null;
-            $ordinalOrder = ($isUserOverridden && !empty($column->ordinal_order))
+            $ordinalOrder = ($isUserOverridden && ! empty($column->ordinal_order))
                 ? $column->ordinal_order
                 : ($finalSemanticType === 'ordinal' ? $detectedOrdinalOrder : null);
 
@@ -79,6 +79,7 @@ class DatasetSemanticSchemaService
         }
 
         $columns = $dataset->columns()->orderBy('position')->get()->all();
+
         return $this->formatSchema($dataset, $columns);
     }
 
@@ -103,15 +104,16 @@ class DatasetSemanticSchemaService
         }
 
         $column->update($payload);
+
         return $column->fresh();
     }
 
     public function overrideOrdinalOrder(DatasetColumn $column, array $order): DatasetColumn
     {
         $normalized = array_values(array_unique(array_filter(array_map(
-            fn($value) => trim((string) $value),
+            fn ($value) => trim((string) $value),
             $order
-        ), fn($value) => $value !== '')));
+        ), fn ($value) => $value !== '')));
 
         $column->update([
             'semantic_type' => 'ordinal',
@@ -152,7 +154,7 @@ class DatasetSemanticSchemaService
             'datasetId' => $dataset->id,
             'generatedAt' => now()->toAtomString(),
             'columns' => array_map(
-                fn(DatasetColumn $column) => $this->formatColumn($column),
+                fn (DatasetColumn $column) => $this->formatColumn($column),
                 $columns
             ),
         ];
@@ -172,7 +174,7 @@ class DatasetSemanticSchemaService
     }
 
     /**
-     * @param DatasetRow[] $rows
+     * @param  DatasetRow[]  $rows
      */
     private function extractColumnValues(array $rows, int $position, string $columnName): array
     {
@@ -181,6 +183,7 @@ class DatasetSemanticSchemaService
             $raw = is_string($row->values) ? json_decode($row->values, true) : (is_array($row->values) ? $row->values : []);
             $values[] = $this->readRowValue($raw, $position, $columnName);
         }
+
         return $values;
     }
 
@@ -197,6 +200,7 @@ class DatasetSemanticSchemaService
                 return $values[$columnName];
             }
         }
+
         return null;
     }
 }

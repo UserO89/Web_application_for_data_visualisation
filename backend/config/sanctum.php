@@ -21,6 +21,7 @@ $normalizeStatefulDomain = static function (?string $value): ?string {
         }
 
         $normalizedHost = strtolower($host);
+
         return is_int($port) ? "{$normalizedHost}:{$port}" : $normalizedHost;
     }
 
@@ -30,6 +31,7 @@ $normalizeStatefulDomain = static function (?string $value): ?string {
     }
 
     $domain = strtolower(rtrim(trim($domain), '/'));
+
     return $domain !== '' ? $domain : null;
 };
 

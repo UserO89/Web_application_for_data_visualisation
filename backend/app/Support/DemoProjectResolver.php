@@ -19,7 +19,7 @@ class DemoProjectResolver
             ->with('dataset.columns')
             ->find($projectId);
 
-        if (!$project || !$project->dataset) {
+        if (! $project || ! $project->dataset) {
             throw new NotFoundHttpException('Demo project is unavailable.');
         }
 
@@ -29,7 +29,7 @@ class DemoProjectResolver
     public function resolveDataset(): Dataset
     {
         $dataset = $this->resolve()->dataset;
-        if (!$dataset) {
+        if (! $dataset) {
             throw new NotFoundHttpException('Demo dataset is unavailable.');
         }
 

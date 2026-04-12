@@ -14,7 +14,7 @@ class VisualizationSuggestionService
     {
         $schema = $this->datasetSemanticSchemaService->getSchema($dataset);
         $columns = collect($schema['columns'] ?? [])
-            ->filter(fn($column) => !($column['isExcludedFromAnalysis'] ?? false))
+            ->filter(fn ($column) => ! ($column['isExcludedFromAnalysis'] ?? false))
             ->values();
 
         $metrics = $columns->where('semanticType', 'metric')->values();

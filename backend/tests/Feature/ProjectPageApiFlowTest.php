@@ -853,7 +853,7 @@ CSV
     {
         return User::create([
             'name' => 'Test User',
-            'email' => 'test-' . uniqid('', true) . '@example.test',
+            'email' => 'test-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);

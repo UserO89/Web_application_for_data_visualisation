@@ -8,6 +8,7 @@ use League\Csv\Reader;
 class CsvImportService
 {
     private const DEFAULT_MAX_DATA_ROWS = 5000;
+
     private const DEFAULT_MAX_COLUMNS = 100;
 
     public function parse(UploadedFile $file, string $delimiter = ',', bool $hasHeader = true): array
@@ -30,7 +31,7 @@ class CsvImportService
                 $lineNumber = $rawRowCount;
                 $columnCount = count($normalizedRow);
                 $maxColumnsDetected = max($maxColumnsDetected, $columnCount);
-                $isDataRow = !$hasHeader || $rawRowCount > 1;
+                $isDataRow = ! $hasHeader || $rawRowCount > 1;
                 $currentDataRowsChecked = $dataRowsChecked + ($isDataRow ? 1 : 0);
 
                 if ($columnCount > $maxColumns) {

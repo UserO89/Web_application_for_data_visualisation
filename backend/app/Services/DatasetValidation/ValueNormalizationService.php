@@ -10,8 +10,11 @@ class ValueNormalizationService
     use BuildsValidationIssue;
 
     private const MAX_VALUE_ISSUE_SAMPLES = 36;
+
     private const MAX_REVIEW_SAMPLES_PER_COLUMN = 8;
+
     private const DATE_OUTPUT_FORMAT = 'd.m.Y';
+
     private const DATETIME_OUTPUT_FORMAT = 'Y-m-d H:i:s';
 
     public function __construct(
@@ -91,7 +94,7 @@ class ValueNormalizationService
                     }
 
                     $issueType = (string) ($normalized['issue_type'] ?? 'value_changed');
-                    $columnName = $column['name'] ?? ('Column_' . ($position + 1));
+                    $columnName = $column['name'] ?? ('Column_'.($position + 1));
                     $issueCount++;
                     $issueTypeCounts[$issueType] = ($issueTypeCounts[$issueType] ?? 0) + 1;
                     if (str_starts_with($issueType, 'invalid_')) {
@@ -159,7 +162,7 @@ class ValueNormalizationService
 
         $columns = [];
         for ($i = 0; $i < $expectedCount; $i++) {
-            $name = $headers[$i] ?? ('Column_' . ($i + 1));
+            $name = $headers[$i] ?? ('Column_'.($i + 1));
             $legacyType = (string) ($inferred[$i]['type'] ?? 'string');
             $physicalType = (string) ($inferred[$i]['physical_type'] ?? $this->legacyTypeToPhysicalType($legacyType));
             $columns[] = [
@@ -263,6 +266,7 @@ class ValueNormalizationService
         }
 
         $type = $this->resolveNormalizationType($column);
+
         return match ($type) {
             'integer' => $this->normalizeIntegerValue($normalized),
             'number' => $this->normalizeNumericValue($normalized),
@@ -289,7 +293,7 @@ class ValueNormalizationService
             ];
         }
 
-        if (!$this->isWholeNumber($numeric)) {
+        if (! $this->isWholeNumber($numeric)) {
             return [
                 'value' => null,
                 'changed' => true,
@@ -299,6 +303,7 @@ class ValueNormalizationService
         }
 
         $integerValue = (int) $numeric;
+
         return [
             'value' => $integerValue,
             'changed' => (string) $integerValue !== $normalized,
@@ -344,6 +349,7 @@ class ValueNormalizationService
         }
 
         $normalizedLiteral = $parsed ? 'true' : 'false';
+
         return [
             'value' => $parsed,
             'changed' => mb_strtolower($normalized) !== $normalizedLiteral,
@@ -443,11 +449,11 @@ class ValueNormalizationService
         mixed $newValue,
         string $message
     ): void {
-        if (!$this->isReviewRelevantIssueType($issueType)) {
+        if (! $this->isReviewRelevantIssueType($issueType)) {
             return;
         }
 
-        if (!isset($reviewColumns[$columnName])) {
+        if (! isset($reviewColumns[$columnName])) {
             $reviewColumns[$columnName] = [
                 'column_index' => $position + 1,
                 'column_name' => $columnName,

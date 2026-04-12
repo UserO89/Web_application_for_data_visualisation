@@ -14,7 +14,7 @@ class ValueParsingServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->service = new ValueParsingService();
+        $this->service = new ValueParsingService;
     }
 
     public function test_normalize_nullable_string_collapses_whitespace_and_recognizes_empty_markers(): void

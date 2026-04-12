@@ -23,7 +23,7 @@ class Project extends Model
     {
         static::deleting(function (Project $project): void {
             $datasetFilePath = $project->dataset()->value('file_path');
-            if (!$datasetFilePath) {
+            if (! $datasetFilePath) {
                 return;
             }
 

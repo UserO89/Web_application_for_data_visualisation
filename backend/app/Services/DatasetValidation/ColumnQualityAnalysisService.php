@@ -10,9 +10,13 @@ class ColumnQualityAnalysisService
     use BuildsValidationIssue;
 
     private const MOSTLY_NUMERIC_RATIO = 0.65;
+
     private const MOSTLY_DATE_RATIO = 0.65;
+
     private const MOSTLY_BOOLEAN_RATIO = 0.8;
+
     private const HIGH_NULL_RATIO_WARNING = 0.45;
+
     private const IDENTIFIER_UNIQUE_RATIO = 0.95;
 
     public function __construct(
@@ -26,7 +30,7 @@ class ColumnQualityAnalysisService
         $issues = [];
 
         foreach ($columns as $index => &$column) {
-            $columnName = (string) ($column['name'] ?? ('Column_' . ($index + 1)));
+            $columnName = (string) ($column['name'] ?? ('Column_'.($index + 1)));
             $columnValues = array_column($rows, $index);
             $quality = $this->buildColumnQuality(
                 $columnName,
@@ -181,7 +185,7 @@ class ColumnQualityAnalysisService
                 'distinctRatio' => round($stats['distinctRatio'], 6),
                 'parseSuccess' => $parseSuccess,
                 'flags' => $flags,
-                'issueCodes' => array_values(array_map(fn($issue) => $issue['code'], $issues)),
+                'issueCodes' => array_values(array_map(fn ($issue) => $issue['code'], $issues)),
             ],
             'report' => [
                 'name' => $columnName,
@@ -234,7 +238,7 @@ class ColumnQualityAnalysisService
             }
 
             $lower = mb_strtolower($normalized);
-            if (!isset($lowerToVariants[$lower])) {
+            if (! isset($lowerToVariants[$lower])) {
                 $lowerToVariants[$lower] = [];
             }
             $lowerToVariants[$lower][$normalized] = true;
@@ -245,7 +249,7 @@ class ColumnQualityAnalysisService
         $topValueCount = empty($frequency) ? 0 : max($frequency);
         $caseVariantGroups = count(array_filter(
             $lowerToVariants,
-            fn(array $variants) => count($variants) > 1
+            fn (array $variants) => count($variants) > 1
         ));
 
         return [
@@ -269,7 +273,7 @@ class ColumnQualityAnalysisService
 
     private function resolveColumnStatus(array $issues): string
     {
-        $severities = array_map(fn($issue) => $issue['severity'] ?? 'info', $issues);
+        $severities = array_map(fn ($issue) => $issue['severity'] ?? 'info', $issues);
         if (in_array('error', $severities, true)) {
             return 'error';
         }
@@ -282,5 +286,4 @@ class ColumnQualityAnalysisService
 
         return 'ok';
     }
-
 }

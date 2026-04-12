@@ -20,7 +20,7 @@ class DemoProjectResolverTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
         $this->expectExceptionMessage('Demo project is not configured.');
 
-        (new DemoProjectResolver())->resolve();
+        (new DemoProjectResolver)->resolve();
     }
 
     public function test_resolve_throws_when_demo_project_is_missing_or_has_no_dataset(): void
@@ -28,7 +28,7 @@ class DemoProjectResolverTest extends TestCase
         config()->set('demo.project_id', 999999);
 
         try {
-            (new DemoProjectResolver())->resolve();
+            (new DemoProjectResolver)->resolve();
             $this->fail('Expected missing project exception was not thrown.');
         } catch (NotFoundHttpException $exception) {
             $this->assertSame('Demo project is unavailable.', $exception->getMessage());
@@ -40,7 +40,7 @@ class DemoProjectResolverTest extends TestCase
         $this->expectException(NotFoundHttpException::class);
         $this->expectExceptionMessage('Demo project is unavailable.');
 
-        (new DemoProjectResolver())->resolve();
+        (new DemoProjectResolver)->resolve();
     }
 
     public function test_resolve_returns_configured_project_with_dataset_and_columns_loaded(): void
@@ -59,7 +59,7 @@ class DemoProjectResolverTest extends TestCase
         ]);
         config()->set('demo.project_id', $project->id);
 
-        $resolved = (new DemoProjectResolver())->resolve();
+        $resolved = (new DemoProjectResolver)->resolve();
 
         $this->assertSame($project->id, $resolved->id);
         $this->assertNotNull($resolved->dataset);
@@ -78,14 +78,14 @@ class DemoProjectResolverTest extends TestCase
         ]);
         config()->set('demo.project_id', $project->id);
 
-        $resolvedDataset = (new DemoProjectResolver())->resolveDataset();
+        $resolvedDataset = (new DemoProjectResolver)->resolveDataset();
         $this->assertSame($dataset->id, $resolvedDataset->id);
 
         $resolver = new class extends DemoProjectResolver
         {
             public function resolve(): Project
             {
-                return new Project();
+                return new Project;
             }
         };
 
@@ -101,7 +101,7 @@ class DemoProjectResolverTest extends TestCase
     {
         $user = User::query()->create([
             'name' => 'Demo Owner',
-            'email' => 'demo-' . uniqid('', true) . '@example.test',
+            'email' => 'demo-'.uniqid('', true).'@example.test',
             'role' => 'user',
             'password' => 'password123',
         ]);
