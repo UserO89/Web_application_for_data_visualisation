@@ -38,7 +38,7 @@
     "name": "Name",
     "namePlaceholder": "Your name",
     "email": "Email",
-    "emailPlaceholder": "name@example.com",
+    "emailPlaceholder": "name{'@'}example.com",
     "password": "Password",
     "passwordPlaceholder": "Password",
     "login": "Log in",
