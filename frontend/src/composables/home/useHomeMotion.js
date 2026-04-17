@@ -4,6 +4,7 @@ const EASE_OUT_CUBIC = (t) => 1 - Math.pow(1 - t, 3)
 const EASE_IN_OUT_CUBIC = (t) => (t < 0.5
   ? 4 * t * t * t
   : 1 - Math.pow(-2 * t + 2, 3) / 2)
+const mediaQueryMatches = (query) => window.matchMedia?.(query)?.matches ?? false
 
 export const useHomeMotion = ({
   pageRef,
@@ -55,7 +56,7 @@ export const useHomeMotion = ({
     const target = document.getElementById(id)
     if (!target) return
 
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reduceMotion = mediaQueryMatches('(prefers-reduced-motion: reduce)')
     const startY = window.scrollY || window.pageYOffset
     const targetY = Math.max(0, startY + target.getBoundingClientRect().top - 14)
     const distance = targetY - startY
@@ -93,8 +94,8 @@ export const useHomeMotion = ({
   }
 
   const attachCursorGlow = (target, cursorId) => {
-    if (!target || !window.matchMedia('(pointer: fine)').matches) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!target || !mediaQueryMatches('(pointer: fine)')) return
+    if (mediaQueryMatches('(prefers-reduced-motion: reduce)')) return
 
     let queuedX = 50
     let queuedY = 50

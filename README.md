@@ -224,6 +224,16 @@ cd backend
 php artisan test
 ```
 
+Backend coverage:
+
+```bash
+cd backend
+composer test:coverage
+```
+
+If your default CLI `php.ini` does not load Xdebug, this command uses `backend/php.coverage.ini`
+and enables `xdebug` for the coverage run.
+
 Frontend:
 
 ```bash
@@ -250,6 +260,7 @@ Backend quality gate:
 ```bash
 cd backend
 composer test
+composer test:coverage
 composer format:check
 ```
 

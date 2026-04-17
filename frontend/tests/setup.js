@@ -24,11 +24,32 @@ const clearBrowserStorage = () => {
   } catch {}
 }
 
+const ensureMatchMedia = () => {
+  if (typeof window === 'undefined' || typeof window.matchMedia === 'function') return
+
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: (query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  })
+}
+
+ensureMatchMedia()
 ensureEnglishNavigator()
 clearBrowserStorage()
 setLocale('en')
 
 beforeEach(() => {
+  ensureMatchMedia()
   ensureEnglishNavigator()
   clearBrowserStorage()
   setLocale('en')

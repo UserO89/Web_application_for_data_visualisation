@@ -27,6 +27,7 @@
 
 # Tooling and local config files
 .phpunit.result.cache
+/php.coverage.ini
 Homestead.json
 Homestead.yaml
 auth.json

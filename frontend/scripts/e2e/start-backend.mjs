@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { existsSync, closeSync, mkdirSync, openSync } from 'node:fs'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, extname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawn, spawnSync } from 'node:child_process'
 
@@ -9,6 +9,7 @@ const repoRoot = resolve(scriptDir, '../../..')
 const backendDir = join(repoRoot, 'backend')
 const databasePath = join(backendDir, 'database', 'e2e.sqlite')
 const phpBinary = resolvePhpBinary()
+const phpProcessOptions = buildPhpProcessOptions(phpBinary)
 
 ensureSqliteDatabase(databasePath)
 
@@ -43,6 +44,7 @@ const backendServer = spawn(
   {
     cwd: backendDir,
     env: backendEnv,
+    shell: phpProcessOptions.shell,
     stdio: 'inherit',
   }
 )
@@ -74,14 +76,19 @@ function resolvePhpBinary() {
   }
 
   const commandName = process.platform === 'win32' ? 'where' : 'which'
-  const lookup = spawnSync(commandName, ['php'], { encoding: 'utf8' })
-  if (lookup.status === 0) {
-    const firstPath = lookup.stdout
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .find(Boolean)
-    if (firstPath) {
-      return firstPath
+  const lookupTargets = process.platform === 'win32' ? ['php.exe', 'php'] : ['php']
+
+  for (const lookupTarget of lookupTargets) {
+    const lookup = spawnSync(commandName, [lookupTarget], { encoding: 'utf8' })
+    if (lookup.status === 0) {
+      const firstPath = lookup.stdout
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .find(Boolean)
+
+      if (firstPath) {
+        return firstPath
+      }
     }
   }
 
@@ -94,8 +101,17 @@ function runArtisan(args, env) {
   execFileSync(phpBinary, ['artisan', ...args], {
     cwd: backendDir,
     env,
+    shell: phpProcessOptions.shell,
     stdio: 'inherit',
   })
+}
+
+function buildPhpProcessOptions(binaryPath) {
+  const extension = extname(binaryPath).toLowerCase()
+
+  return {
+    shell: process.platform === 'win32' && ['.bat', '.cmd'].includes(extension),
+  }
 }
 
 function forwardTerminationSignals(child) {

@@ -44,14 +44,18 @@ test('user can register, create a project, import a dataset, review it, and save
   await expect(validationDialog).toBeHidden()
 
   await page.getByRole('button', { name: /^Visualization$/ }).click()
-  await expect(page.getByRole('button', { name: /load full dataset/i })).toBeVisible()
-  await page.getByRole('button', { name: /load full dataset/i }).click()
+  await expect(page.getByText('Create Visualization')).toBeVisible()
+
+  const buildChartButton = page.getByRole('button', { name: /build chart/i })
+  await expect(buildChartButton).toBeEnabled({ timeout: 20_000 })
+  await buildChartButton.click()
 
   const saveChartButton = page.getByRole('button', { name: /save chart/i })
   await expect(saveChartButton).toBeEnabled({ timeout: 20_000 })
   await saveChartButton.click()
 
   await expect(page.getByText('Chart saved to the project library.')).toBeVisible()
-  await expect(page.locator('.library-shell .saved-chart-card')).toHaveCount(1)
-  await expect(page.getByRole('button', { name: /download png/i })).toBeVisible()
+  const savedChartCard = page.locator('.library-shell .saved-chart-card')
+  await expect(savedChartCard).toHaveCount(1)
+  await expect(savedChartCard.first().getByRole('button', { name: /download png/i })).toBeVisible()
 })

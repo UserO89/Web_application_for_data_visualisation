@@ -37,6 +37,9 @@
         "test": [
             "@php artisan test"
         ],
+        "test:coverage": [
+            "@php -c php.coverage.ini -d zend_extension=xdebug -d xdebug.mode=coverage artisan test --coverage"
+        ],
         "format:check": [
             "@php vendor/bin/pint --test"
         ],
